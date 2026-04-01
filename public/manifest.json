@@ -1,12 +1,12 @@
 {
-  "name": "ChatGPT",
-  "short_name": "ChatGPT",
-  "description": "ChatGPT — AI assistant powered by OpenAI",
+  "name": "Cove",
+  "short_name": "Cove",
+  "description": "Your Vermont cannabis companion",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0d0d0d",
-  "theme_color": "#10a37f",
+  "background_color": "#122a1e",
+  "theme_color": "#1b3a2a",
   "icons": [
     {
       "src": "/icons/icon-192.png",

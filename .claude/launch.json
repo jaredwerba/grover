@@ -1,0 +1,47 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "grover",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "/Users/jkw/grover",
+      "port": 3000
+    },
+    {
+      "name": "brainstorm-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "/Users/jkw/Desktop/brainstorm-frontend",
+      "port": 3000
+    },
+    {
+      "name": "react-kb",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "cwd": "/Users/jkw/Desktop/react-kb",
+      "port": 3000
+    },
+    {
+      "name": "react-project",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "cwd": "/Users/jkw/Desktop/react-project",
+      "port": 3000
+    },
+    {
+      "name": "graphql-sample",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["index.js"],
+      "cwd": "/Users/jkw/Desktop/graphql-sample",
+      "port": 4000
+    },
+    {
+      "name": "aughacks-frontend",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["web_server.py"],
+      "cwd": "/Users/jkw/Desktop/aughacks-frontend",
+      "port": 8080
+    }
+  ]
+}

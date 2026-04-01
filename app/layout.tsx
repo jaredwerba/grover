@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import AgeGate from "@/components/AgeGate";
+import Nav from "@/components/Nav";
+import { getSession } from "@/lib/auth";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,20 +17,20 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#10a37f",
+  themeColor: "#1b3a2a",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
 };
 
 export const metadata: Metadata = {
-  title: "ChatGPT",
-  description: "AI assistant powered by OpenAI",
+  title: "Cove",
+  description: "Your Vermont cannabis companion",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "ChatGPT",
+    title: "Cove",
   },
   icons: {
     icon: "/icons/icon-192.png",
@@ -35,19 +38,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getSession();
+  const isAuthenticated = session !== null;
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full`}
     >
-      <body className="h-full bg-[#0d0d0d] text-white antialiased">
+      <body className="h-full bg-forest-deep text-cream antialiased flex flex-col">
         <ServiceWorkerRegister />
-        {children}
+        <AgeGate>
+          <Nav isAuthenticated={isAuthenticated} />
+          <div className="flex-1 flex flex-col min-h-0">{children}</div>
+        </AgeGate>
       </body>
     </html>
   );

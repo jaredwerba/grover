@@ -39,27 +39,27 @@ export default function ChatInput({
   }
 
   return (
-    <div className="border-t border-[#2f2f2f] bg-[#0d0d0d] px-4 py-4">
+    <div className="border-t border-forest-mid bg-forest-deep px-4 py-4">
       <div className="max-w-3xl mx-auto">
-        <div className="flex items-end gap-3 bg-[#1e1e1e] rounded-2xl border border-[#3f3f3f] px-4 py-3 focus-within:border-[#10a37f] transition-colors">
+        <div className="flex items-end gap-3 bg-forest rounded-2xl border border-forest-mid px-4 py-3 focus-within:border-amber transition-colors">
           <textarea
             ref={textareaRef}
             value={value}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
-            placeholder="Message ChatGPT…"
+            placeholder="Ask Cove…"
             disabled={disabled}
             rows={1}
-            className="flex-1 bg-transparent text-white text-sm placeholder-gray-500 resize-none outline-none leading-relaxed min-h-[24px] max-h-[200px] disabled:opacity-50"
+            className="flex-1 bg-transparent text-cream text-sm placeholder-cream-muted/50 resize-none outline-none leading-relaxed min-h-[24px] max-h-[200px] disabled:opacity-50"
           />
           <button
             onClick={submit}
             disabled={disabled || !value.trim()}
-            className="w-8 h-8 rounded-full bg-[#10a37f] flex items-center justify-center shrink-0 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#0d8f6e] transition-colors"
+            className="w-8 h-8 rounded-full bg-amber flex items-center justify-center shrink-0 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-amber-hover transition-colors"
             aria-label="Send message"
           >
             <svg
-              className="w-4 h-4 text-white"
+              className="w-4 h-4 text-forest-deep"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -73,8 +73,8 @@ export default function ChatInput({
             </svg>
           </button>
         </div>
-        <p className="text-center text-[11px] text-gray-600 mt-2">
-          ChatGPT can make mistakes. Check important info.
+        <p className="text-center text-[11px] text-cream-muted/60 mt-2">
+          Cove is for informational purposes only. Not medical advice.
         </p>
       </div>
     </div>
