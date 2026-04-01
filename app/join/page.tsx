@@ -203,6 +203,11 @@ function JoinForm() {
           ← Back to Cove
         </Link>
       </p>
+      <p className="text-center text-xs text-cream-muted/40 mt-4">
+        <Link href="/login" className="hover:text-cream-muted transition-colors">
+          Admin sign in
+        </Link>
+      </p>
     </>
   );
 }
