@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { dispensaries } from "@/lib/dispensaries";
 import TrailClient from "@/components/TrailClient";
 import Link from "next/link";
@@ -28,8 +29,15 @@ export default function TrailPage() {
         <TrailClient dispensaries={dispensaries} />
 
         {/* Footer note */}
-        <div className="mt-16 border-t border-forest-mid pt-8">
-          <p className="text-cream-muted text-xs leading-relaxed max-w-xl">
+        <div className="mt-16 border-t border-forest-mid pt-8 flex flex-col items-center gap-6">
+          <Image
+            src="/images/grovelogo.jpg"
+            alt="Cove"
+            width={160}
+            height={238}
+            className="w-32 h-auto opacity-90"
+          />
+          <p className="text-cream-muted text-xs leading-relaxed max-w-xl text-center">
             For adults 21+ only. Vermont recreational cannabis law applies.
             Hours and availability subject to change — always confirm with the
             dispensary directly.
