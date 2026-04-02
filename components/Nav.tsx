@@ -23,7 +23,7 @@ export default function Nav({
       <div className="flex items-center gap-1">
         <Link
           href="/trail"
-          className="text-cream-muted hover:text-cream transition-colors text-sm px-3 py-2 rounded-sm hover:bg-forest tracking-wide uppercase"
+          className="text-cream-muted hover:text-cream transition-colors text-xs sm:text-sm px-2 sm:px-3 py-2 rounded-sm hover:bg-forest tracking-wide uppercase"
         >
           Cannatrail
         </Link>
@@ -32,14 +32,14 @@ export default function Nav({
           <>
             <Link
               href="/chat"
-              className="text-cream-muted hover:text-cream transition-colors text-sm px-3 py-2 rounded-sm hover:bg-forest tracking-wide uppercase"
+              className="text-cream-muted hover:text-cream transition-colors text-xs sm:text-sm px-2 sm:px-3 py-2 rounded-sm hover:bg-forest tracking-wide uppercase"
             >
               Chat
             </Link>
             <form action="/api/auth/logout" method="POST">
               <button
                 type="submit"
-                className="text-cream-muted hover:text-cream transition-colors text-sm px-3 py-2 rounded-sm hover:bg-forest tracking-wide uppercase"
+                className="text-cream-muted hover:text-cream transition-colors text-xs sm:text-sm px-2 sm:px-3 py-2 rounded-sm hover:bg-forest tracking-wide uppercase"
               >
                 Sign out
               </button>
@@ -48,7 +48,7 @@ export default function Nav({
         ) : (
           <Link
             href="/join"
-            className="bg-amber text-forest-deep text-xs font-bold px-5 py-2 rounded-sm hover:bg-amber-hover transition-colors ml-2 tracking-widest uppercase"
+            className="bg-amber text-forest-deep text-xs font-bold px-3 sm:px-5 py-2 rounded-sm hover:bg-amber-hover transition-colors ml-1 sm:ml-2 tracking-widest uppercase"
           >
             Join
           </Link>
