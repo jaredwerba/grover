@@ -71,6 +71,81 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Chat UI — prototype */}
+      <section className="px-6 pb-16 max-w-2xl mx-auto w-full">
+        {/* Chat window */}
+        <div className="bg-forest border-2 border-forest-mid rounded-sm overflow-hidden"
+          style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}>
+
+          {/* Header */}
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-forest-mid">
+            <div className="w-2 h-2 rounded-full bg-amber" />
+            <span className="text-amber text-xs tracking-widest uppercase font-bold">Cove AI</span>
+            <span className="text-cream-muted/40 text-xs ml-auto">Cannabis Concierge</span>
+          </div>
+
+          {/* Messages */}
+          <div className="px-4 py-5 space-y-4 min-h-[200px]">
+            {/* AI greeting */}
+            <div className="flex gap-3">
+              <div className="w-6 h-6 rounded-sm bg-amber/20 border border-amber/30 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-amber text-xs font-groovy">C</span>
+              </div>
+              <div className="bg-forest-mid/50 rounded-sm px-4 py-3 max-w-xs">
+                <p className="text-cream text-sm leading-relaxed">
+                  Hey — I&apos;m Cove. Ask me anything about Vermont cannabis: strains, dispensaries, effects, or dosing.
+                </p>
+              </div>
+            </div>
+
+            {/* User message */}
+            <div className="flex gap-3 justify-end">
+              <div className="bg-amber/10 border border-amber/20 rounded-sm px-4 py-3 max-w-xs">
+                <p className="text-cream text-sm leading-relaxed">
+                  where is the best locally grown blue dragon?
+                </p>
+              </div>
+              <div className="w-6 h-6 rounded-sm bg-forest-mid border border-forest-mid flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-cream-muted text-xs">U</span>
+              </div>
+            </div>
+
+            {/* AI typing indicator */}
+            <div className="flex gap-3">
+              <div className="w-6 h-6 rounded-sm bg-amber/20 border border-amber/30 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-amber text-xs font-groovy">C</span>
+              </div>
+              <div className="bg-forest-mid/50 rounded-sm px-4 py-3">
+                <div className="flex gap-1 items-center h-4">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber/60 animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber/60 animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber/60 animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Input bar */}
+          <div className="border-t border-forest-mid px-4 py-3 flex gap-3 items-center">
+            <input
+              type="text"
+              defaultValue="where is the best locally grown blue dragon?"
+              readOnly
+              className="flex-1 bg-transparent text-cream text-sm placeholder:text-cream-muted/40 outline-none"
+            />
+            <button
+              className="bg-amber text-forest-deep text-xs font-bold px-4 py-2 rounded-sm tracking-widest uppercase hover:bg-amber-hover transition-colors"
+            >
+              Ask
+            </button>
+          </div>
+        </div>
+
+        <p className="text-center text-cream-muted/40 text-xs tracking-widest uppercase mt-4">
+          Join to unlock the full Cove experience
+        </p>
+      </section>
+
       <MountainFooter />
     </main>
   );
