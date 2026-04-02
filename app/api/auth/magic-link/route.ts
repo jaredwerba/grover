@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   const magicUrl = `${baseUrl}/verify?token=${token}`;
 
   const { error } = await resend.emails.send({
-    from: "Cove <onboarding@resend.dev>",
+    from: process.env.RESEND_FROM_EMAIL ?? "Cove <onboarding@resend.dev>",
     to: normalizedEmail,
     subject: "Your Cove sign-in link",
     html: `
@@ -44,7 +44,6 @@ export async function POST(req: NextRequest) {
   });
 
   if (error) {
-    console.error("Resend error:", error);
     return Response.json({ error: "Failed to send email" }, { status: 500 });
   }
 
