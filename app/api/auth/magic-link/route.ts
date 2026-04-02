@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   const magicUrl = `${baseUrl}/verify?token=${token}`;
 
   const { error } = await resend.emails.send({
-    from: "Cove <noreply@covevt.com>",
+    from: "Cove <onboarding@resend.dev>",
     to: normalizedEmail,
     subject: "Your Cove sign-in link",
     html: `
