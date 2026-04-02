@@ -1,5 +1,4 @@
 import Link from "next/link";
-import QuickLoginButton from "@/components/QuickLoginButton";
 
 export default function LandingPage() {
   return (
@@ -21,7 +20,12 @@ export default function LandingPage() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <QuickLoginButton />
+          <Link
+            href="/join"
+            className="bg-amber text-forest-deep font-bold px-10 py-4 rounded-full hover:bg-amber-hover transition-colors text-base"
+          >
+            Join
+          </Link>
           <Link
             href="/trail"
             className="border border-forest-mid text-cream px-10 py-4 rounded-full hover:border-forest-light hover:bg-forest transition-colors text-base"
