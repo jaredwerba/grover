@@ -121,18 +121,21 @@ export default function LandingPage() {
               icon: "▲",
               title: "AI Concierge",
               body: "Ask anything about strains, effects, dosing, or terpenes. Cove gives you knowledgeable, personalized guidance.",
+              href: undefined,
             },
             {
               icon: "◉",
               title: "The Cannatrail",
               body: "Vermont's curated network of licensed dispensaries — browse menus, hours, and locations across the state.",
+              href: "/trail",
             },
             {
               icon: "★",
               title: "Vermont-First",
               body: "Built for the Vermont market. Local knowledge, local dispensaries, and a community that knows the Green Mountain State.",
+              href: "/vermont-first",
             },
-          ].map(({ icon, title, body }) => (
+          ].map(({ icon, title, body, href }) => (
             <div
               key={title}
               className="bg-forest border-2 border-forest-mid p-6 rounded-sm relative"
@@ -140,7 +143,12 @@ export default function LandingPage() {
             >
               <div className="text-amber text-xl mb-3 font-groovy">{icon}</div>
               <h3 className="text-cream font-groovy text-lg mb-2">{title}</h3>
-              <p className="text-cream-muted text-sm leading-relaxed">{body}</p>
+              <p className="text-cream-muted text-sm leading-relaxed mb-3">{body}</p>
+              {href && (
+                <Link href={href} className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber-hover transition-colors">
+                  Explore ↗
+                </Link>
+              )}
             </div>
           ))}
         </div>
