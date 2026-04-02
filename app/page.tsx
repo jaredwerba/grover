@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import QuickLoginButton from "@/components/QuickLoginButton";
 
@@ -7,16 +6,12 @@ export default function LandingPage() {
     <main className="min-h-screen bg-forest-deep text-cream flex flex-col">
       {/* Hero */}
       <section className="flex flex-col items-center justify-center flex-1 text-center px-6 py-24">
-        <div className="mb-6">
-          <Image
-            src="/images/logo.jpg"
-            alt="Cove"
-            width={240}
-            height={357}
-            priority
-            className="w-40 h-auto sm:w-52 md:w-60 drop-shadow-2xl"
-          />
+        <div className="text-8xl font-black text-amber leading-none tracking-tighter mb-2">
+          C
         </div>
+        <h1 className="text-5xl md:text-6xl font-black text-cream mb-4 tracking-tight">
+          Cove
+        </h1>
         <p className="text-xl text-cream-muted mb-3 max-w-md leading-relaxed">
           Your Vermont cannabis companion
         </p>
