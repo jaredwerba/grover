@@ -9,7 +9,7 @@ export default function Nav({
     <nav className="flex items-center justify-between px-6 py-4 border-b border-forest-mid">
       <Link
         href="/"
-        className="text-amber font-black text-2xl tracking-tighter leading-none"
+        className="text-amber font-groovy text-2xl leading-none"
       >
         Cove
       </Link>

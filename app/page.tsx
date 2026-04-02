@@ -6,10 +6,10 @@ export default function LandingPage() {
     <main className="min-h-screen bg-forest-deep text-cream flex flex-col">
       {/* Hero */}
       <section className="flex flex-col items-center justify-center flex-1 text-center px-6 py-24">
-        <div className="text-8xl font-black text-amber leading-none tracking-tighter mb-2">
+        <div className="text-8xl font-groovy text-amber leading-none mb-2">
           C
         </div>
-        <h1 className="text-5xl md:text-6xl font-black text-cream mb-4 tracking-tight">
+        <h1 className="text-5xl md:text-6xl font-groovy text-cream mb-4">
           Cove
         </h1>
         <p className="text-xl text-cream-muted mb-3 max-w-md leading-relaxed">

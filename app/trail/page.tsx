@@ -15,7 +15,7 @@ export default function TrailPage() {
           >
             ← Cove
           </Link>
-          <h1 className="text-4xl font-black text-cream tracking-tight mb-2">
+          <h1 className="text-4xl font-groovy text-cream mb-2">
             The Cannatrail
           </h1>
           <p className="text-cream-muted text-base max-w-xl leading-relaxed">

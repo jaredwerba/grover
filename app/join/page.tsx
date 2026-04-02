@@ -76,10 +76,10 @@ function JoinForm() {
   return (
     <>
       <div className="text-center mb-8">
-        <div className="text-5xl font-black text-amber leading-none tracking-tighter mb-1">
+        <div className="text-5xl font-groovy text-amber leading-none mb-1">
           C
         </div>
-        <h1 className="text-3xl font-bold text-cream mb-2">Join Cove</h1>
+        <h1 className="text-3xl font-groovy text-cream mb-2">Join Cove</h1>
         <p className="text-cream-muted text-sm">
           Vermont&apos;s cannabis companion
         </p>

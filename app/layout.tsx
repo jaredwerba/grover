@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Shrikhand } from "next/font/google";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AgeGate from "@/components/AgeGate";
 import Nav from "@/components/Nav";
+import MountainBackground from "@/components/MountainBackground";
 import { getSession } from "@/lib/auth";
 import "./globals.css";
 
@@ -16,8 +17,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const shrikhand = Shrikhand({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-groovy",
+});
+
 export const viewport: Viewport = {
-  themeColor: "#1b3a2a",
+  themeColor: "#1a4a2e",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -49,9 +56,10 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full`}
+      className={`${geistSans.variable} ${geistMono.variable} ${shrikhand.variable} h-full`}
     >
       <body className="h-full bg-forest-deep text-cream antialiased flex flex-col">
+        <MountainBackground />
         <ServiceWorkerRegister />
         <AgeGate>
           <Nav isAuthenticated={isAuthenticated} />
