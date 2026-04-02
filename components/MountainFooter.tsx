@@ -39,6 +39,9 @@ export default function MountainFooter() {
         <p className="text-cream text-xs tracking-widest uppercase">
           Cove · Adults 21+ Only · Vermont State Law Applies
         </p>
+        <p className="text-cream-muted/60 text-xs tracking-wide">
+          Daniels AI · 2026
+        </p>
       </div>
     </footer>
   );

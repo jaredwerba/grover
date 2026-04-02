@@ -108,7 +108,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <p className="text-center text-cream-muted/40 text-xs tracking-widest uppercase mt-4">
+        <p className="text-center text-cream-muted text-sm tracking-wide mt-4">
           Join to unlock the full Cove experience
         </p>
       </section>
