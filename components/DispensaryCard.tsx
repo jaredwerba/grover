@@ -6,16 +6,19 @@ export default function DispensaryCard({
   dispensary: Dispensary;
 }) {
   return (
-    <div className="bg-forest rounded-2xl p-5 border border-forest-mid hover:border-forest-light transition-colors">
+    <div
+      className="bg-forest border-2 border-forest-mid p-5 rounded-sm hover:border-amber/40 transition-colors relative"
+      style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}
+    >
       <div className="flex items-start justify-between gap-3 mb-3">
-        <h3 className="text-cream font-semibold text-base leading-snug">
+        <h3 className="text-cream font-groovy text-lg leading-snug">
           {dispensary.name}
         </h3>
         <div className="flex gap-1 shrink-0 flex-wrap justify-end">
           {dispensary.tags.map((tag) => (
             <span
               key={tag}
-              className="text-[10px] bg-forest-mid text-cream-muted px-2 py-0.5 rounded-full capitalize font-medium"
+              className="text-[10px] border border-amber/30 text-amber/70 px-2 py-0.5 rounded-sm capitalize font-semibold tracking-wider uppercase"
             >
               {tag}
             </span>
@@ -32,7 +35,7 @@ export default function DispensaryCard({
       </p>
 
       <div className="border-t border-forest-mid pt-4 mb-4">
-        <p className="text-xs text-cream-muted font-medium mb-1">Hours</p>
+        <p className="text-xs text-amber/60 font-semibold tracking-widest uppercase mb-2">Hours</p>
         <div className="text-xs text-cream-muted space-y-0.5">
           <div className="flex justify-between">
             <span>Mon – Fri</span>
@@ -54,7 +57,7 @@ export default function DispensaryCard({
           href={dispensary.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-amber hover:text-amber-hover transition-colors font-medium"
+          className="text-xs text-amber hover:text-amber-hover transition-colors font-bold tracking-widest uppercase"
         >
           Website ↗
         </a>
@@ -62,7 +65,7 @@ export default function DispensaryCard({
           href={dispensary.menu_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-amber hover:text-amber-hover transition-colors font-medium"
+          className="text-xs text-amber hover:text-amber-hover transition-colors font-bold tracking-widest uppercase"
         >
           View Menu ↗
         </a>

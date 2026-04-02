@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Shrikhand } from "next/font/google";
+import { Geist, Geist_Mono, Alfa_Slab_One } from "next/font/google";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AgeGate from "@/components/AgeGate";
 import Nav from "@/components/Nav";
@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const shrikhand = Shrikhand({
+const alfaSlabOne = Alfa_Slab_One({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-groovy",
@@ -56,7 +56,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${shrikhand.variable} h-full`}
+      className={`${geistSans.variable} ${geistMono.variable} ${alfaSlabOne.variable} h-full`}
     >
       <body className="h-full bg-forest-deep text-cream antialiased flex flex-col">
         <MountainBackground />

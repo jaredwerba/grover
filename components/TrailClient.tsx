@@ -32,10 +32,10 @@ export default function TrailClient({
           <button
             key={value}
             onClick={() => setFilter(value)}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+            className={`px-5 py-2 rounded-sm text-xs font-bold tracking-widest uppercase transition-colors ${
               filter === value
                 ? "bg-amber text-forest-deep"
-                : "border border-forest-mid text-cream-muted hover:border-forest-light hover:text-cream"
+                : "border-2 border-forest-mid text-cream-muted hover:border-amber/40 hover:text-cream"
             }`}
           >
             {label}

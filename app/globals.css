@@ -2,16 +2,18 @@
 
 @theme {
   --color-forest:       #1a4a2e;
-  --color-forest-deep:  #0d2b1a;
+  --color-forest-deep:  #0f2d1c;
   --color-forest-mid:   #275e3c;
   --color-forest-light: #007749;
-  --color-cream:        #f5edd8;
+  --color-cream:        #f7eed8;
   --color-cream-muted:  #c4b89a;
   --color-amber:        #FFB900;
   --color-amber-hover:  #e8a800;
+  --color-sky:          #5b8fa8;
+  --color-rust:         #b85c38;
 
-  /* 1970s groovy heading font */
-  --font-groovy: var(--font-groovy), system-ui, sans-serif;
+  /* 1970s Vermont slab serif heading font */
+  --font-groovy: var(--font-groovy), Georgia, serif;
 }
 
 * {
@@ -23,9 +25,10 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #0d2b1a;
-  color: #f5edd8;
+  background: #0f2d1c;
+  color: #f7eed8;
 }
+
 
 ::-webkit-scrollbar {
   width: 6px;
