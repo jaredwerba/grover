@@ -9,14 +9,14 @@ export default function Nav({
   return (
     <nav className="flex items-center justify-between px-6 py-4 border-b-2 border-forest-mid"
       style={{ borderBottomColor: "rgba(255,185,0,0.18)" }}>
-      <Link href="/" className="leading-none">
+      <Link href="/" className="leading-none block">
         <Image
-          src="/images/covelogo.jpg"
+          src="/images/logotrans.png"
           alt="Cove"
           width={110}
           height={46}
           className="block"
-                    priority
+          priority
         />
       </Link>
 

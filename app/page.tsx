@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 
 export default function LandingPage() {
   return (
@@ -22,14 +21,12 @@ export default function LandingPage() {
             Vermont · Est. 2024
           </p>
 
-          <Image
-            src="/images/covelogo.jpg"
-            alt="Cove"
-            width={320}
-            height={134}
-            className="block mb-3"
-                        priority
-          />
+          <div className="text-[7rem] md:text-[9rem] font-groovy text-amber leading-none mb-1">
+            C
+          </div>
+          <h1 className="text-5xl md:text-7xl font-groovy text-cream mb-3 tracking-wide">
+            Cove
+          </h1>
 
           {/* Divider rule */}
           <div className="flex items-center gap-3 mb-3 w-full max-w-xs">

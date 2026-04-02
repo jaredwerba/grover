@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-forest:       #0f4938;
+  --color-forest:       #0d3020;
   --color-forest-deep:  #0f2d1c;
   --color-forest-mid:   #275e3c;
   --color-forest-light: #007749;
@@ -25,7 +25,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #0f4938;
+  background: #0d3020;
   color: #f7eed8;
 }
 
