@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import MountainFooter from "@/components/MountainFooter";
 
 export default function LandingPage() {
   return (
@@ -70,12 +71,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t-2 border-forest-mid px-6 py-5 text-center">
-        <p className="text-cream-muted text-xs tracking-widest uppercase">
-          Cove · Adults 21+ Only · Vermont State Law Applies
-        </p>
-      </footer>
+      <MountainFooter />
     </main>
   );
 }
