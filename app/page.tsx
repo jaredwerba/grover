@@ -37,6 +37,39 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Value props */}
+      <section className="px-6 pb-24 max-w-5xl mx-auto w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {[
+            {
+              icon: "▲",
+              title: "AI Concierge",
+              body: "Ask anything about strains, effects, dosing, or terpenes. Cove gives you knowledgeable, personalized guidance.",
+            },
+            {
+              icon: "◉",
+              title: "The Cannatrail",
+              body: "Vermont's curated network of licensed dispensaries — browse menus, hours, and locations across the state.",
+            },
+            {
+              icon: "★",
+              title: "Vermont-First",
+              body: "Built for the Vermont market. Local knowledge, local dispensaries, and a community that knows the Green Mountain State.",
+            },
+          ].map(({ icon, title, body }) => (
+            <div
+              key={title}
+              className="bg-forest border-2 border-forest-mid p-6 rounded-sm relative"
+              style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.07)" }}
+            >
+              <div className="text-amber text-xl mb-3 font-groovy">{icon}</div>
+              <h3 className="text-cream font-groovy text-lg mb-2">{title}</h3>
+              <p className="text-cream-muted text-sm leading-relaxed">{body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t-2 border-forest-mid px-6 py-5 text-center">
         <p className="text-cream-muted text-xs tracking-widest uppercase">
