@@ -33,10 +33,10 @@ export default function MountainFooter() {
         />
       </svg>
 
-      {/* Legal text — floats in sky above peaks */}
-      <div className="relative z-10 flex flex-col items-center pt-8 gap-2">
-        <span className="text-amber/40 text-xs">✦</span>
-        <p className="text-cream-muted/50 text-xs tracking-widest uppercase">
+      {/* Legal text — fixed at bottom, high legibility */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 flex flex-col items-center pb-3 gap-1.5">
+        <span className="text-amber/60 text-xs">✦</span>
+        <p className="text-cream text-xs tracking-widest uppercase">
           Cove · Adults 21+ Only · Vermont State Law Applies
         </p>
       </div>
