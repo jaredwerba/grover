@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Nav({
   isAuthenticated,
@@ -8,11 +9,15 @@ export default function Nav({
   return (
     <nav className="flex items-center justify-between px-6 py-4 border-b-2 border-forest-mid"
       style={{ borderBottomColor: "rgba(255,185,0,0.18)" }}>
-      <Link
-        href="/"
-        className="text-amber font-groovy text-3xl leading-none tracking-wide"
-      >
-        Cove
+      <Link href="/" className="leading-none">
+        <Image
+          src="/images/covelogo.jpg"
+          alt="Cove"
+          width={110}
+          height={46}
+          className="block"
+                    priority
+        />
       </Link>
 
       <div className="flex items-center gap-1">
