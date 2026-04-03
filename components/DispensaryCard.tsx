@@ -7,52 +7,46 @@ export default function DispensaryCard({
 }) {
   return (
     <div
-      className="bg-forest border-2 border-forest-mid p-5 rounded-sm hover:border-amber/40 transition-colors relative"
+      className="bg-forest border-2 border-forest-mid p-5 rounded-sm hover:border-amber/40 transition-colors relative flex flex-col"
       style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}
     >
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <h3 className="text-cream font-groovy text-2xl leading-tight tracking-wide">
-          {dispensary.name}
-        </h3>
-        <div className="flex gap-1 shrink-0 flex-wrap justify-end">
-          {dispensary.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-[11px] border border-amber/40 text-amber/80 px-2 py-0.5 rounded-sm capitalize font-semibold tracking-wider uppercase"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Name */}
+      <h3 className="text-cream font-groovy text-2xl leading-tight tracking-wide mb-3 break-words">
+        {dispensary.name}
+      </h3>
 
-      <p className="text-cream text-sm mb-0.5">
+      {/* Address + phone */}
+      <p className="text-cream text-sm mb-0.5 break-words">
         {dispensary.address}, {dispensary.city}
       </p>
       <p className="text-cream-muted text-sm mb-4">{dispensary.phone}</p>
+
+      {/* Description */}
       <p className="text-cream text-sm leading-relaxed mb-4">
         {dispensary.description}
       </p>
 
+      {/* Hours */}
       <div className="border-t border-forest-mid pt-4 mb-4">
         <p className="text-xs text-amber/70 font-semibold tracking-widest uppercase mb-2">Hours</p>
         <div className="text-sm text-cream-muted space-y-1">
           <div className="flex justify-between gap-4">
-            <span>Mon – Fri</span>
-            <span className="text-cream">{dispensary.hours.mon_fri}</span>
+            <span className="shrink-0">Mon – Fri</span>
+            <span className="text-cream text-right">{dispensary.hours.mon_fri}</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span>Saturday</span>
-            <span className="text-cream">{dispensary.hours.sat}</span>
+            <span className="shrink-0">Saturday</span>
+            <span className="text-cream text-right">{dispensary.hours.sat}</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span>Sunday</span>
-            <span className="text-cream">{dispensary.hours.sun}</span>
+            <span className="shrink-0">Sunday</span>
+            <span className="text-cream text-right">{dispensary.hours.sun}</span>
           </div>
         </div>
       </div>
 
-      <div className="flex gap-6">
+      {/* Links */}
+      <div className="flex gap-6 mb-4">
         <a
           href={dispensary.website}
           target="_blank"
@@ -69,6 +63,18 @@ export default function DispensaryCard({
         >
           Menu ↗
         </a>
+      </div>
+
+      {/* Tags — bottom of card */}
+      <div className="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-forest-mid/60">
+        {dispensary.tags.map((tag) => (
+          <span
+            key={tag}
+            className="text-[11px] border border-amber/40 text-amber/80 px-2.5 py-1 rounded-sm capitalize font-semibold tracking-wider uppercase"
+          >
+            {tag}
+          </span>
+        ))}
       </div>
     </div>
   );
