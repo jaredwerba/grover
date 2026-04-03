@@ -43,11 +43,15 @@ export default function LandingPage() {
       <section className="w-full">
         <div className="px-6 pb-16 max-w-2xl mx-auto">
         {/* Chat window */}
-        <div className="bg-forest border-2 border-forest-mid rounded-sm overflow-hidden"
-          style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}>
+        <div className="border border-forest-mid rounded-sm overflow-hidden"
+          style={{
+            background: "#071a0e",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,185,0,0.08)"
+          }}>
 
           {/* Header */}
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-forest-mid">
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-forest-mid/60"
+            style={{ background: "#0a2214" }}>
             <div className="w-2 h-2 rounded-full bg-amber" />
             <span className="text-amber text-xs tracking-widest uppercase font-bold">Cove AI</span>
             <span className="text-cream-muted/40 text-xs ml-auto">Cannabis Concierge</span>
@@ -60,7 +64,7 @@ export default function LandingPage() {
               <div className="w-6 h-6 rounded-sm bg-amber/20 border border-amber/30 flex items-center justify-center shrink-0 mt-0.5">
                 <span className="text-amber text-xs font-groovy">C</span>
               </div>
-              <div className="bg-forest-mid/50 rounded-sm px-4 py-3 max-w-xs">
+              <div className="rounded-sm px-4 py-3 max-w-xs" style={{ background: "#0f2d1c" }}>
                 <p className="text-cream text-sm leading-relaxed">
                   Hey — I&apos;m Cove. Ask me anything about Vermont cannabis: strains, dispensaries, effects, or dosing.
                 </p>
@@ -69,7 +73,7 @@ export default function LandingPage() {
 
             {/* User message */}
             <div className="flex gap-3 justify-end">
-              <div className="bg-amber/10 border border-amber/20 rounded-sm px-4 py-3 max-w-xs">
+              <div className="rounded-sm px-4 py-3 max-w-xs" style={{ background: "#1a3d28", border: "1px solid rgba(255,185,0,0.15)" }}>
                 <p className="text-cream text-sm leading-relaxed">
                   where is the best locally grown blue dragon?
                 </p>
@@ -84,7 +88,7 @@ export default function LandingPage() {
               <div className="w-6 h-6 rounded-sm bg-amber/20 border border-amber/30 flex items-center justify-center shrink-0 mt-0.5">
                 <span className="text-amber text-xs font-groovy">C</span>
               </div>
-              <div className="bg-forest-mid/50 rounded-sm px-4 py-3">
+              <div className="rounded-sm px-4 py-3" style={{ background: "#0f2d1c" }}>
                 <div className="flex gap-1 items-center h-4">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber/60 animate-bounce" style={{ animationDelay: "0ms" }} />
                   <span className="w-1.5 h-1.5 rounded-full bg-amber/60 animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -95,7 +99,8 @@ export default function LandingPage() {
           </div>
 
           {/* Input bar */}
-          <div className="border-t border-forest-mid px-4 py-3 flex gap-3 items-center">
+          <div className="border-t border-forest-mid/60 px-4 py-3 flex gap-3 items-center"
+            style={{ background: "#0a2214" }}>
             <input
               type="text"
               defaultValue="where is the best locally grown blue dragon?"
