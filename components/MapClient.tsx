@@ -77,11 +77,11 @@ export default function MapClient({ dispensaries, selected, onSelect }: MapClien
       zoomControl={false}
       style={{ background: "#0b2d1b" }}
     >
-      {/* CartoDB Dark Matter — native dark map, borders/labels included */}
+      {/* OpenStreetMap — standard map, no auth, full borders and labels */}
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_matter/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        subdomains="abc"
         maxZoom={19}
       />
 
