@@ -12,8 +12,11 @@
   --color-sky:          #5b8fa8;
   --color-rust:         #b85c38;
 
-  /* 1970s Vermont slab serif heading font */
+  /* Display / groovy — Fascinate (1970s psychedelic hippie) */
   --font-groovy: var(--font-groovy), Georgia, serif;
+
+  /* Pairing body font — Quicksand (warm, rounded, legible) */
+  --font-quicksand: var(--font-quicksand), system-ui, sans-serif;
 }
 
 * {
