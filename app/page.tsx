@@ -147,27 +147,29 @@ export default function LandingPage() {
           ].map(({ icon, title, body, href }) => (
             <div
               key={title}
-              className="bg-forest border-2 border-forest-mid p-6 rounded-sm relative"
+              className="bg-forest border-2 border-forest-mid p-6 rounded-sm relative flex gap-5 items-start"
               style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.07)" }}
             >
+              {/* Icon — left-anchored, scales with viewport */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={icon}
                 alt=""
-                className="mb-3"
+                className="shrink-0 w-14 h-14 sm:w-16 sm:h-16"
                 style={{
-                  width: 36,
-                  height: 36,
                   filter: "brightness(0) saturate(100%) invert(80%) sepia(100%) saturate(600%) hue-rotate(358deg) brightness(105%)",
                 }}
               />
-              <h3 className="text-cream font-groovy text-lg mb-2">{title}</h3>
-              <p className="text-cream-muted text-sm leading-relaxed mb-3">{body}</p>
-              {href && (
-                <Link href={href} className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber-hover transition-colors">
-                  Explore ↗
-                </Link>
-              )}
+              {/* Text */}
+              <div className="flex flex-col">
+                <h3 className="text-cream font-groovy text-xl mb-2">{title}</h3>
+                <p className="text-cream-muted text-sm leading-relaxed mb-3">{body}</p>
+                {href && (
+                  <Link href={href} className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber-hover transition-colors">
+                    Explore ↗
+                  </Link>
+                )}
+              </div>
             </div>
           ))}
         </div>
