@@ -77,13 +77,12 @@ export default function MapClient({ dispensaries, selected, onSelect }: MapClien
       zoomControl={false}
       style={{ background: "#0b2d1b" }}
     >
-      {/* OpenStreetMap base — universally accessible, no auth */}
+      {/* CartoDB Dark Matter — native dark map, borders/labels included */}
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        subdomains="abc"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/dark_matter/{z}/{x}/{y}{r}.png"
+        subdomains="abcd"
         maxZoom={19}
-        className="map-tiles-tinted"
       />
 
       <FlyToMarker dispensary={selected} />
