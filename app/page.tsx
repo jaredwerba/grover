@@ -127,19 +127,19 @@ export default function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
             {
-              icon: "▲",
+              icon: "/images/weed.svg",
               title: "AI Concierge",
               body: "Ask anything about strains, effects, dosing, or terpenes. Cove gives you knowledgeable, personalized guidance.",
               href: undefined,
             },
             {
-              icon: "◉",
+              icon: "/images/mountain.svg",
               title: "The Cannatrail",
               body: "Vermont's curated network of licensed dispensaries — browse menus, hours, and locations across the state.",
               href: "/trail",
             },
             {
-              icon: "★",
+              icon: "/images/vermont.svg",
               title: "Vermont-First",
               body: "Built for the Vermont market. Local knowledge, local dispensaries, and a community that knows the Green Mountain State.",
               href: "/vermont-first",
@@ -150,7 +150,17 @@ export default function LandingPage() {
               className="bg-forest border-2 border-forest-mid p-6 rounded-sm relative"
               style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.07)" }}
             >
-              <div className="text-amber text-xl mb-3 font-groovy">{icon}</div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={icon}
+                alt=""
+                className="mb-3"
+                style={{
+                  width: 36,
+                  height: 36,
+                  filter: "brightness(0) saturate(100%) invert(80%) sepia(100%) saturate(600%) hue-rotate(358deg) brightness(105%)",
+                }}
+              />
               <h3 className="text-cream font-groovy text-lg mb-2">{title}</h3>
               <p className="text-cream-muted text-sm leading-relaxed mb-3">{body}</p>
               {href && (
