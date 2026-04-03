@@ -15,7 +15,7 @@ export default function Nav({
         borderBottom: "1px solid rgba(255,185,0,0.12)",
       }}
     >
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 ml-auto">
         {isAuthenticated ? (
           <>
             <Link
