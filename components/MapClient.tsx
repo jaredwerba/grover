@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L, { LatLngBoundsExpression } from "leaflet";
 import { Dispensary } from "@/lib/dispensaries";
-import "leaflet/dist/leaflet.css";
 
 // Custom amber pin marker matching Cove design
 const amberIcon = L.divIcon({
