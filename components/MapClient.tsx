@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import L from "leaflet";
+import L, { LatLngBoundsExpression } from "leaflet";
 import { Dispensary } from "@/lib/dispensaries";
 import "leaflet/dist/leaflet.css";
 
@@ -60,13 +60,19 @@ interface MapClientProps {
   onSelect: (d: Dispensary) => void;
 }
 
+// Vermont bounding box — SW corner to NE corner
+const VERMONT_BOUNDS: LatLngBoundsExpression = [
+  [42.726, -73.437], // SW — southern tip near Pownal
+  [45.017, -71.464], // NE — northern tip near Derby Line
+];
+
 export default function MapClient({ dispensaries, selected, onSelect }: MapClientProps) {
   const mapRef = useRef<L.Map | null>(null);
 
   return (
     <MapContainer
-      center={[44.26, -72.58]}
-      zoom={8}
+      bounds={VERMONT_BOUNDS}
+      boundsOptions={{ padding: [12, 12] }}
       className="w-full h-full"
       ref={mapRef}
       zoomControl={false}

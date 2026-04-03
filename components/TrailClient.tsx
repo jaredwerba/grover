@@ -116,8 +116,8 @@ export default function TrailClient({ dispensaries }: { dispensaries: Dispensary
         <div
           className="w-full lg:w-[420px] xl:w-[480px] rounded-sm overflow-hidden border-2 border-forest-mid shrink-0 order-first lg:order-last"
           style={{
-            height: "55vw",
-            minHeight: "280px",
+            height: "80vw",
+            minHeight: "360px",
             maxHeight: "520px",
             position: "sticky",
             top: "72px",
