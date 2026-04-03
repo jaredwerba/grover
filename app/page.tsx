@@ -4,7 +4,9 @@ import MountainFooter from "@/components/MountainFooter";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-forest text-cream flex flex-col relative z-10">
+    <main className="text-cream flex flex-col relative z-10" style={{ background: "transparent" }}>
+      {/* Solid content area — ski map hidden behind this */}
+      <div style={{ background: "#0b2d1b" }}>
       {/* Hero — vintage Vermont poster layout */}
       <section className="flex flex-col items-center justify-center flex-1 text-center px-6 py-20">
 
@@ -154,6 +156,9 @@ export default function LandingPage() {
         </div>
       </section>
 
+      </div>{/* end solid content area */}
+
+      {/* Transparent spacer — reveals fixed ski map underneath on scroll */}
       <MountainFooter />
     </main>
   );

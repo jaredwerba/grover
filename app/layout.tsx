@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Alfa_Slab_One } from "next/font/google";
+import Image from "next/image";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AgeGate from "@/components/AgeGate";
 import Nav from "@/components/Nav";
@@ -58,12 +59,31 @@ export default async function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${alfaSlabOne.variable} h-full`}
     >
-      <body className="h-full bg-forest-deep text-cream antialiased flex flex-col">
+      <body className="h-full text-cream antialiased flex flex-col" style={{ background: "transparent" }}>
+        {/* Ski map — truly fixed at bottom, behind all content */}
+        <div className="fixed bottom-0 left-0 right-0" style={{ zIndex: 0 }}>
+          <Image
+            src="/images/footer.jpg"
+            alt="Vermont ski trail map"
+            width={1020}
+            height={428}
+            className="w-full h-auto block"
+          />
+          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-2 gap-0.5"
+            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)" }}>
+            <p className="text-white text-xs tracking-widest uppercase drop-shadow">
+              Cove · Adults 21+ Only · Vermont State Law Applies
+            </p>
+            <p className="text-white/60 text-xs tracking-wide drop-shadow">
+              Daniels AI · 2026
+            </p>
+          </div>
+        </div>
         <MountainBackground />
         <ServiceWorkerRegister />
         <AgeGate>
           <Nav isAuthenticated={isAuthenticated} />
-          <div className="flex-1 flex flex-col min-h-0">{children}</div>
+          <div className="flex-1 flex flex-col min-h-0" style={{ position: "relative", zIndex: 1 }}>{children}</div>
         </AgeGate>
       </body>
     </html>
