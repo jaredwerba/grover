@@ -1,11 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Nav({
   isAuthenticated,
 }: {
   isAuthenticated: boolean;
 }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
   return (
     <nav
       className="sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3"
@@ -16,17 +22,21 @@ export default function Nav({
         borderBottom: "1px solid rgba(255,185,0,0.12)",
       }}
     >
-      {/* Logo — links back to home */}
-      <Link href="/" className="flex items-center shrink-0">
-        <Image
-          src="/images/logotrans.png"
-          alt="Cove"
-          width={72}
-          height={30}
-          className="h-7 w-auto"
-          priority
-        />
-      </Link>
+      {/* Logo — hidden on home page, shown on all other pages */}
+      {isHome ? (
+        <div className="w-0 sm:w-0" />
+      ) : (
+        <Link href="/" className="flex items-center shrink-0">
+          <Image
+            src="/images/logotrans.png"
+            alt="Cove"
+            width={72}
+            height={30}
+            className="h-7 w-auto"
+            priority
+          />
+        </Link>
+      )}
 
       {/* Auth links */}
       <div className="flex items-center gap-1">
