@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import MountainFooter from "@/components/MountainFooter";
 
 export default function LandingPage() {
   return (
@@ -164,8 +163,24 @@ export default function LandingPage() {
         <div style={{ height: "120px", background: "linear-gradient(to bottom, #0b2d1b, transparent)" }} />
       </div>{/* end solid content area */}
 
-      {/* Transparent spacer — reveals fixed ski map underneath on scroll */}
-      <MountainFooter />
+      {/* Footer image — full width, revealed naturally on scroll */}
+      <div className="w-full">
+        <Image
+          src="/images/footer.jpg"
+          alt="Vermont ski trail map"
+          width={1020}
+          height={428}
+          className="w-full h-auto block"
+        />
+        <div className="flex flex-col items-center py-3 gap-1" style={{ background: "#0b2d1b" }}>
+          <p className="text-white text-xs tracking-widest uppercase">
+            Cove · Adults 21+ Only · Vermont State Law Applies
+          </p>
+          <p className="text-white/60 text-xs tracking-wide">
+            Daniels AI · 2026
+          </p>
+        </div>
+      </div>
     </main>
   );
 }
