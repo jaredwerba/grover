@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Alfa_Slab_One } from "next/font/google";
-import Image from "next/image";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AgeGate from "@/components/AgeGate";
 import Nav from "@/components/Nav";
@@ -60,30 +59,12 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${alfaSlabOne.variable} h-full`}
     >
       <body className="h-full text-cream antialiased flex flex-col" style={{ background: "#0b2d1b" }}>
-        {/* Footer — fixed at bottom, z-index 0, revealed as content scrolls away */}
-        <div className="fixed bottom-0 left-0 right-0" style={{ zIndex: 0 }}>
-          <Image
-            src="/images/footer.jpg"
-            alt="Vermont ski trail map"
-            width={1020}
-            height={428}
-            className="w-full h-auto block"
-          />
-          <div className="flex flex-col items-center py-3 gap-1" style={{ background: "#0b2d1b" }}>
-            <p className="text-white text-xs tracking-widest uppercase">
-              Cove · Adults 21+ Only · Vermont State Law Applies
-            </p>
-            <p className="text-white/60 text-xs tracking-wide">
-              Daniels AI · 2026
-            </p>
-          </div>
-        </div>
         <MountainBackground />
         <ServiceWorkerRegister />
         <AgeGate>
           <Nav isAuthenticated={isAuthenticated} />
           {/* z-index 1 — sits on top of fixed footer, slides away on scroll */}
-          <div className="flex-1 flex flex-col min-h-0" style={{ position: "relative", zIndex: 1 }}>{children}</div>
+          <div className="flex-1 flex flex-col min-h-0">{children}</div>
         </AgeGate>
       </body>
     </html>
