@@ -6,7 +6,7 @@ export default function LandingPage() {
   return (
     <main className="text-cream flex flex-col relative z-10" style={{ background: "transparent" }}>
       {/* Solid content area — ski map hidden behind this */}
-      <div style={{ background: "#0b2d1b" }}>
+      <div style={{ background: "#0b2d1b", position: "relative", zIndex: 1 }}>
       {/* Hero — vintage Vermont poster layout */}
       <section className="flex flex-col items-center justify-center flex-1 text-center px-6 py-20">
 
@@ -41,7 +41,8 @@ export default function LandingPage() {
       </section>
 
       {/* Chat UI — prototype */}
-      <section className="px-6 pb-16 max-w-2xl mx-auto w-full">
+      <section className="w-full">
+        <div className="px-6 pb-16 max-w-2xl mx-auto">
         {/* Chat window */}
         <div className="bg-forest border-2 border-forest-mid rounded-sm overflow-hidden"
           style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}>
@@ -113,10 +114,12 @@ export default function LandingPage() {
         <p className="text-center text-cream-muted text-sm tracking-wide mt-4">
           Join to unlock the full Cove experience
         </p>
+        </div>
       </section>
 
       {/* Value props */}
-      <section className="px-6 pb-24 max-w-5xl mx-auto w-full">
+      <section className="w-full">
+        <div className="px-6 pb-24 max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
             {
@@ -153,6 +156,7 @@ export default function LandingPage() {
               )}
             </div>
           ))}
+        </div>
         </div>
       </section>
 
