@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Nav({
   isAuthenticated,
@@ -7,7 +8,7 @@ export default function Nav({
 }) {
   return (
     <nav
-      className="sticky top-0 z-50 flex items-center justify-between px-6 py-4"
+      className="sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3"
       style={{
         background: "rgba(11, 45, 27, 0.55)",
         backdropFilter: "blur(20px) saturate(180%)",
@@ -15,19 +16,32 @@ export default function Nav({
         borderBottom: "1px solid rgba(255,185,0,0.12)",
       }}
     >
-      <div className="flex items-center gap-1 ml-auto">
+      {/* Logo — links back to home */}
+      <Link href="/" className="flex items-center shrink-0">
+        <Image
+          src="/images/logotrans.png"
+          alt="Cove"
+          width={72}
+          height={30}
+          className="h-7 w-auto"
+          priority
+        />
+      </Link>
+
+      {/* Auth links */}
+      <div className="flex items-center gap-1">
         {isAuthenticated ? (
           <>
             <Link
               href="/chat"
-              className="text-cream-muted hover:text-cream transition-colors text-xs sm:text-sm px-2 sm:px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"
+              className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"
             >
               Chat
             </Link>
             <form action="/api/auth/logout" method="POST">
               <button
                 type="submit"
-                className="text-cream-muted hover:text-cream transition-colors text-xs sm:text-sm px-2 sm:px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"
+                className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"
               >
                 Sign out
               </button>
@@ -36,7 +50,7 @@ export default function Nav({
         ) : (
           <Link
             href="/join"
-            className="bg-amber text-forest-deep text-xs font-bold px-3 sm:px-5 py-2 rounded-sm hover:bg-amber-hover transition-colors ml-1 sm:ml-2 tracking-widest uppercase"
+            className="bg-amber text-forest-deep text-xs font-bold px-4 py-2 rounded-sm hover:bg-amber-hover transition-colors tracking-widest uppercase"
           >
             Join
           </Link>

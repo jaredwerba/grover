@@ -1,24 +1,16 @@
-import Image from "next/image";
 import { dispensaries } from "@/lib/dispensaries";
 import TrailClient from "@/components/TrailClient";
-import Link from "next/link";
 
 export default function TrailPage() {
   return (
     <main className="min-h-screen bg-forest-deep text-cream">
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header */}
-        <div className="mb-10">
-          <Link
-            href="/"
-            className="text-cream-muted text-sm hover:text-cream transition-colors mb-6 inline-block"
-          >
-            ← Cove
-          </Link>
-          <h1 className="text-4xl font-groovy text-cream mb-2">
+        <div className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-groovy text-cream mb-3">
             The Cannatrail
           </h1>
-          <p className="text-cream-muted text-base max-w-xl leading-relaxed">
+          <p className="text-cream-muted text-sm sm:text-base max-w-xl leading-relaxed">
             Vermont&apos;s curated network of licensed cannabis dispensaries.
             Find quality products, knowledgeable staff, and locally-grown
             cannabis across the Green Mountain State.
@@ -29,15 +21,8 @@ export default function TrailPage() {
         <TrailClient dispensaries={dispensaries} />
 
         {/* Footer note */}
-        <div className="mt-16 border-t border-forest-mid pt-8 flex flex-col items-center gap-6">
-          <Image
-            src="/images/grovelogo.jpg"
-            alt="Cove"
-            width={160}
-            height={238}
-            className="w-32 h-auto opacity-90"
-          />
-          <p className="text-cream-muted text-xs leading-relaxed max-w-xl text-center">
+        <div className="mt-12 border-t border-forest-mid pt-6">
+          <p className="text-cream-muted text-xs leading-relaxed max-w-xl text-center mx-auto">
             For adults 21+ only. Vermont recreational cannabis law applies.
             Hours and availability subject to change — always confirm with the
             dispensary directly.

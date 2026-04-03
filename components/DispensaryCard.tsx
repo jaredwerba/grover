@@ -11,14 +11,14 @@ export default function DispensaryCard({
       style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
-        <h3 className="text-cream font-groovy text-lg leading-snug">
+        <h3 className="text-cream font-groovy text-xl leading-snug">
           {dispensary.name}
         </h3>
         <div className="flex gap-1 shrink-0 flex-wrap justify-end">
           {dispensary.tags.map((tag) => (
             <span
               key={tag}
-              className="text-[10px] border border-amber/30 text-amber/70 px-2 py-0.5 rounded-sm capitalize font-semibold tracking-wider uppercase"
+              className="text-[11px] border border-amber/40 text-amber/80 px-2 py-0.5 rounded-sm capitalize font-semibold tracking-wider uppercase"
             >
               {tag}
             </span>
@@ -26,7 +26,7 @@ export default function DispensaryCard({
         </div>
       </div>
 
-      <p className="text-cream-muted text-sm mb-0.5">
+      <p className="text-cream text-sm mb-0.5">
         {dispensary.address}, {dispensary.city}
       </p>
       <p className="text-cream-muted text-sm mb-4">{dispensary.phone}</p>
@@ -35,29 +35,29 @@ export default function DispensaryCard({
       </p>
 
       <div className="border-t border-forest-mid pt-4 mb-4">
-        <p className="text-xs text-amber/60 font-semibold tracking-widest uppercase mb-2">Hours</p>
-        <div className="text-xs text-cream-muted space-y-0.5">
-          <div className="flex justify-between">
+        <p className="text-xs text-amber/70 font-semibold tracking-widest uppercase mb-2">Hours</p>
+        <div className="text-sm text-cream-muted space-y-1">
+          <div className="flex justify-between gap-4">
             <span>Mon – Fri</span>
-            <span>{dispensary.hours.mon_fri}</span>
+            <span className="text-cream">{dispensary.hours.mon_fri}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-4">
             <span>Saturday</span>
-            <span>{dispensary.hours.sat}</span>
+            <span className="text-cream">{dispensary.hours.sat}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-4">
             <span>Sunday</span>
-            <span>{dispensary.hours.sun}</span>
+            <span className="text-cream">{dispensary.hours.sun}</span>
           </div>
         </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-6">
         <a
           href={dispensary.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-amber hover:text-amber-hover transition-colors font-bold tracking-widest uppercase"
+          className="text-sm text-amber hover:text-amber-hover transition-colors font-bold tracking-wider uppercase"
         >
           Website ↗
         </a>
@@ -65,9 +65,9 @@ export default function DispensaryCard({
           href={dispensary.menu_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-amber hover:text-amber-hover transition-colors font-bold tracking-widest uppercase"
+          className="text-sm text-amber hover:text-amber-hover transition-colors font-bold tracking-wider uppercase"
         >
-          View Menu ↗
+          Menu ↗
         </a>
       </div>
     </div>
