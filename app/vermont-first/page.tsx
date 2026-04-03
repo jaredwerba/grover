@@ -39,16 +39,10 @@ const growers = [
 export default function VermontFirstPage() {
   return (
     <main className="min-h-screen bg-forest text-cream">
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
 
         {/* Header */}
-        <div className="mb-10">
-          <Link
-            href="/"
-            className="text-cream-muted text-sm hover:text-cream transition-colors mb-6 inline-block"
-          >
-            ← Cove
-          </Link>
+        <div className="mb-8">
           <p className="text-amber/70 text-xs tracking-[0.3em] uppercase font-semibold mb-3">
             Vermont · Est. 2024
           </p>
@@ -60,49 +54,65 @@ export default function VermontFirstPage() {
             <span className="text-amber/50 text-xs">✦</span>
             <div className="flex-1 h-px bg-amber/30" />
           </div>
-          <p className="text-cream-muted text-base max-w-xl leading-relaxed">
+          <p className="text-cream-muted text-sm sm:text-base max-w-xl leading-relaxed">
             Vermont&apos;s licensed cannabis cultivators — grown right here in the Green Mountain State.
             Support local farmers and discover what Vermont soil produces.
           </p>
         </div>
 
         {/* Growers table */}
-        <div className="border-2 border-forest-mid rounded-sm overflow-hidden"
-          style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}>
-
-          {/* Table header */}
-          <div className="grid grid-cols-3 gap-4 px-5 py-3 border-b border-forest-mid bg-forest-mid/30">
+        <div
+          className="border-2 border-forest-mid rounded-sm overflow-hidden"
+          style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}
+        >
+          {/* Table header — # narrow, Grower fills space, Town right-aligned */}
+          <div
+            className="grid gap-x-3 px-4 py-3 border-b border-forest-mid bg-forest-mid/30"
+            style={{ gridTemplateColumns: "2rem 1fr auto" }}
+          >
             <span className="text-amber/70 text-xs tracking-widest uppercase font-bold">#</span>
             <span className="text-amber/70 text-xs tracking-widest uppercase font-bold">Grower</span>
-            <span className="text-amber/70 text-xs tracking-widest uppercase font-bold">Town</span>
+            <span className="text-amber/70 text-xs tracking-widest uppercase font-bold text-right">Town</span>
           </div>
 
           {/* Rows */}
           {growers.map((g, i) => (
             <div
               key={g.name}
-              className={`grid grid-cols-3 gap-4 px-5 py-4 border-b border-forest-mid/50 hover:bg-forest-mid/20 transition-colors ${i === growers.length - 1 ? "border-b-0" : ""}`}
+              className={`grid gap-x-3 px-4 py-3.5 border-b border-forest-mid/50 hover:bg-forest-mid/20 transition-colors items-center ${
+                i === growers.length - 1 ? "border-b-0" : ""
+              }`}
+              style={{ gridTemplateColumns: "2rem 1fr auto" }}
             >
-              <span className="text-cream-muted/40 text-xs self-center">{String(i + 1).padStart(2, "0")}</span>
+              {/* Index */}
+              <span className="text-cream-muted/40 text-xs tabular-nums">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+
+              {/* Name — truncate prevents overflow on any screen */}
               <a
                 href={g.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber hover:text-amber-hover transition-colors text-sm font-semibold self-center"
+                className="text-amber hover:text-amber-hover transition-colors text-sm font-semibold truncate"
               >
                 {g.name} ↗
               </a>
-              <span className="text-cream-muted text-sm self-center">{g.town}</span>
+
+              {/* Town — nowrap so it stays one line, right-aligned */}
+              <span className="text-cream-muted text-xs whitespace-nowrap text-right">
+                {g.town}
+              </span>
             </div>
           ))}
         </div>
 
-        <p className="text-cream-muted/50 text-xs tracking-wide text-center mt-6">
-          {growers.length} cultivators listed · Source: Vermont Cannabis Control Board & Vermont Growers Association
+        <p className="text-cream-muted/50 text-xs tracking-wide text-center mt-4">
+          {growers.length} cultivators · Vermont Cannabis Control Board & Vermont Growers Association
         </p>
 
         {/* Footer note */}
-        <div className="mt-16 border-t border-forest-mid pt-8 text-center">
+        <div className="mt-12 border-t border-forest-mid pt-6 text-center">
           <p className="text-cream-muted text-xs leading-relaxed max-w-xl mx-auto">
             For adults 21+ only. Vermont recreational cannabis law applies.
             Listings are informational — always verify directly with the cultivator.
