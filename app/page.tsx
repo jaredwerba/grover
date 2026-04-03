@@ -160,8 +160,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-        {/* Gradient — content fades into transparent spacer below */}
-        <div style={{ height: "80px", background: "linear-gradient(to bottom, #0b2d1b, transparent)" }} />
+        {/* Gradient — last section fades into footer reveal */}
+        <div style={{ height: "120px", background: "linear-gradient(to bottom, #0b2d1b, transparent)" }} />
       </div>{/* end solid content area */}
 
       {/* Transparent spacer — reveals fixed ski map underneath on scroll */}
