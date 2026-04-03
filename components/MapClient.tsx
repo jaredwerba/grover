@@ -72,19 +72,11 @@ export default function MapClient({ dispensaries, selected, onSelect }: MapClien
       zoomControl={false}
       style={{ background: "#0b2d1b" }}
     >
-      {/* CartoDB Dark Matter tiles — cohesive with the dark forest palette */}
+      {/* Stadia Maps Alidade Smooth Dark — borders, roads, labels, cohesive with forest palette */}
       <TileLayer
-        attribution='&copy; <a href="https://carto.com">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_matter_nolabels/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
-        maxZoom={19}
-      />
-      {/* Label layer on top — muted warm labels */}
-      <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_matter_only_labels/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
-        maxZoom={19}
-        opacity={0.6}
+        attribution='&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>, &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+        url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+        maxZoom={20}
       />
 
       <FlyToMarker dispensary={selected} />
