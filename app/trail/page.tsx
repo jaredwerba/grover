@@ -7,7 +7,7 @@ export default function TrailPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-groovy text-cream mb-3">
+          <h1 className="text-3xl sm:text-4xl font-groovy text-cream mb-3 tracking-wide leading-tight">
             The Cannatrail
           </h1>
           <p className="text-cream-muted text-sm sm:text-base max-w-xl leading-relaxed">

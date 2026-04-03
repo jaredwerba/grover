@@ -11,7 +11,7 @@ export default function DispensaryCard({
       style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
-        <h3 className="text-cream font-groovy text-xl leading-snug">
+        <h3 className="text-cream font-groovy text-2xl leading-tight tracking-wide">
           {dispensary.name}
         </h3>
         <div className="flex gap-1 shrink-0 flex-wrap justify-end">

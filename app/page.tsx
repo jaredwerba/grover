@@ -62,7 +62,7 @@ export default function LandingPage() {
             {/* AI greeting */}
             <div className="flex gap-3">
               <div className="w-6 h-6 rounded-sm bg-amber/20 border border-amber/30 flex items-center justify-center shrink-0 mt-0.5">
-                <span className="text-amber text-xs font-groovy">C</span>
+                <span className="text-amber text-xs font-bold">C</span>
               </div>
               <div className="rounded-sm px-4 py-3 max-w-xs" style={{ background: "#0f2d1c" }}>
                 <p className="text-cream text-sm leading-relaxed">
@@ -86,7 +86,7 @@ export default function LandingPage() {
             {/* AI typing indicator */}
             <div className="flex gap-3">
               <div className="w-6 h-6 rounded-sm bg-amber/20 border border-amber/30 flex items-center justify-center shrink-0 mt-0.5">
-                <span className="text-amber text-xs font-groovy">C</span>
+                <span className="text-amber text-xs font-bold">C</span>
               </div>
               <div className="rounded-sm px-4 py-3" style={{ background: "#0f2d1c" }}>
                 <div className="flex gap-1 items-center h-4">
@@ -162,7 +162,7 @@ export default function LandingPage() {
               />
               {/* Text */}
               <div className="flex flex-col">
-                <h3 className="text-cream font-groovy text-xl mb-2">{title}</h3>
+                <h3 className="text-cream font-groovy text-2xl leading-tight tracking-wide mb-2">{title}</h3>
                 <p className="text-cream-muted text-sm leading-relaxed mb-3">{body}</p>
                 {href && (
                   <Link href={href} className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber-hover transition-colors">

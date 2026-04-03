@@ -52,7 +52,7 @@ export default function VermontFirstPage() {
           <p className="text-amber/70 text-xs tracking-[0.3em] uppercase font-semibold mb-3">
             Vermont · Est. 2024
           </p>
-          <h1 className="text-4xl md:text-5xl font-groovy text-cream mb-3">
+          <h1 className="text-4xl md:text-5xl font-groovy text-cream mb-3 tracking-wide leading-tight">
             Vermont-First
           </h1>
           <div className="flex items-center gap-3 mb-5 max-w-xs">

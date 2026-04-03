@@ -38,10 +38,10 @@ export default function AgeGate({ children }: { children: React.ReactNode }) {
             <span className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-amber/60" />
 
             <p className="text-amber/60 text-xs tracking-[0.3em] uppercase mb-4">Vermont · Cannabis</p>
-            <div className="text-7xl font-groovy text-amber mb-1 leading-none">
+            <div className="text-7xl font-groovy text-amber mb-1 leading-none tracking-wide">
               C
             </div>
-            <h1 className="text-3xl font-groovy text-cream mb-3">
+            <h1 className="text-3xl font-groovy text-cream mb-3 tracking-wide leading-tight">
               Cove
             </h1>
             <div className="flex items-center gap-3 mb-4">
