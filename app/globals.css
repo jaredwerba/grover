@@ -52,6 +52,11 @@ body {
 }
 
 /* ── Leaflet overrides — match Cove design system ── */
+
+/* Dark forest tint over OSM tiles — keeps borders/labels, kills the white */
+.map-tiles-tinted {
+  filter: brightness(0.35) saturate(0.4) hue-rotate(90deg) sepia(0.4);
+}
 .leaflet-container {
   font-family: var(--font-quicksand), system-ui, sans-serif;
   background: #0b2d1b;

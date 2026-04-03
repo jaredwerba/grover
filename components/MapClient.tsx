@@ -77,12 +77,13 @@ export default function MapClient({ dispensaries, selected, onSelect }: MapClien
       zoomControl={false}
       style={{ background: "#0b2d1b" }}
     >
-      {/* OpenStreetMap — universally accessible, no auth, shows all borders/labels */}
+      {/* OpenStreetMap base — universally accessible, no auth */}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         subdomains="abc"
         maxZoom={19}
+        className="map-tiles-tinted"
       />
 
       <FlyToMarker dispensary={selected} />
