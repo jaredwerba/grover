@@ -161,11 +161,11 @@ export default function LandingPage() {
 
       </div>{/* end solid content area */}
 
-      <footer className="w-full flex flex-col items-center py-6 gap-1 border-t border-forest-mid">
-        <p className="text-amber text-xs tracking-widest uppercase">
+      <footer className="w-full flex flex-col items-center py-6 gap-1 bg-amber">
+        <p className="text-forest-deep text-xs tracking-widest uppercase font-bold">
           Cove · Adults 21+ Only · Vermont State Law Applies
         </p>
-        <p className="text-amber/50 text-xs tracking-wide">
+        <p className="text-forest-deep/70 text-xs tracking-wide">
           Daniels AI · 2026
         </p>
       </footer>
