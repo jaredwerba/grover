@@ -69,6 +69,8 @@ export default async function RootLayout({
             height={428}
             className="w-full h-auto block"
           />
+          {/* Gradient overlay at top of ski map — blends with page content */}
+          <div className="absolute top-0 left-0 right-0" style={{ height: "160px", background: "linear-gradient(to bottom, #0b2d1b 0%, #0b2d1b 20%, transparent 100%)" }} />
           <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center py-3 gap-1"
             style={{ background: "#0b2d1b" }}>
             <p className="text-white text-xs tracking-widest uppercase">
