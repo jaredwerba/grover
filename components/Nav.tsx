@@ -16,22 +16,6 @@ export default function Nav({
       }}
     >
       <div className="flex items-center gap-1">
-        <Link
-          href="/trail"
-          className="text-cream-muted hover:text-cream transition-colors text-xs sm:text-sm px-2 sm:px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"
-        >
-          Cannatrail
-        </Link>
-
-        <Link
-          href="/vermont-first"
-          className="text-cream-muted hover:text-cream transition-colors text-xs sm:text-sm px-2 sm:px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"
-        >
-          Vermont-First
-        </Link>
-      </div>
-
-      <div className="flex items-center gap-1">
         {isAuthenticated ? (
           <>
             <Link
