@@ -159,18 +159,21 @@ export default function LandingPage() {
         </div>
       </section>
 
-        {/* Gradient — last section fades into footer reveal */}
-        <div style={{ height: "120px", background: "linear-gradient(to bottom, #0b2d1b, transparent)" }} />
       </div>{/* end solid content area */}
 
-      {/* Footer image — full width, revealed naturally on scroll */}
-      <div className="w-full">
+      {/* Footer — scroll reveal with gradient fade into image */}
+      <div className="relative w-full">
         <Image
           src="/images/footer.jpg"
           alt="Vermont ski trail map"
           width={1020}
           height={428}
           className="w-full h-auto block"
+        />
+        {/* Gradient overlay at top of image — fades from forest green into the ski map */}
+        <div
+          className="absolute inset-x-0 top-0 pointer-events-none"
+          style={{ height: "35%", background: "linear-gradient(to bottom, #0b2d1b, transparent)" }}
         />
         <div className="flex flex-col items-center py-3 gap-1" style={{ background: "#0b2d1b" }}>
           <p className="text-white text-xs tracking-widest uppercase">
