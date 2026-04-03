@@ -4,7 +4,7 @@ import MountainFooter from "@/components/MountainFooter";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-forest text-cream flex flex-col">
+    <main className="min-h-screen bg-forest text-cream flex flex-col relative z-10">
       {/* Hero — vintage Vermont poster layout */}
       <section className="flex flex-col items-center justify-center flex-1 text-center px-6 py-20">
 
