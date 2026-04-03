@@ -69,12 +69,12 @@ export default async function RootLayout({
             height={428}
             className="w-full h-auto block"
           />
-          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-2 gap-0.5"
-            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)" }}>
-            <p className="text-white text-xs tracking-widest uppercase drop-shadow">
+          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center py-3 gap-1"
+            style={{ background: "#0b2d1b" }}>
+            <p className="text-white text-xs tracking-widest uppercase">
               Cove · Adults 21+ Only · Vermont State Law Applies
             </p>
-            <p className="text-white/60 text-xs tracking-wide drop-shadow">
+            <p className="text-white/60 text-xs tracking-wide">
               Daniels AI · 2026
             </p>
           </div>

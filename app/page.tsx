@@ -160,6 +160,8 @@ export default function LandingPage() {
         </div>
       </section>
 
+        {/* Gradient fade — content dissolves into ski map reveal */}
+        <div style={{ height: "120px", background: "linear-gradient(to bottom, #0b2d1b, transparent)" }} />
       </div>{/* end solid content area */}
 
       {/* Transparent spacer — reveals fixed ski map underneath on scroll */}
