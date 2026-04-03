@@ -160,6 +160,8 @@ export default function LandingPage() {
         </div>
       </section>
 
+        {/* Gradient at bottom of last section — fades into footer reveal */}
+        <div style={{ height: "120px", background: "linear-gradient(to bottom, #0b2d1b, transparent)" }} />
       </div>{/* end solid content area */}
 
       {/* Transparent spacer — same height as fixed footer (image + text bar) so full footer reveals on scroll */}
