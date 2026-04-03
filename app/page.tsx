@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import MountainFooter from "@/components/MountainFooter";
 
 export default function LandingPage() {
   return (
@@ -161,29 +162,8 @@ export default function LandingPage() {
 
       </div>{/* end solid content area */}
 
-      {/* Footer — scroll reveal with gradient fade into image */}
-      <div className="relative w-full">
-        <Image
-          src="/images/footer.jpg"
-          alt="Vermont ski trail map"
-          width={1020}
-          height={428}
-          className="w-full h-auto block"
-        />
-        {/* Gradient overlay at top of image — fades from forest green into the ski map */}
-        <div
-          className="absolute inset-x-0 top-0 pointer-events-none"
-          style={{ height: "35%", background: "linear-gradient(to bottom, #0b2d1b, transparent)" }}
-        />
-        <div className="flex flex-col items-center py-3 gap-1" style={{ background: "#0b2d1b" }}>
-          <p className="text-white text-xs tracking-widest uppercase">
-            Cove · Adults 21+ Only · Vermont State Law Applies
-          </p>
-          <p className="text-white/60 text-xs tracking-wide">
-            Daniels AI · 2026
-          </p>
-        </div>
-      </div>
+      {/* Transparent spacer — same height as fixed footer (image + text bar) so full footer reveals on scroll */}
+      <MountainFooter />
     </main>
   );
 }
