@@ -49,3 +49,41 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #FFB900;
 }
+
+/* ── Leaflet overrides — match Cove design system ── */
+.leaflet-container {
+  font-family: var(--font-quicksand), system-ui, sans-serif;
+  background: #0b2d1b;
+}
+
+/* Remove default white popup background */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.leaflet-popup-content {
+  margin: 0 !important;
+}
+
+/* Zoom controls — amber on forest */
+.leaflet-control-zoom a {
+  background: #0f2d1c !important;
+  color: #FFB900 !important;
+  border-color: #275e3c !important;
+}
+.leaflet-control-zoom a:hover {
+  background: #275e3c !important;
+}
+.leaflet-bar {
+  border-color: #275e3c !important;
+}
+.leaflet-control-attribution {
+  background: rgba(11,45,27,0.7) !important;
+  color: #c4b89a !important;
+  font-size: 9px !important;
+}
+.leaflet-control-attribution a {
+  color: #FFB900 !important;
+}
