@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 export default function MountainBackground() {
   const pathname = usePathname();
 
-  // Pages that manage their own mountain placement
-  if (pathname === "/vermont-first") return null;
+  // Pages that manage their own mountain placement or don't need it
+  if (pathname === "/vermont-first" || pathname === "/trail") return null;
 
   return (
     <div
