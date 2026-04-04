@@ -62,7 +62,7 @@ export default async function RootLayout({
       lang="en"
       className={`${geistMono.variable} ${fascinate.variable} ${quicksand.variable} h-full`}
     >
-      <body className="h-full text-cream antialiased flex flex-col font-quicksand" style={{ background: "#0b2d1b" }}>
+      <body className="min-h-full text-cream antialiased flex flex-col font-quicksand" style={{ background: "#0b2d1b" }}>
         <MountainBackground />
         <ServiceWorkerRegister />
         <AgeGate>
