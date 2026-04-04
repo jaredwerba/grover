@@ -1,7 +1,23 @@
-"use client";
-
-import { useState } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
+import AboutNav from "@/components/AboutNav";
+
+export const metadata: Metadata = {
+  title: "About Cove — Vermont Cannabis Guide, Cannatrail & AI Concierge",
+  description:
+    "Learn what Cannatrail is, find the best strains for any time of day, and discover how AI helps you choose Vermont cannabis before visiting a dispensary.",
+  openGraph: {
+    title: "About Cove — Vermont Cannabis Guide",
+    description:
+      "Vermont's Cannatrail dispensary map, strain guidance, and AI-powered cannabis discovery — all in one place.",
+    url: "https://cove.garden/about",
+    siteName: "Cove",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://cove.garden/about",
+  },
+};
 
 const AEO_SECTIONS = [
   {
@@ -51,7 +67,7 @@ const AEO_SECTIONS = [
         text: "Avoid high-myrcene Indicas like Granddaddy Purple, Northern Lights, or Purple Punch in the afternoon — their sedative terpene profile is better saved for evening. Similarly, Gorilla Glue #4 and Wedding Cake can feel heavy if you have things to do.",
       },
       {
-        heading: "Ask Cove",
+        heading: "Ask Cove AI",
         text: "Everyone's endocannabinoid system responds differently. Cove's AI can help you narrow down the right afternoon strain based on your tolerance, goals, and what's actually available at your nearest dispensary on the Cannatrail.",
       },
     ],
@@ -86,13 +102,31 @@ const AEO_SECTIONS = [
   },
 ];
 
+// JSON-LD FAQ schema — parsed directly by Google and AI models
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: AEO_SECTIONS.map((s) => ({
+    "@type": "Question",
+    name: s.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: [s.shortAnswer, ...s.body.map((b) => `${b.heading}: ${b.text}`)].join(" "),
+    },
+  })),
+};
+
+const navSections = AEO_SECTIONS.map(({ id, question }) => ({ id, question }));
+
 export default function AboutPage() {
-  const [active, setActive] = useState(AEO_SECTIONS[0].id);
-
-  const activeSection = AEO_SECTIONS.find((s) => s.id === active)!;
-
   return (
     <main className="min-h-screen bg-forest-deep text-cream">
+      {/* JSON-LD — in body is valid and Next.js-idiomatic */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
       {/* Page header */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-6">
         <p className="text-amber/70 text-xs tracking-[0.3em] uppercase font-semibold mb-2">
@@ -106,147 +140,68 @@ export default function AboutPage() {
         </p>
       </div>
 
-      {/* Desktop: two-column | Mobile: stacked */}
+      {/* Two-column layout */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
 
-          {/* Sidebar nav — sticky on desktop, horizontal pills on mobile */}
+          {/* Sidebar nav — client island for scroll-aware highlighting */}
           <aside className="lg:w-64 shrink-0">
-            {/* Mobile: horizontal pill row */}
-            <div className="flex lg:hidden gap-2 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
-              {AEO_SECTIONS.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => {
-                    setActive(s.id);
-                    document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                  className={`shrink-0 text-[11px] font-bold tracking-widest uppercase px-4 py-2 rounded-sm transition-colors whitespace-nowrap ${
-                    active === s.id
-                      ? "bg-amber text-forest-deep"
-                      : "border border-forest-mid text-cream-muted hover:border-amber/40 hover:text-cream"
-                  }`}
-                >
-                  {s.question}
-                </button>
-              ))}
-            </div>
-
-            {/* Desktop: sticky vertical nav */}
-            <nav className="hidden lg:flex flex-col gap-1 sticky top-20">
-              <p className="text-amber/60 text-[10px] tracking-[0.3em] uppercase font-bold mb-3 px-3">
-                Topics
-              </p>
-              {AEO_SECTIONS.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => {
-                    setActive(s.id);
-                    document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                  className={`text-left text-sm px-3 py-2.5 rounded-sm transition-colors leading-snug ${
-                    active === s.id
-                      ? "bg-amber/15 text-amber border-l-2 border-amber"
-                      : "text-cream-muted hover:text-cream hover:bg-forest-mid/30 border-l-2 border-transparent"
-                  }`}
-                >
-                  {s.question}
-                </button>
-              ))}
-
-              <div className="mt-8 pt-8 border-t border-forest-mid/40 px-3 flex flex-col gap-2">
-                <Link
-                  href="/trail"
-                  className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber/70 transition-colors"
-                >
-                  Explore the Cannatrail ↗
-                </Link>
-                <Link
-                  href="/strain"
-                  className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber/70 transition-colors"
-                >
-                  Strain Library ↗
-                </Link>
-              </div>
-            </nav>
+            <AboutNav sections={navSections} />
           </aside>
 
-          {/* Content — full readable articles */}
-          <div className="flex-1 min-w-0">
+          {/* Content — all sections always in DOM, server-rendered */}
+          <div className="flex-1 min-w-0 flex flex-col gap-16">
+            {AEO_SECTIONS.map((section) => (
+              <article key={section.id} id={section.id} className="scroll-mt-24">
+                {/* Direct answer — structured for AI snippet extraction */}
+                <div className="mb-8">
+                  <h2 className="text-2xl sm:text-3xl font-groovy text-cream tracking-wide leading-tight mb-4">
+                    {section.question}
+                  </h2>
+                  <div
+                    className="border-l-4 border-amber pl-4 py-1"
+                    style={{ background: "rgba(255,185,0,0.06)" }}
+                  >
+                    <p className="text-cream text-sm sm:text-base leading-relaxed font-semibold">
+                      {section.shortAnswer}
+                    </p>
+                  </div>
+                </div>
 
-            {/* Mobile: show all sections stacked */}
-            <div className="flex lg:hidden flex-col gap-12">
-              {AEO_SECTIONS.map((s) => (
-                <article key={s.id} id={s.id}>
-                  <AeoSection section={s} />
-                </article>
-              ))}
-            </div>
+                {/* Full body */}
+                <div className="space-y-8">
+                  {section.body.map((block) => (
+                    <div key={block.heading}>
+                      <h3 className="text-cream text-base sm:text-lg font-bold mb-2 leading-snug">
+                        {block.heading}
+                      </h3>
+                      <p className="text-cream-muted text-sm sm:text-base leading-relaxed">
+                        {block.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
 
-            {/* Desktop: show active section as full page */}
-            <div className="hidden lg:block">
-              <article id={activeSection.id}>
-                <AeoSection section={activeSection} />
+                {/* CTA */}
+                <div className="mt-10 pt-8 border-t border-forest-mid/40 flex flex-wrap gap-3">
+                  <Link
+                    href="/trail"
+                    className="bg-amber text-forest-deep text-xs font-bold px-5 py-2.5 rounded-sm tracking-widest uppercase hover:bg-amber/90 transition-colors"
+                  >
+                    Open Cannatrail
+                  </Link>
+                  <Link
+                    href="/strain"
+                    className="border border-forest-mid text-cream-muted text-xs font-bold px-5 py-2.5 rounded-sm tracking-widest uppercase hover:border-amber/40 hover:text-cream transition-colors"
+                  >
+                    Browse Strains
+                  </Link>
+                </div>
               </article>
-            </div>
+            ))}
           </div>
         </div>
       </div>
     </main>
-  );
-}
-
-function AeoSection({
-  section,
-}: {
-  section: (typeof AEO_SECTIONS)[number];
-}) {
-  return (
-    <div>
-      {/* Direct answer — optimized for AI snippet extraction */}
-      <div className="mb-8">
-        <h2 className="text-2xl sm:text-3xl font-groovy text-cream tracking-wide leading-tight mb-4">
-          {section.question}
-        </h2>
-        <div
-          className="border-l-4 border-amber pl-4 py-1"
-          style={{ background: "rgba(255,185,0,0.06)" }}
-        >
-          <p className="text-cream text-sm sm:text-base leading-relaxed font-semibold">
-            {section.shortAnswer}
-          </p>
-        </div>
-      </div>
-
-      {/* Full body — scrollable sections */}
-      <div className="space-y-8">
-        {section.body.map((block) => (
-          <div key={block.heading}>
-            <h3 className="text-cream text-base sm:text-lg font-bold mb-2 leading-snug">
-              {block.heading}
-            </h3>
-            <p className="text-cream-muted text-sm sm:text-base leading-relaxed">
-              {block.text}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* CTA */}
-      <div className="mt-10 pt-8 border-t border-forest-mid/40 flex flex-wrap gap-3">
-        <Link
-          href="/trail"
-          className="bg-amber text-forest-deep text-xs font-bold px-5 py-2.5 rounded-sm tracking-widest uppercase hover:bg-amber/90 transition-colors"
-        >
-          Open Cannatrail
-        </Link>
-        <Link
-          href="/strain"
-          className="border border-forest-mid text-cream-muted text-xs font-bold px-5 py-2.5 rounded-sm tracking-widest uppercase hover:border-amber/40 hover:text-cream transition-colors"
-        >
-          Browse Strains
-        </Link>
-      </div>
-    </div>
   );
 }

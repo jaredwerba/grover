@@ -1,0 +1,29 @@
+# Cove
+
+> Vermont cannabis companion app — https://cove.garden
+
+Cove helps Vermonters and visitors navigate Vermont's licensed cannabis dispensaries. It combines an interactive dispensary map (the Cannatrail), a strain library, and an AI cannabis concierge called Cove AI.
+
+## What is Cannatrail?
+
+The Cannatrail is Vermont's curated, interactive map of every state-licensed cannabis dispensary — adult-use and medical. It covers the full state from Burlington and the Champlain Valley to the Northeast Kingdom. Each location includes address, phone, hours, and direct menu links.
+
+## Strain Library
+
+A searchable library of Vermont cannabis strains. Each strain entry includes: type (Indica/Sativa/Hybrid), THC and CBD percentages, effects, terpenes, and flavor profile. Vermont cultivators grow many of these strains locally for the Green Mountain market.
+
+## Cove AI
+
+An AI cannabis concierge built specifically for Vermont's market. Cove AI helps users choose the right strain, format (flower, edible, concentrate), and dosage before visiting a dispensary. It answers questions about terpenes, effects, and product availability on the Cannatrail.
+
+## Vermont Cannabis
+
+Vermont legalized adult-use cannabis in 2022. The state licenses both recreational (adult-use) and medical dispensaries under the Vermont Cannabis Control Board. Vermont is known for craft, locally-grown cannabis from small independent cultivators.
+
+## Key Pages
+
+- /about — Learn about Cove, the Cannatrail, strain guidance, and AI-powered discovery
+- /trail — Interactive map of all Vermont licensed dispensaries
+- /strain — Full strain library with effects, terpenes, and potency
+- /vermont-first — Vermont's craft cannabis grower community
+- /join — Join Cove for the full AI concierge experience
