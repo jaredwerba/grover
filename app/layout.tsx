@@ -4,7 +4,6 @@ import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AgeGate from "@/components/AgeGate";
 import Nav from "@/components/Nav";
 import MountainBackground from "@/components/MountainBackground";
-import Footer from "@/components/Footer";
 import { getSession } from "@/lib/auth";
 import "./globals.css";
 
@@ -69,7 +68,6 @@ export default async function RootLayout({
           <Nav isAuthenticated={isAuthenticated} />
           {/* z-index 1 — sits on top of fixed footer, slides away on scroll */}
           <div className="flex-1 flex flex-col min-h-0">{children}</div>
-          <Footer />
         </AgeGate>
       </body>
     </html>

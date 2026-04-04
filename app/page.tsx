@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import Footer from "@/components/Footer";
 
 export default function LandingPage() {
   return (
@@ -178,6 +179,7 @@ export default function LandingPage() {
 
       </div>{/* end solid content area */}
 
+      <Footer />
     </main>
   );
 }
