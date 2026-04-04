@@ -7,7 +7,8 @@ export default function DispensaryCard({
 }) {
   return (
     <div
-      className="bg-forest border-2 border-forest-mid p-5 rounded-sm hover:border-amber/40 transition-colors relative flex flex-col"
+      className="bg-forest border-2 border-forest-mid p-5 rounded-sm hover:border-amber/40 transition-colors relative flex flex-col h-full overflow-y-auto"
+      style={{ maxHeight: "420px" }}
       style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}
     >
       {/* Name */}

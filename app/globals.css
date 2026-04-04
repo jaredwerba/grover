@@ -51,6 +51,15 @@ body {
   background: #FFB900;
 }
 
+/* ── Horizontal card scroll row ── */
+.cards-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none; /* Firefox */
+}
+.cards-scroll::-webkit-scrollbar {
+  display: none; /* Safari + Chrome */
+}
+
 /* ── Leaflet overrides — match Cove design system ── */
 
 .leaflet-container {
