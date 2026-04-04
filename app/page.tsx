@@ -28,7 +28,7 @@ export default function LandingPage() {
             href="/join"
             className="bg-amber text-forest-deep font-bold px-10 py-4 rounded-sm hover:bg-amber-hover transition-colors text-base tracking-wide uppercase text-sm"
           >
-            VIP
+            Join
           </Link>
           <Link
             href="/trail"
@@ -103,7 +103,7 @@ export default function LandingPage() {
             style={{ background: "#0a2214" }}>
             <input
               type="text"
-              defaultValue="I'd love to partake"
+              defaultValue="love 2 partake"
               readOnly
               className="flex-1 bg-transparent text-cream text-sm placeholder:text-cream-muted/40 outline-none"
             />
@@ -127,12 +127,6 @@ export default function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
             {
-              icon: "/images/weed.svg",
-              title: "AI Concierge",
-              body: "Ask anything about strains, effects, dosing, or terpenes. Cove gives you knowledgeable, personalized guidance.",
-              href: undefined,
-            },
-            {
               icon: "/images/mountain.svg",
               title: "The Cannatrail",
               body: "Vermont's curated network of licensed dispensaries — browse menus, hours, and locations across the state.",
@@ -140,7 +134,7 @@ export default function LandingPage() {
             },
             {
               icon: "/images/vermont.svg",
-              title: "Vermont-First",
+              title: "Craft Growers",
               body: "Built for the Vermont market. Local knowledge, local dispensaries, and a community that knows the Green Mountain State.",
               href: "/vermont-first",
             },
@@ -186,7 +180,7 @@ export default function LandingPage() {
 
       <footer className="w-full flex flex-wrap items-center justify-center gap-x-4 gap-y-0.5 px-4 py-2 bg-amber">
         <p className="text-forest-deep text-[10px] tracking-widest uppercase font-bold whitespace-nowrap">
-          Cove · Adults 21+ Only · Vermont State Law Applies
+          Cove AI · Vermont Cannabis · 2026
         </p>
       </footer>
     </main>
