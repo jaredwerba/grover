@@ -144,6 +144,12 @@ export default function LandingPage() {
               body: "Built for the Vermont market. Local knowledge, local dispensaries, and a community that knows the Green Mountain State.",
               href: "/vermont-first",
             },
+            {
+              icon: "/images/weed.svg",
+              title: "Strain Library",
+              body: "Explore Vermont cannabis strains — effects, terpenes, flavors, and potency data for every cultivar on the Cannatrail.",
+              href: "/strain",
+            },
           ].map(({ icon, title, body, href }) => (
             <div
               key={title}
