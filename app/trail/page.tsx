@@ -3,31 +3,23 @@ import TrailClient from "@/components/TrailClient";
 
 export default function TrailPage() {
   return (
-    <main className="min-h-screen bg-forest-deep text-cream">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-groovy text-cream mb-3 tracking-wide leading-tight">
-            The Cannatrail
-          </h1>
-          <p className="text-cream-muted text-sm sm:text-base max-w-xl leading-relaxed">
-            Vermont&apos;s curated network of licensed cannabis dispensaries.
-            Find quality products, knowledgeable staff, and locally-grown
-            cannabis across the Green Mountain State.
-          </p>
-        </div>
+    <main
+      className="bg-forest-deep text-cream flex flex-col"
+      style={{ height: "calc(100svh - 56px)" }}
+    >
+      {/* Header — compact, no vertical padding waste */}
+      <div className="px-4 sm:px-6 pt-5 pb-3 shrink-0">
+        <h1 className="text-2xl sm:text-3xl font-groovy text-cream tracking-wide leading-tight mb-1">
+          The Cannatrail
+        </h1>
+        <p className="text-cream-muted text-xs max-w-xl leading-relaxed">
+          Vermont&apos;s licensed cannabis dispensaries — tap a pin or swipe the cards.
+        </p>
+      </div>
 
-        {/* Dispensary grid with filter */}
+      {/* TrailClient fills remaining height */}
+      <div className="flex-1 min-h-0 px-4 sm:px-6 pb-4 flex flex-col">
         <TrailClient dispensaries={dispensaries} />
-
-        {/* Footer note */}
-        <div className="mt-12 border-t border-forest-mid pt-6">
-          <p className="text-cream-muted text-xs leading-relaxed max-w-xl text-center mx-auto">
-            For adults 21+ only. Vermont recreational cannabis law applies.
-            Hours and availability subject to change — always confirm with the
-            dispensary directly.
-          </p>
-        </div>
       </div>
     </main>
   );
