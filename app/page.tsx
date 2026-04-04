@@ -182,6 +182,10 @@ export default function LandingPage() {
         <p className="text-forest-deep text-[10px] tracking-widest uppercase font-bold whitespace-nowrap">
           Cove AI · Vermont Cannabis · 2026
         </p>
+        <span className="text-forest-deep/40 text-[10px] font-bold">·</span>
+        <Link href="/about" className="text-forest-deep text-[10px] tracking-widest uppercase font-bold hover:text-forest-deep/70 transition-colors whitespace-nowrap">
+          About
+        </Link>
       </footer>
     </main>
   );
