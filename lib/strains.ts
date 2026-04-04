@@ -12,6 +12,17 @@ export interface Strain {
 
 export const strains: Strain[] = [
   {
+    id: "papa-g",
+    name: "Papa G",
+    type: "Hybrid",
+    thc: "18–22%",
+    cbd: "0.4%",
+    effects: ["Euphoric", "Relaxed", "Creative", "Happy", "Focused"],
+    terpenes: ["Myrcene", "Caryophyllene", "Pinene"],
+    flavors: ["Earthy", "Woody", "Herbal", "Pine"],
+    description: "A UNH classic that blends timeless wisdom & style. Papa G carries the quiet confidence of a strain that's been around — earthy, grounded, and deeply satisfying. A well-rounded hybrid that's at home on the porch or the trail.",
+  },
+  {
     id: "blue-dream",
     name: "Blue Dream",
     type: "Hybrid",
