@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import MessageBubble from "./MessageBubble";
 
 interface Message {
@@ -36,10 +37,16 @@ export default function ChatWindow({
         className="flex-1 flex flex-col items-center justify-center px-4 pb-4"
         aria-label="Start a conversation with Cove AI"
       >
-        {/* Wordmark */}
-        <p className="font-groovy text-amber text-5xl sm:text-6xl leading-none tracking-wide mb-3">
-          Cove
-        </p>
+        {/* Dog */}
+        <Image
+          src="/images/dog.png"
+          alt="Cove"
+          width={120}
+          height={120}
+          className="mb-4"
+          style={{ width: 120, height: "auto" }}
+          priority
+        />
         <p className="text-cream-muted text-sm max-w-xs text-center leading-relaxed mb-8">
           Your Vermont cannabis companion. Ask about strains, dispensaries, dosing, or anything cannabis.
         </p>
