@@ -3,7 +3,6 @@
 import { useState } from "react";
 import ChatWindow from "./ChatWindow";
 import ChatInput from "./ChatInput";
-import Link from "next/link";
 
 interface Message {
   role: "user" | "assistant";
@@ -60,39 +59,6 @@ export default function ChatApp() {
       className="flex flex-col bg-forest-deep"
       style={{ height: "calc(100dvh - 56px)" }}
     >
-      {/* Slim header */}
-      <header
-        className="flex items-center justify-between px-4 py-3 border-b border-forest-mid/50 shrink-0"
-        style={{ background: "rgba(11,45,27,0.9)", backdropFilter: "blur(12px)" }}
-      >
-        <div className="flex items-center gap-2">
-          <span className="font-groovy text-amber text-xl leading-none tracking-wide">
-            Cove
-          </span>
-          <span className="text-[10px] text-cream-muted/70 bg-forest-mid/50 px-2 py-0.5 rounded-full tracking-widest uppercase font-semibold">
-            AI
-          </span>
-        </div>
-
-        <nav className="flex items-center gap-1" aria-label="Chat navigation">
-          <Link
-            href="/trail"
-            className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-1.5 rounded-lg hover:bg-forest-mid/40"
-          >
-            Cannatrail
-          </Link>
-          {messages.length > 0 && (
-            <button
-              onClick={() => setMessages([])}
-              aria-label="Start a new conversation"
-              className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-1.5 rounded-lg hover:bg-forest-mid/40"
-            >
-              New chat
-            </button>
-          )}
-        </nav>
-      </header>
-
       <ChatWindow
         messages={messages}
         isStreaming={isStreaming}
