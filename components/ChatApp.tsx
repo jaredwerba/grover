@@ -29,9 +29,7 @@ export default function ChatApp() {
         body: JSON.stringify({ messages: newMessages }),
       });
 
-      if (!res.ok || !res.body) {
-        throw new Error(`Error ${res.status}`);
-      }
+      if (!res.ok || !res.body) throw new Error(`Error ${res.status}`);
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -58,40 +56,48 @@ export default function ChatApp() {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <header className="flex items-center justify-between px-5 py-3 border-b border-forest-mid shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-amber flex items-center justify-center text-forest-deep text-xs font-black">
-            C
-          </div>
-          <span className="text-cream font-bold text-sm tracking-tight">
+    <div
+      className="flex flex-col bg-forest-deep"
+      style={{ height: "calc(100dvh - 56px)" }}
+    >
+      {/* Slim header */}
+      <header
+        className="flex items-center justify-between px-4 py-3 border-b border-forest-mid/50 shrink-0"
+        style={{ background: "rgba(11,45,27,0.9)", backdropFilter: "blur(12px)" }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="font-groovy text-amber text-xl leading-none tracking-wide">
             Cove
           </span>
-          <span className="text-[10px] text-cream-muted bg-forest-mid px-2 py-0.5 rounded-full">
-            AI Concierge
+          <span className="text-[10px] text-cream-muted/70 bg-forest-mid/50 px-2 py-0.5 rounded-full tracking-widest uppercase font-semibold">
+            AI
           </span>
         </div>
 
-        <div className="flex items-center gap-1">
+        <nav className="flex items-center gap-1" aria-label="Chat navigation">
+          <Link
+            href="/trail"
+            className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-1.5 rounded-lg hover:bg-forest-mid/40"
+          >
+            Cannatrail
+          </Link>
           {messages.length > 0 && (
             <button
               onClick={() => setMessages([])}
-              className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-1.5 rounded-lg hover:bg-forest"
+              aria-label="Start a new conversation"
+              className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-1.5 rounded-lg hover:bg-forest-mid/40"
             >
               New chat
             </button>
           )}
-          <Link
-            href="/trail"
-            className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-1.5 rounded-lg hover:bg-forest"
-          >
-            Cannatrail
-          </Link>
-        </div>
+        </nav>
       </header>
 
-      <ChatWindow messages={messages} isStreaming={isStreaming} />
+      <ChatWindow
+        messages={messages}
+        isStreaming={isStreaming}
+        onSuggest={sendMessage}
+      />
       <ChatInput onSend={sendMessage} disabled={isStreaming} />
     </div>
   );

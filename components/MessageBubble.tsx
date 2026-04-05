@@ -15,29 +15,43 @@ export default function MessageBubble({
   const isUser = message.role === "user";
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
+    <article
+      aria-label={isUser ? "Your message" : "Cove AI response"}
+      className={`flex ${isUser ? "justify-end" : "justify-start"} mb-3`}
+    >
+      {/* Cove avatar */}
       {!isUser && (
-        <div className="w-8 h-8 rounded-full bg-amber flex items-center justify-center text-forest-deep text-sm font-black shrink-0 mr-3 mt-1">
+        <div
+          aria-hidden="true"
+          className="w-7 h-7 rounded-full bg-amber flex items-center justify-center text-forest-deep text-xs font-groovy shrink-0 mr-2.5 mt-1"
+        >
           C
         </div>
       )}
+
       <div
-        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words ${
+        className={`max-w-[82%] sm:max-w-[72%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap break-words ${
           isUser
-            ? "bg-forest text-cream rounded-br-sm border border-forest-mid"
-            : "text-cream rounded-bl-sm"
+            ? "bg-forest border border-forest-mid text-cream rounded-tr-sm"
+            : "bg-forest-deep/80 border border-forest-mid/40 text-cream rounded-tl-sm"
         }`}
       >
-        {message.content}
-        {isStreaming && !isUser && (
-          <span className="inline-block w-2 h-4 bg-amber/50 ml-0.5 animate-pulse rounded-sm" />
+        {message.content || (isStreaming ? null : null)}
+        {isStreaming && (
+          <span
+            aria-label="Cove is typing"
+            className="inline-flex gap-1 ml-1 align-middle"
+          >
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                className="w-1.5 h-1.5 rounded-full bg-amber/60 animate-bounce"
+                style={{ animationDelay: `${i * 0.15}s` }}
+              />
+            ))}
+          </span>
         )}
       </div>
-      {isUser && (
-        <div className="w-8 h-8 rounded-full bg-forest-mid flex items-center justify-center text-cream text-sm font-bold shrink-0 ml-3 mt-1">
-          U
-        </div>
-      )}
-    </div>
+    </article>
   );
 }
