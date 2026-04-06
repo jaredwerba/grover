@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     verification = await verifyAuthenticationResponse({
       response: authResponse,
       expectedChallenge: stored.challenge,
-      expectedOrigin: process.env.NEXT_PUBLIC_BASE_URL!,
+      expectedOrigin: req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL!,
       expectedRPID: process.env.NEXT_PUBLIC_RP_ID!,
       credential: {
         id: cred.credentialId,
