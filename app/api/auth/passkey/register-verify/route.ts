@@ -29,17 +29,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Challenge mismatch" }, { status: 400 });
   }
 
+  const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL!;
+  const rpID = process.env.NEXT_PUBLIC_RP_ID!;
+  console.log("[register-verify]", { origin, rpID, challenge: stored.challenge?.slice(0, 20) });
+
   let verification;
   try {
     verification = await verifyRegistrationResponse({
       response: registrationResponse,
       expectedChallenge: stored.challenge,
-      expectedOrigin: req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL!,
-      expectedRPID: process.env.NEXT_PUBLIC_RP_ID!,
+      expectedOrigin: origin,
+      expectedRPID: rpID,
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Verification failed";
-    return NextResponse.json({ error: msg }, { status: 400 });
+    console.error("[register-verify] error:", err);
+    return NextResponse.json({ error: msg, debug: { origin, rpID, hasChallenge: !!stored.challenge } }, { status: 400 });
   }
 
   if (!verification.verified || !verification.registrationInfo) {
