@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
         id: cred.credentialId,
         publicKey: decodePublicKey(cred.publicKey) as Uint8Array<ArrayBuffer>,
         counter: cred.counter,
-        transports: ["internal"],
       },
     });
   } catch (err) {
