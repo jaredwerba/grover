@@ -19,6 +19,13 @@ export default function Footer() {
       >
         About
       </Link>
+      <span className="text-forest-deep/40 text-[10px] font-bold">·</span>
+      <Link
+        href="/me"
+        className="text-forest-deep text-[10px] tracking-widest uppercase font-bold hover:text-forest-deep/70 transition-colors whitespace-nowrap"
+      >
+        Me
+      </Link>
     </footer>
   );
 }

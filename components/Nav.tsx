@@ -48,6 +48,12 @@ export default function Nav({
             >
               Chat
             </Link>
+            <Link
+              href="/me/dashboard"
+              className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"
+            >
+              Me
+            </Link>
             <form action="/api/auth/logout" method="POST">
               <button
                 type="submit"

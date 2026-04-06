@@ -7,7 +7,7 @@ function encodedKey(secret: string) {
   return new TextEncoder().encode(secret);
 }
 
-const PROTECTED = ["/chat"];
+const PROTECTED = ["/chat", "/me/dashboard"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -15,8 +15,9 @@ export async function proxy(req: NextRequest) {
   if (!isProtected) return NextResponse.next();
 
   const token = req.cookies.get("cove_session")?.value;
+  const redirectTo = pathname.startsWith("/me/") ? "/me" : "/join";
   if (!token) {
-    return NextResponse.redirect(new URL("/join", req.url));
+    return NextResponse.redirect(new URL(redirectTo, req.url));
   }
 
   try {
@@ -25,7 +26,7 @@ export async function proxy(req: NextRequest) {
     });
     return NextResponse.next();
   } catch {
-    return NextResponse.redirect(new URL("/join", req.url));
+    return NextResponse.redirect(new URL(redirectTo, req.url));
   }
 }
 
