@@ -24,7 +24,7 @@ export default function Footer() {
         href="/me"
         className="text-forest-deep text-[10px] tracking-widest uppercase font-bold hover:text-forest-deep/70 transition-colors whitespace-nowrap"
       >
-        Login
+        Me: Login
       </Link>
     </footer>
   );
