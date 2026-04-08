@@ -1,8 +1,36 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import { getSession } from "@/lib/auth";
+import { dispensaries } from "@/lib/dispensaries";
+import { strains } from "@/lib/strains";
+import { growers } from "@/lib/growers";
 
-const COVE_SYSTEM_PROMPT = `You are Cove, a Vermont cannabis companion. Answer questions about cannabis — strains, effects, dispensaries, and the Vermont cannabis scene — in a natural, conversational way.`;
+const dispensaryContext = dispensaries
+  .map((d) =>
+    `${d.name} | ${d.city} | ${d.tags.join(", ")} | Mon-Fri ${d.hours.mon_fri}, Sat ${d.hours.sat}, Sun ${d.hours.sun} | ${d.phone} | ${d.website}`
+  )
+  .join("\n");
+
+const strainContext = strains
+  .map((s) =>
+    `${s.name} | ${s.type} | THC: ${s.thc} | CBD: ${s.cbd} | Effects: ${s.effects.join(", ")} | Terpenes: ${s.terpenes.join(", ")} | Flavors: ${s.flavors.join(", ")}`
+  )
+  .join("\n");
+
+const growerContext = growers
+  .map((g) => `${g.name} | ${g.town} | ${g.website}`)
+  .join("\n");
+
+const COVE_SYSTEM_PROMPT = `You are Cove, a Vermont cannabis companion. Answer questions naturally and conversationally using the data below.
+
+--- CANNATRAIL DISPENSARIES (${dispensaries.length} Vermont locations) ---
+${dispensaryContext}
+
+--- CRAFT GROWERS (Vermont cultivators) ---
+${growerContext}
+
+--- STRAIN LIBRARY (${strains.length} cultivars) ---
+${strainContext}`;
 
 interface Message {
   role: "user" | "assistant" | "system";
