@@ -3,6 +3,12 @@ import { growers } from "@/lib/growers";
 
 
 export default function VermontFirstPage() {
+  const shuffled = [...growers];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
   return (
     <main className="min-h-screen bg-forest text-cream">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -31,30 +37,24 @@ export default function VermontFirstPage() {
           className="border-2 border-forest-mid rounded-sm overflow-hidden"
           style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}
         >
-          {/* Table header — # narrow, Grower fills space, Town right-aligned */}
+          {/* Table header — Grower fills space, Town right-aligned */}
           <div
             className="grid gap-x-3 px-4 py-3 border-b border-forest-mid bg-forest-mid/30"
-            style={{ gridTemplateColumns: "2rem 1fr auto" }}
+            style={{ gridTemplateColumns: "1fr auto" }}
           >
-            <span className="text-amber/70 text-xs tracking-widest uppercase font-bold">#</span>
             <span className="text-amber/70 text-xs tracking-widest uppercase font-bold">Grower</span>
             <span className="text-amber/70 text-xs tracking-widest uppercase font-bold text-right">Town</span>
           </div>
 
           {/* Rows */}
-          {growers.map((g, i) => (
+          {shuffled.map((g, i) => (
             <div
               key={g.name}
               className={`grid gap-x-3 px-4 py-3.5 border-b border-forest-mid/50 hover:bg-forest-mid/20 transition-colors items-center ${
-                i === growers.length - 1 ? "border-b-0" : ""
+                i === shuffled.length - 1 ? "border-b-0" : ""
               }`}
-              style={{ gridTemplateColumns: "2rem 1fr auto" }}
+              style={{ gridTemplateColumns: "1fr auto" }}
             >
-              {/* Index */}
-              <span className="text-cream-muted/40 text-xs tabular-nums">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-
               {/* Name — truncate prevents overflow on any screen */}
               <a
                 href={g.website}
