@@ -1,38 +1,7 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import { getSession } from "@/lib/auth";
-import { dispensaries } from "@/lib/dispensaries";
-import { strains } from "@/lib/strains";
-import { growers } from "@/lib/growers";
-
-const dispensaryContext = dispensaries
-  .map((d) =>
-    `${d.name} | ${d.city} | ${d.tags.join(", ")} | Mon-Fri ${d.hours.mon_fri}, Sat ${d.hours.sat}, Sun ${d.hours.sun} | ${d.phone} | ${d.website}`
-  )
-  .join("\n");
-
-const strainContext = strains
-  .map((s) =>
-    `${s.name} | ${s.type} | THC: ${s.thc} | CBD: ${s.cbd} | Effects: ${s.effects.join(", ")} | Terpenes: ${s.terpenes.join(", ")} | Flavors: ${s.flavors.join(", ")}`
-  )
-  .join("\n");
-
-const growerContext = growers
-  .map((g) => `${g.name} | ${g.town} | ${g.website}`)
-  .join("\n");
-
-const COVE_SYSTEM_PROMPT = `You are Cove, a Vermont cannabis companion. Answer questions naturally and conversationally using the data below.
-
-When you share a website, include it exactly once as a single markdown link in the form [Friendly Name](https://example.com). Never write the URL twice (e.g. do not write "example.com (https://example.com)" or "[https://example.com](https://example.com)"). Each dispensary, grower, or resource should be linked at most once per response.
-
---- CANNATRAIL DISPENSARIES (${dispensaries.length} Vermont locations) ---
-${dispensaryContext}
-
---- CRAFT GROWERS (Vermont cultivators) ---
-${growerContext}
-
---- STRAIN LIBRARY (${strains.length} cultivars) ---
-${strainContext}`;
+import { COVE_SYSTEM_PROMPT } from "@/lib/cove-prompt";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -57,6 +26,8 @@ export async function POST(req: NextRequest) {
   const stream = await openai.chat.completions.create({
     model: "gpt-4o",
     stream: true,
+    temperature: 0.7, // tighter than default 1.0 for consistency
+    max_tokens: 800, // keep responses concise; prevents runaway generations
     messages: [
       { role: "system", content: COVE_SYSTEM_PROMPT },
       ...messages,

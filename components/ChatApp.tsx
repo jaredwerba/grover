@@ -9,6 +9,10 @@ interface Message {
   content: string;
 }
 
+// Cap how many prior turns we ship to the model. 16 ≈ 8 exchanges —
+// enough for coherent follow-ups, not enough to drift or bloat cost.
+const HISTORY_LIMIT = 16;
+
 export default function ChatApp() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -25,7 +29,7 @@ export default function ChatApp() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ messages: newMessages.slice(-HISTORY_LIMIT) }),
       });
 
       if (!res.ok || !res.body) throw new Error(`Error ${res.status}`);
