@@ -1,8 +1,53 @@
 "use client";
 
+import { Fragment, ReactNode } from "react";
+
 interface Message {
   role: "user" | "assistant";
   content: string;
+}
+
+// Match markdown links [text](url) first, then bare http(s) URLs.
+const LINK_REGEX = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s)]+)/g;
+
+function renderWithLinks(content: string): ReactNode[] {
+  const nodes: ReactNode[] = [];
+  let lastIndex = 0;
+  let key = 0;
+  let match: RegExpExecArray | null;
+
+  LINK_REGEX.lastIndex = 0;
+  while ((match = LINK_REGEX.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      nodes.push(
+        <Fragment key={`t-${key++}`}>{content.slice(lastIndex, match.index)}</Fragment>
+      );
+    }
+
+    const [full, mdText, mdUrl, bareUrl] = match;
+    const href = mdUrl ?? bareUrl;
+    const label = mdText ?? (bareUrl ? bareUrl.replace(/^https?:\/\//, "") : full);
+
+    nodes.push(
+      <a
+        key={`l-${key++}`}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-amber underline underline-offset-2 hover:text-amber-hover break-all"
+      >
+        {label}
+      </a>
+    );
+
+    lastIndex = match.index + full.length;
+  }
+
+  if (lastIndex < content.length) {
+    nodes.push(<Fragment key={`t-${key++}`}>{content.slice(lastIndex)}</Fragment>);
+  }
+
+  return nodes;
 }
 
 export default function MessageBubble({
@@ -36,7 +81,7 @@ export default function MessageBubble({
             : "bg-forest-deep/80 border border-forest-mid/40 text-cream rounded-tl-sm"
         }`}
       >
-        {message.content || (isStreaming ? null : null)}
+        {message.content ? renderWithLinks(message.content) : null}
         {isStreaming && (
           <span
             aria-label="Cove is typing"

@@ -23,6 +23,8 @@ const growerContext = growers
 
 const COVE_SYSTEM_PROMPT = `You are Cove, a Vermont cannabis companion. Answer questions naturally and conversationally using the data below.
 
+When you share a website, include it exactly once as a single markdown link in the form [Friendly Name](https://example.com). Never write the URL twice (e.g. do not write "example.com (https://example.com)" or "[https://example.com](https://example.com)"). Each dispensary, grower, or resource should be linked at most once per response.
+
 --- CANNATRAIL DISPENSARIES (${dispensaries.length} Vermont locations) ---
 ${dispensaryContext}
 
