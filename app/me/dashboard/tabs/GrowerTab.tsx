@@ -46,8 +46,8 @@ const ENV = [
 ];
 
 const COMPLIANCE = [
-  { label: "Plant count", status: "ok", detail: "3 / 6 limit" },
-  { label: "Canopy sq ft", status: "ok", detail: "48 / 50 sq ft" },
+  { label: "Room Count", status: "ok", detail: "3 / 6 limit" },
+  { label: "Canopy sq ft", status: "ok", detail: "10,000 sq ft" },
   { label: "License renewal", status: "warn", detail: "Expires in 42 days" },
   { label: "Waste log", status: "ok", detail: "Up to date" },
 ];
@@ -65,8 +65,8 @@ export default function GrowerTab() {
     return () => clearTimeout(t);
   }, []);
 
-  const revenue = useCountUp(4820, 1200, 100);
-  const totalGrams = useCountUp(415, 1000, 200);
+  const revenue = useCountUp(2050000, 1200, 100);
+  const totalGrams = useCountUp(682500, 1000, 200);
 
   function card(delay: number): React.CSSProperties {
     return {
@@ -80,14 +80,14 @@ export default function GrowerTab() {
     <div className="space-y-4">
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-3" style={card(0)}>
-        <StatCard label="Active Grows" value="3" unit="plants" />
-        <StatCard label="YTD Yield" value={`${totalGrams}g`} />
-        <StatCard label="Est. Revenue" value={`$${revenue}`} />
+        <StatCard label="Active Grow Rooms" value="3" unit="rooms" />
+        <StatCard label="Projected Yield" value={`${totalGrams.toLocaleString()}g`} />
+        <StatCard label="Estimated Wholesale Revenue" value={`$${revenue.toLocaleString()}`} />
       </div>
 
       {/* Active Grows */}
       <div className="bg-forest rounded-2xl border border-forest-mid p-5" style={card(80)}>
-        <h3 className="text-cream font-semibold text-sm mb-4">Active Grows</h3>
+        <h3 className="text-cream font-semibold text-sm mb-4">Active Strains</h3>
         <div className="space-y-4">
           {GROWS.map((g, i) => {
             const pct = Math.round((g.daysIn / g.totalDays) * 100);

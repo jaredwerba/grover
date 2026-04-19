@@ -118,20 +118,26 @@ export default function DashboardChat({ persona }: { persona: Persona }) {
       {/* Floating button */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-amber shadow-lg flex items-center justify-center transition-transform active:scale-95"
-        aria-label="Open data chat"
+        className="fixed bottom-6 right-6 z-50 px-5 py-3 rounded-full bg-amber shadow-lg flex items-center gap-2 transition-transform active:scale-95 text-forest-deep text-sm font-semibold"
+        aria-label={open ? "Close chat" : "Chat with Cove"}
       >
         {open ? (
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M5 5l10 10M15 5L5 15" stroke="#1a2e1a" strokeWidth="2.2" strokeLinecap="round" />
-          </svg>
+          <>
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+              <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+            </svg>
+            <span>Close</span>
+          </>
         ) : (
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path
-              d="M4 4h14a1 1 0 011 1v8a1 1 0 01-1 1H7l-4 4V5a1 1 0 011-1z"
-              fill="#1a2e1a"
-            />
-          </svg>
+          <>
+            <svg width="16" height="16" viewBox="0 0 22 22" fill="none">
+              <path
+                d="M4 4h14a1 1 0 011 1v8a1 1 0 01-1 1H7l-4 4V5a1 1 0 011-1z"
+                fill="currentColor"
+              />
+            </svg>
+            <span>Chat with Cove</span>
+          </>
         )}
       </button>
 

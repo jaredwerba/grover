@@ -10,8 +10,8 @@ export type Persona = "toker" | "grower" | "dispenser";
 
 const TABS: { id: Persona; label: string; sub: string }[] = [
   { id: "toker", label: "Toker", sub: "Consumer" },
-  { id: "grower", label: "Grower", sub: "Cultivator" },
-  { id: "dispenser", label: "Dispenser", sub: "Retail" },
+  { id: "grower", label: "Plant Manager", sub: "Cultivator" },
+  { id: "dispenser", label: "Sales Manager", sub: "Retail" },
 ];
 
 export default function DashboardClient({ email }: { email: string }) {
