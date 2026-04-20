@@ -5,6 +5,40 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
+// Known webmail providers — mapping domain → inbox URL.
+// On mobile, iOS/Android typically deep-link these to the native
+// app if it's installed. Unmapped domains show no button (avoids
+// sending users to the wrong webmail).
+interface MailProvider {
+  name: string;
+  url: string;
+}
+
+const PROVIDER_MAP: Record<string, MailProvider> = {
+  "gmail.com":      { name: "Gmail",       url: "https://mail.google.com" },
+  "googlemail.com": { name: "Gmail",       url: "https://mail.google.com" },
+  "outlook.com":    { name: "Outlook",     url: "https://outlook.live.com/mail/" },
+  "hotmail.com":    { name: "Outlook",     url: "https://outlook.live.com/mail/" },
+  "live.com":       { name: "Outlook",     url: "https://outlook.live.com/mail/" },
+  "msn.com":        { name: "Outlook",     url: "https://outlook.live.com/mail/" },
+  "yahoo.com":      { name: "Yahoo Mail",  url: "https://mail.yahoo.com" },
+  "ymail.com":      { name: "Yahoo Mail",  url: "https://mail.yahoo.com" },
+  "icloud.com":     { name: "iCloud Mail", url: "https://www.icloud.com/mail" },
+  "me.com":         { name: "iCloud Mail", url: "https://www.icloud.com/mail" },
+  "mac.com":        { name: "iCloud Mail", url: "https://www.icloud.com/mail" },
+  "protonmail.com": { name: "Proton Mail", url: "https://mail.proton.me" },
+  "proton.me":      { name: "Proton Mail", url: "https://mail.proton.me" },
+  "pm.me":          { name: "Proton Mail", url: "https://mail.proton.me" },
+  "aol.com":        { name: "AOL Mail",    url: "https://mail.aol.com" },
+  "fastmail.com":   { name: "Fastmail",    url: "https://app.fastmail.com" },
+  "zoho.com":       { name: "Zoho Mail",   url: "https://mail.zoho.com" },
+};
+
+function getMailProvider(email: string): MailProvider | null {
+  const domain = email.trim().toLowerCase().split("@")[1];
+  return (domain && PROVIDER_MAP[domain]) || null;
+}
+
 function JoinForm() {
   const searchParams = useSearchParams();
   const errorParam = searchParams.get("error");
@@ -63,6 +97,20 @@ function JoinForm() {
           The link expires in 15 minutes. Check your spam folder if you
           don&apos;t see it.
         </p>
+        {(() => {
+          const provider = getMailProvider(email);
+          if (!provider) return null;
+          return (
+            <a
+              href={provider.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full bg-amber text-forest-deep font-bold py-3.5 rounded-full hover:bg-amber-hover transition-colors text-sm mt-6"
+            >
+              Open {provider.name} ↗
+            </a>
+          );
+        })()}
         <button
           onClick={() => setStatus("idle")}
           className="mt-8 text-sm text-cream-muted hover:text-cream transition-colors underline"
