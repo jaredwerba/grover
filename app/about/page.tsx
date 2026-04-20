@@ -11,12 +11,12 @@ export const metadata: Metadata = {
     title: "About Cove — Vermont Cannabis Guide",
     description:
       "Vermont cannabis for first-timers, tourists, and curious consumers. Cannatrail dispensary map, strain library, and Cove AI — your Vermont cannabis companion.",
-    url: "https://cove.garden/about",
+    url: "https://covebud.com/about",
     siteName: "Cove",
     type: "website",
   },
   alternates: {
-    canonical: "https://cove.garden/about",
+    canonical: "https://covebud.com/about",
   },
 };
 

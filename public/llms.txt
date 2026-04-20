@@ -1,6 +1,6 @@
 # Cove
 
-> Vermont cannabis companion app — https://cove.garden
+> Vermont cannabis companion app — https://covebud.com
 
 Cove helps Vermonters and visitors navigate Vermont's licensed cannabis dispensaries. It combines an interactive dispensary map (the Cannatrail), a strain library, and an AI cannabis concierge called Cove AI.
 
