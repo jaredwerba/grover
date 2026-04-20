@@ -16,8 +16,15 @@ export async function POST(req: NextRequest) {
 
   const normalizedEmail = email.toLowerCase().trim();
   const token = await createMagicToken(normalizedEmail);
+
+  // Always match the origin of the request — i.e. wherever the user
+  // actually is right now. This prevents a stale NEXT_PUBLIC_BASE_URL
+  // env var from shipping users to the wrong host in their email link.
+  // Env var stays as a local-dev fallback only.
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+    new URL(req.url).origin ||
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    "http://localhost:3000";
   const magicUrl = `${baseUrl}/verify?token=${token}`;
 
   const { error } = await resend.emails.send({

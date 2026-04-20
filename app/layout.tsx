@@ -73,7 +73,7 @@ export default async function RootLayout({
       <body className="min-h-screen text-cream antialiased flex flex-col font-quicksand" style={{ background: "#0b2d1b" }}>
         <MountainBackground />
         <ServiceWorkerRegister />
-        <AgeGate>
+        <AgeGate isAuthenticated={isAuthenticated}>
           <Nav isAuthenticated={isAuthenticated} />
           {/* z-index 1 — sits on top of fixed footer, slides away on scroll */}
           <div className="flex-1 flex flex-col">{children}</div>

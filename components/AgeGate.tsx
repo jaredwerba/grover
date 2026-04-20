@@ -4,14 +4,29 @@ import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "cove_age_verified";
 
-export default function AgeGate({ children }: { children: React.ReactNode }) {
+export default function AgeGate({
+  children,
+  isAuthenticated = false,
+}: {
+  children: React.ReactNode;
+  isAuthenticated?: boolean;
+}) {
   const [showGate, setShowGate] = useState(false);
 
   useEffect(() => {
+    // Authenticated users already accepted 21+ at /join — skip the gate,
+    // and treat this visit as an implicit re-acknowledgement so the same
+    // origin remembers it for any future logged-out sessions.
+    if (isAuthenticated) {
+      if (localStorage.getItem(STORAGE_KEY) !== "true") {
+        localStorage.setItem(STORAGE_KEY, "true");
+      }
+      return;
+    }
     if (localStorage.getItem(STORAGE_KEY) !== "true") {
       setShowGate(true);
     }
-  }, []);
+  }, [isAuthenticated]);
 
   function handleConfirm() {
     localStorage.setItem(STORAGE_KEY, "true");
