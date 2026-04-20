@@ -4,22 +4,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-type Tab = "register" | "signin";
-type Status = "idle" | "loading" | "error";
+type LoadingAction = "register" | "signin" | null;
 
 export default function MePage() {
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("register");
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
+  const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   const isValidEmail = email.includes("@") && email.includes(".");
+  const busy = loadingAction !== null;
 
-  async function handleRegister(e: React.FormEvent) {
-    e.preventDefault();
-    if (!isValidEmail || status === "loading") return;
-    setStatus("loading");
+  async function handleRegister(e?: React.FormEvent) {
+    e?.preventDefault();
+    if (!isValidEmail || busy) return;
+    setLoadingAction("register");
     setErrorMessage("");
 
     try {
@@ -53,14 +52,13 @@ export default function MePage() {
       } else {
         setErrorMessage(msg);
       }
-      setStatus("idle");
+      setLoadingAction(null);
     }
   }
 
-  async function handleSignIn(e: React.FormEvent) {
-    e.preventDefault();
-    if (!isValidEmail || status === "loading") return;
-    setStatus("loading");
+  async function handleSignIn() {
+    if (!isValidEmail || busy) return;
+    setLoadingAction("signin");
     setErrorMessage("");
 
     try {
@@ -72,9 +70,10 @@ export default function MePage() {
       });
 
       if (optRes.status === 404) {
-        setErrorMessage("No passkey found for this email. Create an account first.");
-        setTab("register");
-        setStatus("idle");
+        setErrorMessage(
+          "No passkey found for this email. Tap Create Account to set one up."
+        );
+        setLoadingAction(null);
         return;
       }
       if (!optRes.ok) throw new Error("Failed to start sign in");
@@ -103,7 +102,7 @@ export default function MePage() {
       } else {
         setErrorMessage(msg);
       }
-      setStatus("idle");
+      setLoadingAction(null);
     }
   }
 
@@ -119,30 +118,6 @@ export default function MePage() {
           <p className="text-cream-muted text-sm">Your personal Cove space</p>
         </div>
 
-        {/* Tabs */}
-        <div className="flex rounded-xl border border-forest-mid overflow-hidden mb-6">
-          <button
-            onClick={() => { setTab("register"); setErrorMessage(""); }}
-            className={`flex-1 text-sm font-medium py-2.5 transition-colors ${
-              tab === "register"
-                ? "bg-amber text-forest-deep"
-                : "text-cream-muted hover:text-cream"
-            }`}
-          >
-            Create Account
-          </button>
-          <button
-            onClick={() => { setTab("signin"); setErrorMessage(""); }}
-            className={`flex-1 text-sm font-medium py-2.5 transition-colors ${
-              tab === "signin"
-                ? "bg-amber text-forest-deep"
-                : "text-cream-muted hover:text-cream"
-            }`}
-          >
-            Sign In
-          </button>
-        </div>
-
         {/* Error */}
         {errorMessage && (
           <div className="bg-red-900/30 border border-red-700/50 text-red-300 text-sm px-4 py-3 rounded-xl mb-5">
@@ -150,80 +125,61 @@ export default function MePage() {
           </div>
         )}
 
-        {/* Register form */}
-        {tab === "register" && (
-          <form onSubmit={handleRegister} className="space-y-4">
-            <div>
-              <label htmlFor="reg-email" className="block text-sm text-cream-muted mb-1.5">
-                Email address
-              </label>
-              <input
-                id="reg-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                className="w-full bg-forest-deep border border-forest-mid rounded-xl px-4 py-3 text-cream text-sm placeholder-cream-muted/40 outline-none focus:border-amber transition-colors"
-              />
-            </div>
+        {/* Single email input + two action buttons */}
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label htmlFor="me-email" className="block text-sm text-cream-muted mb-1.5">
+              Email address
+            </label>
+            <input
+              id="me-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+              className="w-full bg-forest-deep border border-forest-mid rounded-xl px-4 py-3 text-cream text-sm placeholder-cream-muted/40 outline-none focus:border-amber transition-colors"
+            />
+          </div>
 
-            <button
-              type="submit"
-              disabled={!isValidEmail || status === "loading"}
-              className="w-full bg-amber text-forest-deep font-bold py-3.5 rounded-full hover:bg-amber-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
-            >
-              {status === "loading" ? (
-                "Setting up Face ID…"
-              ) : (
-                <>
-                  <FaceIdIcon />
-                  Create account with Face ID
-                </>
-              )}
-            </button>
+          {/* Primary: Create account */}
+          <button
+            type="submit"
+            disabled={!isValidEmail || busy}
+            className="w-full bg-amber text-forest-deep font-bold py-3.5 rounded-full hover:bg-amber-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
+          >
+            {loadingAction === "register" ? (
+              "Setting up Face ID…"
+            ) : (
+              <>
+                <FaceIdIcon />
+                Create account with Face ID
+              </>
+            )}
+          </button>
 
-            <p className="text-center text-xs text-cream-muted/60 leading-relaxed">
-              Your account is secured with Face ID or Touch ID.
-              No password required.
-            </p>
-          </form>
-        )}
+          {/* Secondary: Sign in */}
+          <button
+            type="button"
+            onClick={handleSignIn}
+            disabled={!isValidEmail || busy}
+            className="w-full border border-amber/60 text-amber font-semibold py-3.5 rounded-full hover:bg-amber/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
+          >
+            {loadingAction === "signin" ? (
+              "Verifying…"
+            ) : (
+              <>
+                <FaceIdIcon />
+                Sign in with Face ID
+              </>
+            )}
+          </button>
 
-        {/* Sign in form */}
-        {tab === "signin" && (
-          <form onSubmit={handleSignIn} className="space-y-4">
-            <div>
-              <label htmlFor="signin-email" className="block text-sm text-cream-muted mb-1.5">
-                Email address
-              </label>
-              <input
-                id="signin-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                className="w-full bg-forest-deep border border-forest-mid rounded-xl px-4 py-3 text-cream text-sm placeholder-cream-muted/40 outline-none focus:border-amber transition-colors"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={!isValidEmail || status === "loading"}
-              className="w-full bg-amber text-forest-deep font-bold py-3.5 rounded-full hover:bg-amber-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
-            >
-              {status === "loading" ? (
-                "Verifying…"
-              ) : (
-                <>
-                  <FaceIdIcon />
-                  Sign in with Face ID
-                </>
-              )}
-            </button>
-          </form>
-        )}
+          <p className="text-center text-xs text-cream-muted/60 leading-relaxed">
+            Your account is secured with Face ID or Touch ID.
+            No password required.
+          </p>
+        </form>
 
         <p className="text-center text-xs text-cream-muted mt-6">
           <Link href="/" className="hover:text-cream transition-colors">
