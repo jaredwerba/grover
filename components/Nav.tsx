@@ -11,6 +11,7 @@ export default function Nav({
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isMePage = pathname === "/me";
 
   return (
     <nav
@@ -63,6 +64,18 @@ export default function Nav({
               </button>
             </form>
           </>
+        ) : isMePage ? (
+          // On the /me sign-in page, offer Sign Out instead of Join —
+          // Join would just circle back to another auth page, which
+          // is a confusing destination from here.
+          <form action="/api/auth/logout" method="POST">
+            <button
+              type="submit"
+              className="border border-amber/60 text-amber text-xs font-bold px-4 py-2 rounded-sm hover:bg-amber/10 transition-colors tracking-widest uppercase"
+            >
+              Sign Out
+            </button>
+          </form>
         ) : (
           <Link
             href="/join"
