@@ -74,7 +74,7 @@ export default async function RootLayout({
         <MountainBackground />
         <ServiceWorkerRegister />
         <AgeGate isAuthenticated={isAuthenticated}>
-          <Nav isAuthenticated={isAuthenticated} />
+          <Nav isAuthenticated={isAuthenticated} email={session?.email ?? null} />
           {/* z-index 1 — sits on top of fixed footer, slides away on scroll */}
           <div className="flex-1 flex flex-col">{children}</div>
         </AgeGate>

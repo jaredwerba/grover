@@ -231,19 +231,21 @@ export default function GrowerTab() {
           <span className="text-[10px] text-cream-muted/60 uppercase tracking-widest">Live</span>
         </div>
 
-        {/* Room pill switcher — horizontal scroll on narrow screens */}
-        <div className="flex gap-1.5 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none">
+        {/* Room pill switcher — horizontal scroll on narrow screens.
+            Pills are sized for touch: >=44px tap height per HIG. */}
+        <div className="flex gap-2 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none">
           {ROOMS.map((room) => {
             const active = room.id === activeRoom;
             return (
               <button
                 key={room.id}
                 onClick={() => setActiveRoom(room.id)}
-                className={`shrink-0 text-[11px] font-semibold px-3 py-1.5 rounded-full border transition-colors ${
+                className={`shrink-0 text-sm font-semibold px-4 py-3 rounded-full border transition-colors active:scale-95 ${
                   active
                     ? "bg-amber text-forest-deep border-amber"
                     : "bg-forest-mid/30 text-cream-muted border-forest-mid hover:text-cream hover:border-amber/40"
                 }`}
+                style={{ minHeight: 44 }}
               >
                 {room.name}
               </button>
@@ -314,12 +316,22 @@ export default function GrowerTab() {
 }
 
 function StatCard({ label, value, unit }: { label: string; value: string; unit?: string }) {
+  // Scale the displayed value to fit a narrow card — long strings
+  // like "$2,050,000" need smaller type at mobile widths.
+  const valueSize =
+    value.length >= 9
+      ? "text-[13px] sm:text-base md:text-lg"
+      : value.length >= 7
+      ? "text-sm sm:text-lg md:text-xl"
+      : "text-xl";
   return (
-    <div className="bg-forest rounded-2xl border border-forest-mid p-4">
+    <div className="bg-forest rounded-2xl border border-forest-mid p-4 min-w-0">
       <p className="text-cream-muted text-[10px] uppercase tracking-widest mb-1.5 leading-none">
         {label}
       </p>
-      <p className="text-amber font-bold text-xl leading-none">{value}</p>
+      <p className={`text-amber font-bold leading-none tabular-nums truncate ${valueSize}`}>
+        {value}
+      </p>
       {unit && <p className="text-cream-muted/60 text-[10px] mt-1">{unit}</p>}
     </div>
   );

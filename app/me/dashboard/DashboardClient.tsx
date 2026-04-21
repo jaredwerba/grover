@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TokerTab from "./tabs/TokerTab";
 import GrowerTab from "./tabs/GrowerTab";
 import DispenserTab from "./tabs/DispenserTab";
 import DashboardChat from "./DashboardChat";
-import { exportDashboardPdf } from "@/lib/export-pdf";
 
 export type Persona = "toker" | "grower" | "dispenser";
 
@@ -15,16 +14,29 @@ const TABS: { id: Persona; label: string; sub: string }[] = [
   { id: "dispenser", label: "Sales Manager", sub: "Retail" },
 ];
 
+function isPersona(v: string | null): v is Persona {
+  return v === "toker" || v === "grower" || v === "dispenser";
+}
+
 export default function DashboardClient({ email }: { email: string }) {
   const [persona, setPersona] = useState<Persona>("toker");
+
+  // On mount, hydrate persona from URL (?tab=…). Default is "toker".
+  useEffect(() => {
+    const tab = new URLSearchParams(window.location.search).get("tab");
+    if (isPersona(tab)) setPersona(tab);
+  }, []);
+
+  // Sync persona to URL so the Nav's Export button can read it.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", persona);
+    window.history.replaceState(null, "", url.toString());
+  }, [persona]);
 
   async function handleSignOut() {
     await fetch("/api/auth/logout", { method: "POST" });
     window.location.href = "/";
-  }
-
-  function handleExport() {
-    exportDashboardPdf({ email, persona });
   }
 
   return (
@@ -32,31 +44,21 @@ export default function DashboardClient({ email }: { email: string }) {
       {/* Header */}
       <div className="max-w-2xl mx-auto px-4 pt-10 pb-4">
         <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <h1 className="text-3xl font-groovy text-amber tracking-wide leading-none mb-1">
               Me
             </h1>
-            <p className="text-cream-muted text-sm truncate">
+            <p className="text-cream-muted text-sm break-all">
               Welcome back,{" "}
               <span className="text-cream font-medium">{email}</span>
             </p>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={handleExport}
-              className="bg-amber text-forest-deep text-[10px] font-bold tracking-widest uppercase px-3 py-2 rounded-sm hover:bg-amber-hover transition-colors flex items-center gap-1.5"
-              aria-label="Export data as Cove PDF"
-            >
-              <DownloadIcon />
-              Export
-            </button>
-            <button
-              onClick={handleSignOut}
-              className="border border-forest-mid text-cream-muted text-[10px] font-bold tracking-widest uppercase px-3 py-2 rounded-sm hover:border-amber/40 hover:text-cream transition-colors"
-            >
-              Sign Out
-            </button>
-          </div>
+          <button
+            onClick={handleSignOut}
+            className="shrink-0 border border-forest-mid text-cream-muted text-[10px] font-bold tracking-widest uppercase px-3 py-2 rounded-sm hover:border-amber/40 hover:text-cream transition-colors"
+          >
+            Sign Out
+          </button>
         </div>
       </div>
 
@@ -93,24 +95,5 @@ export default function DashboardClient({ email }: { email: string }) {
 
       <DashboardChat persona={persona} />
     </div>
-  );
-}
-
-function DownloadIcon() {
-  return (
-    <svg
-      className="w-3 h-3"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" y1="15" x2="12" y2="3" />
-    </svg>
   );
 }
