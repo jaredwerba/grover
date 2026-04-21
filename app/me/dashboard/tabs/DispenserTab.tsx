@@ -24,11 +24,11 @@ function useCountUp(target: number, duration = 1200, delay = 0) {
 }
 
 const TOP_SELLERS = [
-  { name: "Blue Dream 3.5g", units: 48, pct: 100, revenue: 864 },
-  { name: "OG Kush Pre-Roll 5pk", units: 36, pct: 75, revenue: 540 },
-  { name: "Sour Diesel 1g", units: 29, pct: 60, revenue: 290 },
-  { name: "Wedding Cake Vape", units: 22, pct: 46, revenue: 770 },
-  { name: "Charlotte's Web 30ct", units: 18, pct: 38, revenue: 630 },
+  { name: "Fresh Flower", units: 142, pct: 100, revenue: 4260 },
+  { name: "Pre Rolls", units: 98, pct: 69, revenue: 2940 },
+  { name: "Vapes", units: 76, pct: 54, revenue: 3420 },
+  { name: "Edibles", units: 64, pct: 45, revenue: 1920 },
+  { name: "Beverages", units: 41, pct: 29, revenue: 820 },
 ];
 
 const HOURLY = [

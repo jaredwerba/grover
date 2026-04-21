@@ -38,12 +38,63 @@ const YIELD_DATA = [
 
 const maxYield = 160;
 
-const ENV = [
-  { label: "Temp", value: 72, unit: "°F", min: 65, max: 85, color: "#FFB900", warn: false },
-  { label: "Humidity", value: 58, unit: "%", min: 40, max: 70, color: "#10b981", warn: false },
-  { label: "CO₂", value: 1240, unit: "ppm", min: 800, max: 1500, color: "#818cf8", warn: false },
-  { label: "VPD", value: 1.1, unit: "kPa", min: 0.8, max: 1.6, color: "#fb7185", warn: false },
-];
+// Environment targets per room — typical commercial-cannabis setpoints.
+// Each room shows 4 live-readout gauges; metrics shift to what matters
+// for that stage of the workflow.
+const ROOMS = [
+  {
+    id: "veg",
+    name: "Veg Rooms",
+    metrics: [
+      { label: "Temp", value: 76, unit: "°F", min: 65, max: 85, color: "#FFB900" },
+      { label: "Humidity", value: 65, unit: "%", min: 50, max: 75, color: "#10b981" },
+      { label: "CO₂", value: 1100, unit: "ppm", min: 800, max: 1500, color: "#818cf8" },
+      { label: "VPD", value: 0.9, unit: "kPa", min: 0.4, max: 1.2, color: "#fb7185" },
+    ],
+  },
+  {
+    id: "grow",
+    name: "Grow Rooms",
+    metrics: [
+      { label: "Temp", value: 72, unit: "°F", min: 65, max: 80, color: "#FFB900" },
+      { label: "Humidity", value: 45, unit: "%", min: 35, max: 60, color: "#10b981" },
+      { label: "CO₂", value: 1400, unit: "ppm", min: 1000, max: 1500, color: "#818cf8" },
+      { label: "VPD", value: 1.4, unit: "kPa", min: 1.0, max: 1.6, color: "#fb7185" },
+    ],
+  },
+  {
+    id: "dry",
+    name: "Dry Room",
+    metrics: [
+      { label: "Temp", value: 64, unit: "°F", min: 60, max: 70, color: "#FFB900" },
+      { label: "Humidity", value: 60, unit: "%", min: 55, max: 65, color: "#10b981" },
+      { label: "Airflow", value: 2.2, unit: "m/s", min: 0, max: 5, color: "#818cf8" },
+      { label: "Dry Day", value: 7, unit: "d", min: 1, max: 14, color: "#fb7185" },
+    ],
+  },
+  {
+    id: "trim",
+    name: "Trim Room",
+    metrics: [
+      { label: "Temp", value: 68, unit: "°F", min: 60, max: 75, color: "#FFB900" },
+      { label: "Humidity", value: 55, unit: "%", min: 45, max: 65, color: "#10b981" },
+      { label: "Stations", value: 6, unit: "/8", min: 0, max: 8, color: "#818cf8" },
+      { label: "Output", value: 12, unit: "lb/d", min: 0, max: 20, color: "#fb7185" },
+    ],
+  },
+  {
+    id: "package",
+    name: "Package Room",
+    metrics: [
+      { label: "Temp", value: 70, unit: "°F", min: 60, max: 75, color: "#FFB900" },
+      { label: "Humidity", value: 55, unit: "%", min: 45, max: 65, color: "#10b981" },
+      { label: "Output", value: 145, unit: "/hr", min: 0, max: 200, color: "#818cf8" },
+      { label: "Seal QA", value: 99.7, unit: "%", min: 95, max: 100, color: "#fb7185" },
+    ],
+  },
+] as const;
+
+type RoomId = (typeof ROOMS)[number]["id"];
 
 const COMPLIANCE = [
   { label: "Room Count", status: "ok", detail: "3 / 6 limit" },
@@ -60,6 +111,10 @@ function stageColor(stage: string) {
 
 export default function GrowerTab() {
   const [mounted, setMounted] = useState(false);
+  const [activeRoom, setActiveRoom] = useState<RoomId>("grow");
+  const activeMetrics =
+    ROOMS.find((r) => r.id === activeRoom)?.metrics ?? ROOMS[1].metrics;
+
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 80);
     return () => clearTimeout(t);
@@ -169,12 +224,39 @@ export default function GrowerTab() {
         </div>
       </div>
 
-      {/* Environment */}
+      {/* Environment — per-room switcher */}
       <div className="bg-forest rounded-2xl border border-forest-mid p-5" style={card(240)}>
-        <h3 className="text-cream font-semibold text-sm mb-4">Environment — Room A</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-cream font-semibold text-sm">Environment</h3>
+          <span className="text-[10px] text-cream-muted/60 uppercase tracking-widest">Live</span>
+        </div>
+
+        {/* Room pill switcher — horizontal scroll on narrow screens */}
+        <div className="flex gap-1.5 mb-4 overflow-x-auto -mx-1 px-1 pb-1 scrollbar-none">
+          {ROOMS.map((room) => {
+            const active = room.id === activeRoom;
+            return (
+              <button
+                key={room.id}
+                onClick={() => setActiveRoom(room.id)}
+                className={`shrink-0 text-[11px] font-semibold px-3 py-1.5 rounded-full border transition-colors ${
+                  active
+                    ? "bg-amber text-forest-deep border-amber"
+                    : "bg-forest-mid/30 text-cream-muted border-forest-mid hover:text-cream hover:border-amber/40"
+                }`}
+              >
+                {room.name}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
-          {ENV.map((e, i) => {
-            const rangePct = ((e.value - e.min) / (e.max - e.min)) * 100;
+          {activeMetrics.map((e, i) => {
+            const rangePct = Math.max(
+              0,
+              Math.min(100, ((e.value - e.min) / (e.max - e.min)) * 100)
+            );
             return (
               <div key={e.label} className="bg-forest-mid/40 rounded-xl p-3">
                 <div className="flex justify-between items-start mb-2">
