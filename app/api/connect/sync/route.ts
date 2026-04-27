@@ -6,6 +6,7 @@ import {
   setInventoryMeta,
 } from "@/lib/inventory-store";
 import type { ShopInventoryMeta } from "@/lib/inventory";
+import { tagWithStrain } from "@/lib/strain-match";
 
 /**
  * Cove Connect — nightly sync.
@@ -34,6 +35,7 @@ interface PerShopResult {
   platform: string;
   status: "ok" | "skipped" | "error";
   item_count?: number;
+  matched_count?: number;
   advertised_total?: number;
   unfetched_overflow?: number;
   error?: string;
@@ -78,6 +80,13 @@ async function syncOne(
     const raw = await connector.fetchMenu(shop.merchant_id);
     const normalized = connector.normalize(raw, shop.id);
 
+    // Strain matching pass: connector left strain_id null; we resolve
+    // each product name against the canonical strain catalog here so
+    // the matcher itself is shared across all platforms. ~80% of
+    // products get null (local-grower SKUs); confident matches get
+    // tagged for cross-linking on the Strain Library page.
+    for (const item of normalized) tagWithStrain(item);
+
     const advertisedTotal = (raw as unknown as { __total_advertised?: number })
       .__total_advertised;
     const unfetchedOverflow = (raw as unknown as {
@@ -94,11 +103,14 @@ async function syncOne(
     };
     await setInventoryMeta(shop.id, meta);
 
+    const matchedCount = normalized.filter((i) => i.strain_id !== null).length;
+
     return {
       shop_slug: shop.id,
       platform: shop.platform,
       status: "ok",
       item_count: normalized.length,
+      matched_count: matchedCount,
       advertised_total: advertisedTotal,
       unfetched_overflow: unfetchedOverflow,
       duration_ms: Date.now() - start,
