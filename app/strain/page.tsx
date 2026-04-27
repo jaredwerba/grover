@@ -1,10 +1,18 @@
 import { strains } from "@/lib/strains";
 import StrainClient from "@/components/StrainClient";
 import { dispensaries } from "@/lib/dispensaries";
-import { getStrainAvailability } from "@/lib/inventory-public";
+import {
+  getStrainAvailability,
+  getLiveProducts,
+} from "@/lib/inventory-public";
 
 export default async function StrainPage() {
-  const { byStrain } = await getStrainAvailability();
+  const [availResult, liveProducts] = await Promise.all([
+    getStrainAvailability(),
+    getLiveProducts(),
+  ]);
+  const { byStrain } = availResult;
+
   // Map slug arrays to display-name arrays for the client.
   const availability: Record<string, string[]> = {};
   for (const [strainId, slugs] of Object.entries(byStrain)) {
@@ -21,10 +29,14 @@ export default async function StrainPage() {
             Strain Library
           </h1>
           <p className="text-cream-muted text-sm sm:text-base max-w-xl leading-relaxed">
-            Explore Vermont&apos;s cannabis strains — effects, terpenes, flavors, and potency data for every cultivar.
+            Explore Vermont&apos;s cannabis strains — featured cultivars and a live feed of every product currently in stock at connected dispensaries.
           </p>
         </div>
-        <StrainClient strains={strains} availability={availability} />
+        <StrainClient
+          strains={strains}
+          availability={availability}
+          liveProducts={liveProducts}
+        />
       </div>
     </main>
   );

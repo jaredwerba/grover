@@ -117,6 +117,176 @@ export async function getLiveInventoryForPrompt(): Promise<string> {
   }
 }
 
+/**
+ * One row in the Strain Library's "Live in Vermont" section.
+ * Aggregates every dispensary SKU that resolves to the same display
+ * name into a single card so the user sees one entry per strain
+ * across multiple brands and shops.
+ */
+export interface LiveProduct {
+  /** Stable slug used for keys. */
+  key: string;
+  /** Cleaned strain-ish name shown in the card title. */
+  displayName: string;
+  /** Coarse product type (flower/preroll/vape/edible/...). */
+  type: string;
+  /** Distinct brands carrying it. */
+  brands: string[];
+  /** Distinct shop display names that have it in stock. */
+  shops: string[];
+  /** Min observed THC% (null when no flower/vape provided one). */
+  thcMin: number | null;
+  thcMax: number | null;
+  /** Min/max observed dollar price (entry size). */
+  priceMin: number | null;
+  priceMax: number | null;
+  /** Total SKUs this card represents. */
+  skuCount: number;
+}
+
+/** Product types that make sense as "strains" in the Strain Library. */
+const STRAIN_LIKE_TYPES = new Set([
+  "flower",
+  "preroll",
+  "vape",
+  "concentrate",
+  "edible",
+  "drink",
+  "tincture",
+]);
+
+/** Patterns indicating a product is paraphernalia/accessory, not a strain. */
+const ACCESSORY_NAME_RE = /\b(bong|pipe|spoon|grinder|lighter|paper|cone|tip|rolling|stash\s*jar|ash\s*tray|nail|banger|dab|rig|torch|battery|charger|pen\s*battery|box|case|bag|tray|filter|t-shirt|tshirt|hat|sticker|merch)\b/i;
+
+/** Patterns indicating the cleaned name is just a quantity/size, not a strain. */
+const JUNK_NAME_RE = /^\s*\d+(?:\.\d+)?\s*(?:ct|g|gr|gram|grams|mg|oz|ounce|ml|pc|pcs|pack|pk)?\s*$/i;
+
+/** Strip brand prefix + size/unit suffix to get a clean strain-ish name. */
+function cleanDisplayName(raw: string): string {
+  let s = raw;
+  // First " | " or " - " separator splits brand from rest. Take the
+  // remainder and strip any trailing size/format segments.
+  const sep = / +[|–—]+ +| +- +/;
+  const parts = s.split(sep);
+  if (parts.length >= 2) s = parts.slice(1).join(" - ");
+  // Drop obvious size/format suffixes
+  s = s.replace(
+    /\s*\(\d+\s*ct\)?\s*$|\s*-\s*\d+(?:\.\d+)?\s*(?:g|gr|gram|grams|mg|oz|ounce|ml|pc|pcs|pack|pk)\s*$|\s*\d+(?:\.\d+)?\s*(?:g|gr|gram|grams|mg|oz|ounce|ml|pc|pcs|pack|pk)\s*$/i,
+    ""
+  );
+  // Drop trailing generic words like "Pre-Roll", "Flower", "Vape Cart"
+  s = s.replace(/\s*-?\s*(pre[- ]?roll|flower|vape\s*cart(ridge)?|cartridge|tincture|topical|oral\s*spray|edible|gummies?|chocolate|chew|drink)s?\s*$/i, "");
+  return s.replace(/\s+/g, " ").trim();
+}
+
+/**
+ * True if the product looks like paraphernalia (bong, papers, etc.)
+ * even if its raw name slipped past the platform-level type tag. Some
+ * dispensaries label glassware as "edible" or "other" by mistake.
+ */
+function isAccessoryByName(name: string): boolean {
+  return ACCESSORY_NAME_RE.test(name);
+}
+
+function dollarRound(v: number): number {
+  return Math.round(v * 100) / 100;
+}
+
+/**
+ * Aggregate every shop's inventory into one deduplicated list keyed
+ * by cleaned display name + product type. Used by the Strain Library
+ * to show "Live in Vermont" — every strain currently for sale at a
+ * connected dispensary, with brand/shop/THC/price ranges.
+ */
+export async function getLiveProducts(): Promise<LiveProduct[]> {
+  try {
+    const slugs = dispensaries.map((d) => d.id);
+    const all = await Promise.all(
+      slugs.map((s) => getInventory(s).then((items) => ({ slug: s, items })))
+    );
+
+    type AggKey = string;
+    interface Agg {
+      displayName: string;
+      type: string;
+      brands: Set<string>;
+      shops: Set<string>;
+      thcMin: number | null;
+      thcMax: number | null;
+      priceMin: number | null;
+      priceMax: number | null;
+      skuCount: number;
+    }
+    const map = new Map<AggKey, Agg>();
+
+    for (const { slug, items } of all) {
+      if (!items || items.length === 0) continue;
+      const shop = dispensaries.find((d) => d.id === slug);
+      if (!shop) continue;
+      for (const it of items) {
+        if (!STRAIN_LIKE_TYPES.has(it.type)) continue;
+        // Belt-and-suspenders: drop paraphernalia by name even if a
+        // platform mis-classified it (some shops tag bongs as "edible").
+        if (isAccessoryByName(it.name)) continue;
+        const display = cleanDisplayName(it.name);
+        if (!display || display.length < 3) continue; // need ≥3 chars
+        if (JUNK_NAME_RE.test(display)) continue; // pure size like "30ct"
+        // Need at least 2 alpha chars to count as a real name
+        const alpha = (display.match(/[a-z]/gi) || []).length;
+        if (alpha < 2) continue;
+        const key = `${it.type}::${display.toLowerCase()}`;
+        let agg = map.get(key);
+        if (!agg) {
+          agg = {
+            displayName: display,
+            type: it.type,
+            brands: new Set<string>(),
+            shops: new Set<string>(),
+            thcMin: null,
+            thcMax: null,
+            priceMin: null,
+            priceMax: null,
+            skuCount: 0,
+          };
+          map.set(key, agg);
+        }
+        if (it.brand) agg.brands.add(it.brand);
+        agg.shops.add(shop.name);
+        agg.skuCount++;
+        if (typeof it.thc === "number" && it.thc > 0 && it.thc <= 100) {
+          agg.thcMin = agg.thcMin === null ? it.thc : Math.min(agg.thcMin, it.thc);
+          agg.thcMax = agg.thcMax === null ? it.thc : Math.max(agg.thcMax, it.thc);
+        }
+        if (typeof it.price === "number" && it.price > 0) {
+          agg.priceMin = agg.priceMin === null ? it.price : Math.min(agg.priceMin, it.price);
+          agg.priceMax = agg.priceMax === null ? it.price : Math.max(agg.priceMax, it.price);
+        }
+      }
+    }
+
+    return [...map.entries()]
+      .map(([key, a]) => ({
+        key,
+        displayName: a.displayName,
+        type: a.type,
+        brands: [...a.brands].sort(),
+        shops: [...a.shops].sort(),
+        thcMin: a.thcMin !== null ? dollarRound(a.thcMin) : null,
+        thcMax: a.thcMax !== null ? dollarRound(a.thcMax) : null,
+        priceMin: a.priceMin !== null ? dollarRound(a.priceMin) : null,
+        priceMax: a.priceMax !== null ? dollarRound(a.priceMax) : null,
+        skuCount: a.skuCount,
+      }))
+      .sort((x, y) => x.displayName.localeCompare(y.displayName));
+  } catch (err) {
+    console.warn(
+      "[inventory-public] getLiveProducts failed:",
+      err instanceof Error ? err.message : err
+    );
+    return [];
+  }
+}
+
 /** Pretty "synced Xh ago" / "synced just now" style helper. */
 export function formatSyncedAgo(meta: ShopInventoryMeta | null): string | null {
   if (!meta || meta.status !== "ok") return null;
