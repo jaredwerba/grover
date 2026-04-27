@@ -1,13 +1,14 @@
 import type { NormalizedItem, PlatformId, RawProduct } from "../inventory";
 import { tymberConnector } from "./tymber";
-import { dutchieConnector } from "./dutchie";
+// Dutchie connector intentionally NOT registered yet:
+// dutchie.com is gated by Cloudflare bot protection and operator
+// subdomains are SPA-rendered. Reach requires Playwright or a Dutchie
+// partnership. Tagged shops (e.g. flora-cannabis) get cleanly skipped
+// in the sync route via the "no connector for platform" branch.
+// import { dutchieConnector } from "./dutchie";
 
 /**
  * A connector knows how to read one platform's public menu data.
- *
- * Day 1: interface + stubs.
- * Day 2 (Mon Apr 27): tymber working end-to-end against MothaPlant.
- * Day 3 (Tue Apr 28): dutchie working.
  */
 export interface Connector {
   platform: PlatformId;
@@ -33,5 +34,5 @@ export function getConnector(platform: PlatformId): Connector | null {
 
 const CONNECTORS: Partial<Record<PlatformId, Connector>> = {
   tymber: tymberConnector,
-  dutchie: dutchieConnector,
+  // dutchie: dutchieConnector — see note above
 };
