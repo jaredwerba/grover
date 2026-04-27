@@ -193,6 +193,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Lamoille County's premier cannabis destination, serving the Stowe ski corridor.",
+    platform: "leafly",
+    merchant_id: "higher-elevation-vt",
   },
   {
     id: "freedom-flower-direct",
