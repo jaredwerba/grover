@@ -445,6 +445,12 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Addison County's blooming cannabis boutique — beautifully curated, locally grown, naturally yours.",
+    // Platform discovered Day 3, but our Dutchie connector is on hold:
+    // dutchie.com gates GraphQL behind Cloudflare and the operator
+    // subdomain (shop.floravt.com) is a SPA shell. Reach blocked
+    // until we add Playwright or get Dutchie API access.
+    platform: "dutchie",
+    merchant_id: "62f28802b87e0f676aeaa8a6", // dispensary id from embed bootstrap
   },
   {
     id: "the-herbal-collective",
