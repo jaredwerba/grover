@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import { getSession } from "@/lib/auth";
 import { COVE_SYSTEM_PROMPT } from "@/lib/cove-prompt";
+import { getLiveInventoryForPrompt } from "@/lib/inventory-public";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -23,13 +24,21 @@ export async function POST(req: NextRequest) {
 
   const openai = new OpenAI({ apiKey });
 
+  // Cove Connect — append live inventory snapshot to the system
+  // prompt at request time. Read failures fall back to "" so the
+  // chat keeps working even if Redis is unreachable.
+  const liveInventory = await getLiveInventoryForPrompt();
+  const systemPrompt = liveInventory
+    ? `${COVE_SYSTEM_PROMPT}\n\n${liveInventory}`
+    : COVE_SYSTEM_PROMPT;
+
   const stream = await openai.chat.completions.create({
     model: "gpt-4o",
     stream: true,
     temperature: 0.7, // tighter than default 1.0 for consistency
     max_tokens: 800, // keep responses concise; prevents runaway generations
     messages: [
-      { role: "system", content: COVE_SYSTEM_PROMPT },
+      { role: "system", content: systemPrompt },
       ...messages,
     ],
   });

@@ -1,7 +1,9 @@
 import { dispensaries } from "@/lib/dispensaries";
 import TrailClient from "@/components/TrailClient";
+import { getInventorySnapshot } from "@/lib/inventory-public";
 
-export default function TrailPage() {
+export default async function TrailPage() {
+  const { metas } = await getInventorySnapshot();
   return (
     <main className="bg-forest-deep text-cream flex flex-col min-h-screen">
       {/* Header — compact */}
@@ -19,7 +21,7 @@ export default function TrailPage() {
         className="px-4 sm:px-6 flex flex-col shrink-0"
         style={{ height: "calc(100svh - 120px)" }}
       >
-        <TrailClient dispensaries={dispensaries} />
+        <TrailClient dispensaries={dispensaries} inventoryMetas={metas} />
       </div>
 
       {/* About section — scrolls below the map */}

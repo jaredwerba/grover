@@ -11,7 +11,13 @@ const TYPE_COLORS: Record<Strain["type"], string> = {
 
 const TYPE_FILTERS: Array<Strain["type"] | "All"> = ["All", "Indica", "Sativa", "Hybrid"];
 
-function StrainCard({ strain }: { strain: Strain }) {
+function StrainCard({
+  strain,
+  availableAt,
+}: {
+  strain: Strain;
+  availableAt?: string[];
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,6 +47,20 @@ function StrainCard({ strain }: { strain: Strain }) {
             <span className="text-amber text-xs font-bold">THC {strain.thc}</span>
             <span className="text-cream-muted text-xs">CBD {strain.cbd}</span>
           </div>
+          {/* Live "available at" badge — only when we have ingest data */}
+          {availableAt && availableAt.length > 0 && (
+            <p className="mt-2 text-[10px] text-cream-muted/70 tracking-wide flex items-start gap-1.5 leading-snug">
+              <span
+                className="inline-block w-1.5 h-1.5 rounded-full bg-amber/60 mt-1 shrink-0 animate-pulse"
+                aria-hidden="true"
+              />
+              <span>
+                <span className="text-amber/80 font-semibold">Available at: </span>
+                {availableAt.slice(0, 3).join(", ")}
+                {availableAt.length > 3 && ` +${availableAt.length - 3} more`}
+              </span>
+            </p>
+          )}
         </div>
         <span className="text-amber/60 text-lg shrink-0 mt-0.5 transition-transform duration-200" style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}>
           ↓
@@ -106,7 +126,13 @@ function StrainCard({ strain }: { strain: Strain }) {
   );
 }
 
-export default function StrainClient({ strains }: { strains: Strain[] }) {
+export default function StrainClient({
+  strains,
+  availability,
+}: {
+  strains: Strain[];
+  availability?: Record<string, string[]>;
+}) {
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<Strain["type"] | "All">("All");
 
@@ -174,7 +200,11 @@ export default function StrainClient({ strains }: { strains: Strain[] }) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((s) => (
-            <StrainCard key={s.id} strain={s} />
+            <StrainCard
+              key={s.id}
+              strain={s}
+              availableAt={availability?.[s.id]}
+            />
           ))}
         </div>
       )}

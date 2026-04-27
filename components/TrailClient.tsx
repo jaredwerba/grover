@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { Dispensary } from "@/lib/dispensaries";
 import DispensaryCard from "./DispensaryCard";
+import type { ShopInventoryMeta } from "@/lib/inventory";
 
 const MapClient = dynamic(() => import("./MapClient"), {
   ssr: false,
@@ -29,7 +30,13 @@ const FILTERS: { value: Filter; label: string }[] = [
 // Card height — drives the map size calculation
 const CARD_ROW_HEIGHT = 210;
 
-export default function TrailClient({ dispensaries }: { dispensaries: Dispensary[] }) {
+export default function TrailClient({
+  dispensaries,
+  inventoryMetas,
+}: {
+  dispensaries: Dispensary[];
+  inventoryMetas?: Record<string, ShopInventoryMeta | null>;
+}) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter | null>(null);
   const [selected, setSelected] = useState<Dispensary | null>(null);
@@ -154,7 +161,10 @@ export default function TrailClient({ dispensaries }: { dispensaries: Dispensary
                 scrollSnapAlign: "start",
               }}
             >
-              <DispensaryCard dispensary={d} />
+              <DispensaryCard
+                dispensary={d}
+                inventoryMeta={inventoryMetas?.[d.id]}
+              />
             </div>
           ))}
         </div>
