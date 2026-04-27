@@ -49,8 +49,26 @@ async function main() {
   try {
     const raw = await connector.fetchMenu(shop.merchant_id);
     const normalized = connector.normalize(raw, shop.id);
-    console.log(`[cove-connect] ${normalized.length} items normalized.`);
-    console.log(JSON.stringify(normalized.slice(0, 5), null, 2));
+    const totalAdvertised = (raw as unknown as { __total_advertised?: number })
+      .__total_advertised;
+    const unfetchedOverflow = (raw as unknown as {
+      __unfetched_overflow?: number;
+    }).__unfetched_overflow;
+    console.log(
+      `[cove-connect] raw fetched: ${raw.length} | normalized: ${normalized.length}` +
+        (typeof totalAdvertised === "number"
+          ? ` | advertised total across categories: ${totalAdvertised}`
+          : "") +
+        (typeof unfetchedOverflow === "number" && unfetchedOverflow > 0
+          ? ` | unfetched (pagination cap): ${unfetchedOverflow}`
+          : "")
+    );
+    // Type counts
+    const byType: Record<string, number> = {};
+    for (const item of normalized) byType[item.type] = (byType[item.type] || 0) + 1;
+    console.log(`[cove-connect] by type:`, byType);
+    console.log(`[cove-connect] sample:`);
+    console.log(JSON.stringify(normalized.slice(0, 3), null, 2));
   } catch (err) {
     console.error(
       `[cove-connect] FAIL — ${err instanceof Error ? err.message : err}`

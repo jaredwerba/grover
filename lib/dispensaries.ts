@@ -176,8 +176,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Northwest Vermont's neighborhood dispensary with a down-to-earth selection and local pride.",
-    platform: "dispenseapp",
-    merchant_id: "a6b0c909cbf495bb",
+    platform: "tymber",
+    merchant_id: "shop.mothaplant.com",
   },
   // Morrisville
   {

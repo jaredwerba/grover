@@ -1,19 +1,20 @@
 import type { NormalizedItem, PlatformId, RawProduct } from "../inventory";
-import { dispenseAppConnector } from "./dispenseapp";
+import { tymberConnector } from "./tymber";
 import { dutchieConnector } from "./dutchie";
 
 /**
  * A connector knows how to read one platform's public menu data.
  *
- * Day 1: interface + stubs. Day 2 (Mon Apr 27): dispenseapp working.
+ * Day 1: interface + stubs.
+ * Day 2 (Mon Apr 27): tymber working end-to-end against MothaPlant.
  * Day 3 (Tue Apr 28): dutchie working.
  */
 export interface Connector {
   platform: PlatformId;
   /**
-   * Fetch the raw menu for one shop. The merchantId argument is what
-   * the platform uses to identify this shop (e.g. DispenseApp's
-   * 16-char hex ID, Dutchie's slug).
+   * Fetch the raw menu for one shop. The merchantId argument is
+   * platform-specific: a shop hostname for Tymber (e.g.
+   * "shop.mothaplant.com"), a slug for Dutchie, etc.
    */
   fetchMenu(merchantId: string): Promise<RawProduct[]>;
   /**
@@ -31,6 +32,6 @@ export function getConnector(platform: PlatformId): Connector | null {
 }
 
 const CONNECTORS: Partial<Record<PlatformId, Connector>> = {
-  dispenseapp: dispenseAppConnector,
+  tymber: tymberConnector,
   dutchie: dutchieConnector,
 };

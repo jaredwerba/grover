@@ -89,7 +89,7 @@ export interface ShopInventoryMeta {
 
 /** All platforms Cove Connect knows how to ingest. Add as we add connectors. */
 export type PlatformId =
-  | "dispenseapp"
+  | "tymber" // shop.{domain}.com SSR (powers most VT shops, incl. those listed via DispenseApp)
   | "dutchie"
   | "shopify"
   | "manual";
