@@ -1,3 +1,5 @@
+import type { PlatformId } from "./inventory";
+
 export interface Dispensary {
   id: string;
   name: string;
@@ -15,6 +17,15 @@ export interface Dispensary {
   };
   tags: Array<"recreational" | "medical">;
   description: string;
+  /**
+   * Cove Connect — which platform powers this shop's online menu, and
+   * the platform-specific merchant identifier the connector uses to
+   * fetch their inventory. Optional: shops without a known platform
+   * are visible on Cannatrail but won't have live "in stock" data
+   * until classified.
+   */
+  platform?: PlatformId;
+  merchant_id?: string;
 }
 
 export const dispensaries: Dispensary[] = [
@@ -102,6 +113,9 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 8pm", sat: "10am – 8pm", sun: "11am – 6pm" },
     tags: ["recreational"],
     description: "Pine Street Arts District dispensary with a strong lineup of craft extracts and flower.",
+    platform: "dutchie",
+    // TODO Day 3: confirm Dutchie slug from their embed iframe.
+    merchant_id: "upstate-elevator",
   },
   // Winooski
   {
@@ -162,6 +176,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Northwest Vermont's neighborhood dispensary with a down-to-earth selection and local pride.",
+    platform: "dispenseapp",
+    merchant_id: "a6b0c909cbf495bb",
   },
   // Morrisville
   {
