@@ -199,6 +199,9 @@ export default function StrainClient({
   const [query, setQuery] = useState("");
   const [liveType, setLiveType] = useState<string>("all");
   const [liveSubcat, setLiveSubcat] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">(
+    "default"
+  );
 
   /**
    * Sorted list of every product's minimum price. The price slider
@@ -273,8 +276,24 @@ export default function StrainClient({
           p.shops.some((s) => s.toLowerCase().includes(q))
       );
     }
+
+    // Sort. Products without a price are always pushed to the bottom
+    // so the sort visually reflects "by price" without N/As cluttering
+    // the top.
+    if (sortBy !== "default") {
+      const dir = sortBy === "price-asc" ? 1 : -1;
+      result = [...result].sort((a, b) => {
+        const ap = a.priceMin;
+        const bp = b.priceMin;
+        if (ap === null && bp === null) return 0;
+        if (ap === null) return 1;
+        if (bp === null) return -1;
+        return dir * (ap - bp);
+      });
+    }
+
     return result;
-  }, [liveProducts, liveType, liveSubcat, priceCap, query]);
+  }, [liveProducts, liveType, liveSubcat, priceCap, query, sortBy]);
 
   const subcategoryRow = liveType !== "all" ? LIVE_SUBCATEGORIES[liveType] : null;
   const labelForType = LIVE_TYPE_LABELS[liveType] ?? "products";
@@ -306,13 +325,40 @@ export default function StrainClient({
         <h2 className="text-2xl sm:text-3xl font-groovy text-cream tracking-wide leading-tight">
           In Stock in Vermont
         </h2>
-        <p className="text-cream-muted text-sm font-medium mt-1.5">
-          <span className="text-amber font-bold tabular-nums">
-            {filteredLive.length.toLocaleString()}
-          </span>{" "}
-          {liveType === "all" ? "products" : labelForType}
-          {query && <span className="text-amber/70"> · &ldquo;{query}&rdquo;</span>}
-        </p>
+        <div className="flex items-center justify-between gap-3 mt-1.5">
+          <p className="text-cream-muted text-sm font-medium min-w-0">
+            <span className="text-amber font-bold tabular-nums">
+              {filteredLive.length.toLocaleString()}
+            </span>{" "}
+            {liveType === "all" ? "products" : labelForType}
+            {query && (
+              <span className="text-amber/70"> · &ldquo;{query}&rdquo;</span>
+            )}
+          </p>
+
+          {/* Sort dropdown — native select for mobile-friendly OS picker */}
+          <div className="relative shrink-0">
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value as typeof sortBy);
+                tapHaptic();
+              }}
+              aria-label="Sort products"
+              className="appearance-none bg-forest border border-forest-mid text-cream text-xs font-bold tracking-widest uppercase pl-3 pr-8 py-2 rounded-full hover:border-amber/50 focus:border-amber/60 outline-none transition-colors min-h-[36px] cursor-pointer"
+            >
+              <option value="default">Sort</option>
+              <option value="price-asc">Price ↑ Low–High</option>
+              <option value="price-desc">Price ↓ High–Low</option>
+            </select>
+            <span
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-amber/70 text-[10px] pointer-events-none"
+              aria-hidden="true"
+            >
+              ▼
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Search */}
