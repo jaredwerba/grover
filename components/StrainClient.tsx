@@ -20,12 +20,6 @@ const LIVE_TYPE_FILTERS: FilterChoice[] = [
 
 /** Sub-categories per main type. "all" is implied. Empty = no sub-pills. */
 const LIVE_SUBCATEGORIES: Record<string, FilterChoice[]> = {
-  flower: [
-    { value: "all", label: "All" },
-    { value: "sativa", label: "Sativa" },
-    { value: "indica", label: "Indica" },
-    { value: "hybrid", label: "Hybrid" },
-  ],
   edible: [
     { value: "all", label: "All" },
     { value: "gummies", label: "Gummies" },
@@ -77,11 +71,6 @@ function classifySubcategory(product: LiveProduct, mainType: string): string[] {
   const haystack = `${n} ${brands}`;
   const tags: string[] = [];
 
-  if (mainType === "flower") {
-    if (/\bsativa\b/.test(haystack)) tags.push("sativa");
-    if (/\bindica\b/.test(haystack)) tags.push("indica");
-    if (/\bhybrid\b/.test(haystack)) tags.push("hybrid");
-  }
   if (mainType === "edible") {
     if (product.type === "tincture") tags.push("tincture");
     if (/\bgumm/i.test(haystack)) tags.push("gummies");
