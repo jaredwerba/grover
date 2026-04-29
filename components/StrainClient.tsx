@@ -192,26 +192,68 @@ export default function StrainClient({
     "default"
   );
 
+  // Slider position 0..STEPS. STEPS means "no filter" (Any).
+  const STEPS = 100;
+  const [pricePct, setPricePct] = useState<number>(STEPS);
+
+  function pickType(value: string) {
+    setLiveType(value);
+    setLiveSubcat("all");
+    tapHaptic();
+  }
+  function pickSubcat(value: string) {
+    setLiveSubcat(value);
+    tapHaptic();
+  }
+
   /**
-   * Sorted list of every product's minimum price. The price slider
-   * indexes into this array so each step on the slider corresponds
-   * to ~1% of products, not ~$X. That way dragging the slider feels
-   * meaningful across the whole range — no "dead zone" between $50
-   * and the $500 outlier price ceiling.
+   * Apply category + sub-category + search BEFORE the price filter,
+   * so the price slider can rescale to whatever's currently visible.
+   * Otherwise the slider's max would always be the global max
+   * ($500 flower), and Drinks (which top out around $25) would only
+   * use the first 5% of the slider's travel.
+   */
+  const categoryFiltered = useMemo(() => {
+    if (!liveProducts || liveProducts.length === 0) return [];
+    let result = liveProducts;
+
+    if (liveType !== "all") {
+      if (liveType === "edible") {
+        result = result.filter((p) => p.type === "edible" || p.type === "tincture");
+      } else {
+        result = result.filter((p) => p.type === liveType);
+      }
+    }
+    if (liveSubcat !== "all" && liveType !== "all") {
+      result = result.filter((p) =>
+        classifySubcategory(p, liveType).includes(liveSubcat)
+      );
+    }
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.displayName.toLowerCase().includes(q) ||
+          p.brands.some((b) => b.toLowerCase().includes(q)) ||
+          p.shops.some((s) => s.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  }, [liveProducts, liveType, liveSubcat, query]);
+
+  /**
+   * Sorted prices ARE for the currently visible category. The slider
+   * thus naturally rescales when the user picks Drinks vs Flower —
+   * each step still represents ~1% of the visible products.
    */
   const sortedPrices = useMemo(() => {
-    if (!liveProducts) return [];
     const arr: number[] = [];
-    for (const p of liveProducts) {
+    for (const p of categoryFiltered) {
       if (p.priceMin !== null && p.priceMin > 0) arr.push(p.priceMin);
     }
     arr.sort((a, b) => a - b);
     return arr;
-  }, [liveProducts]);
-
-  // Slider position 0..STEPS. STEPS means "no filter" (Any).
-  const STEPS = 100;
-  const [pricePct, setPricePct] = useState<number>(STEPS);
+  }, [categoryFiltered]);
 
   /** Translate slider pct into an actual price cap (or null = no cap). */
   const priceCap = useMemo(() => {
@@ -224,46 +266,11 @@ export default function StrainClient({
     return sortedPrices[Math.max(0, idx)];
   }, [sortedPrices, pricePct]);
 
-  function pickType(value: string) {
-    setLiveType(value);
-    setLiveSubcat("all");
-    tapHaptic();
-  }
-  function pickSubcat(value: string) {
-    setLiveSubcat(value);
-    tapHaptic();
-  }
-
   const filteredLive = useMemo(() => {
-    if (!liveProducts || liveProducts.length === 0) return [];
-    let result = liveProducts;
-
-    if (liveType !== "all") {
-      if (liveType === "edible") {
-        result = result.filter((p) => p.type === "edible" || p.type === "tincture");
-      } else {
-        result = result.filter((p) => p.type === liveType);
-      }
-    }
-
-    if (liveSubcat !== "all" && liveType !== "all") {
-      result = result.filter((p) =>
-        classifySubcategory(p, liveType).includes(liveSubcat)
-      );
-    }
+    let result = categoryFiltered;
 
     if (priceCap !== null) {
       result = result.filter((p) => (p.priceMin ?? 0) <= priceCap);
-    }
-
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.displayName.toLowerCase().includes(q) ||
-          p.brands.some((b) => b.toLowerCase().includes(q)) ||
-          p.shops.some((s) => s.toLowerCase().includes(q))
-      );
     }
 
     // Sort. Products without a price are always pushed to the bottom
@@ -282,7 +289,7 @@ export default function StrainClient({
     }
 
     return result;
-  }, [liveProducts, liveType, liveSubcat, priceCap, query, sortBy]);
+  }, [categoryFiltered, priceCap, sortBy]);
 
   const subcategoryRow = liveType !== "all" ? LIVE_SUBCATEGORIES[liveType] : null;
   const labelForType = LIVE_TYPE_LABELS[liveType] ?? "products";
