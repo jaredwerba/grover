@@ -74,9 +74,16 @@ const FETCH_HEADERS = {
 };
 
 function shopBaseUrl(merchantId: string): string {
-  // merchantId is the shop hostname (e.g. shop.mothaplant.com).
-  // Tolerate both "shop.example.com" and full URLs.
+  // Two flavors of merchantId are accepted:
+  //   1. A shop hostname like "shop.mothaplant.com" (operators with
+  //      their own white-labeled Tymber subdomain)
+  //   2. A 16-char hex DispenseApp venue ID like "0bf4da933d9e0616"
+  //      (operators only listed via the menus.dispenseapp.com
+  //      directory — same Tymber backend, different access path).
   if (merchantId.startsWith("http")) return merchantId.replace(/\/+$/, "");
+  if (/^[a-f0-9]{16}$/i.test(merchantId)) {
+    return `https://menus.dispenseapp.com/${merchantId}`;
+  }
   return `https://${merchantId}`.replace(/\/+$/, "");
 }
 

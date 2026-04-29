@@ -57,6 +57,9 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 8pm", sat: "10am – 8pm", sun: "11am – 6pm" },
     tags: ["recreational"],
     description: "Burlington's premier cannabis destination with a focus on Vermont-grown, locally sourced products.",
+    // Tymber via DispenseApp directory only (App Router/RSC).
+    // Connector currently parses Pages Router __NEXT_DATA__ — TODO: add
+    // RSC stream parsing to ingest these. Skipping cleanly until then.
   },
   {
     id: "lucky-you",
@@ -136,6 +139,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 8pm", sat: "10am – 8pm", sun: "11am – 6pm" },
     tags: ["recreational"],
     description: "Winooski's homegrown dispensary with a focus on organic, locally-cultivated Vermont cannabis.",
+    platform: "dutchie",
+    merchant_id: "630d1f47b0992f010e0bec47",
   },
   // Essex Junction
   {
@@ -166,6 +171,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 7pm", sun: "11am – 5pm" },
     tags: ["recreational", "medical"],
     description: "Island Life meets Vermont cannabis. Medical and recreational products from the shores of Lake Champlain.",
+    platform: "dutchie",
+    merchant_id: "651d9909613505000993ef41",
   },
   // St. Albans
   {
@@ -292,6 +299,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "12pm – 5pm" },
     tags: ["recreational", "medical"],
     description: "The capital's flagship dispensary with a full spectrum of medical and recreational products.",
+    platform: "dutchie",
+    merchant_id: "62f1311ebce6d2744eafea42",
   },
   {
     id: "juanas-garden",
@@ -306,6 +315,9 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "12pm – 5pm" },
     tags: ["recreational"],
     description: "Montpelier's neighborhood garden of cannabis delights — knowledgeable, welcoming, Vermont-rooted.",
+    // Tymber via DispenseApp directory only (App Router/RSC).
+    // Connector currently parses Pages Router __NEXT_DATA__ — TODO: add
+    // RSC stream parsing to ingest these. Skipping cleanly until then.
   },
   // Barre
   {
@@ -366,6 +378,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 7pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "The Northeast Kingdom's anchor dispensary — wide selection, local knowledge, Kingdom proud.",
+    platform: "leafly",
+    merchant_id: "northeast-kannabis",
   },
   // Derby
   {
@@ -381,6 +395,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Far north Vermont's Kingdom-grown cannabis outpost, steps from the Canadian border.",
+    platform: "dutchie",
+    merchant_id: "63642852a352150106fe558b",
   },
   // Waitsfield
   {
@@ -411,6 +427,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Central Vermont's guiding light for craft cannabis — genuine, local, and community-rooted.",
+    platform: "dutchie",
+    merchant_id: "6334a4421806bf00fa33a3d3",
   },
   // White River Junction
   {
@@ -426,6 +444,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational", "medical"],
     description: "Upper Valley's calm cannabis sanctuary — thoughtful product curation with medical expertise.",
+    platform: "maui",
+    merchant_id: "theteahouse",
   },
   // Woodstock
   {
@@ -441,6 +461,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Take the Sunday Drive into Woodstock's premier cannabis shop — unhurried, quality-focused, Vermont-proud.",
+    platform: "dutchie",
+    merchant_id: "62ffa7e1b787e800ce7b8424",
   },
   // Middlebury
   {
@@ -476,6 +498,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational", "medical"],
     description: "Full-spectrum cannabis care in the Champlain Valley — medical and recreational with deep product knowledge.",
+    platform: "maui",
+    merchant_id: "theherbalcollectivevt",
   },
   // Vergennes
   {
@@ -491,6 +515,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Vermont's smallest city, biggest heart — Vergennes' neighborhood cannabis shop.",
+    platform: "dutchie",
+    merchant_id: "643e9b9f4517ff003272ed1e",
   },
   // Bristol
   {
@@ -506,6 +532,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Green Mountain foothills dispensary with a cultivator-first ethos and Vermont-grown selection.",
+    platform: "dutchie",
+    merchant_id: "65860962422c8c00097c7489",
   },
   // Rutland
   {
@@ -521,6 +549,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Rutland's elevated cannabis experience — serving Vermont's second city with mountain-high quality.",
+    platform: "dutchie",
+    merchant_id: "6344851691e1bd00f70df88d",
   },
   // Brandon
   {
@@ -536,6 +566,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Organic-first cannabis from Vermont's most committed cultivator-retail team in Brandon.",
+    platform: "dutchie",
+    merchant_id: "65e65884dcd9d900098a7155",
   },
   // Bradford
   {
@@ -551,6 +583,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Connecticut River Valley's boldest cannabis shop — unforgettable name, exceptional product.",
+    platform: "maui",
+    merchant_id: "devilsden",
   },
   // Springfield
   {
@@ -566,6 +600,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Southern Vermont's corner bodega for cannabis — stocked, friendly, and community-driven.",
+    platform: "maui",
+    merchant_id: "thebuddega",
   },
   // Brattleboro
   {
@@ -581,6 +617,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 8pm", sat: "10am – 8pm", sun: "11am – 6pm" },
     tags: ["recreational"],
     description: "Brattleboro's barn full of Vermont's best — flower, concentrates, and edibles from local growers.",
+    platform: "dutchie",
+    merchant_id: "62fbbc5780bafa00c9d0a900",
   },
   {
     id: "theory-wellness-brattleboro",
@@ -610,5 +648,7 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Northeast Kingdom kindness in every visit — local growers, local faces, local love.",
+    platform: "leafly",
+    merchant_id: "kingdom-kind",
   },
 ];
