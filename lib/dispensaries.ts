@@ -113,9 +113,14 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 8pm", sat: "10am – 8pm", sun: "11am – 6pm" },
     tags: ["recreational"],
     description: "Pine Street Arts District dispensary with a strong lineup of craft extracts and flower.",
+    // Confirmed Dutchie via /pages/menu embed:
+    //   <script src="https://dutchie.com/api/v2/embedded-menu/62f28802b87e0f676aeaa8a6.js">
+    // Dutchie's consumer GraphQL is gated behind Cloudflare bot protection
+    // and the bootstrap doesn't expose a public REST equivalent. Tagging
+    // metadata so when we add a Dutchie connector (Playwright or partnership)
+    // this shop auto-syncs.
     platform: "dutchie",
-    // TODO Day 3: confirm Dutchie slug from their embed iframe.
-    merchant_id: "upstate-elevator",
+    merchant_id: "62f28802b87e0f676aeaa8a6",
   },
   // Winooski
   {
@@ -209,6 +214,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 7pm", sat: "10am – 6pm", sun: "11am – 5pm" },
     tags: ["recreational"],
     description: "Farm-direct cannabis from Vermont cultivators. Freedom Flower champions the craft grower.",
+    platform: "leafly",
+    merchant_id: "freedom-flower-direct",
   },
   // Cambridge
   {
@@ -254,6 +261,8 @@ export const dispensaries: Dispensary[] = [
     hours: { mon_fri: "10am – 8pm", sat: "10am – 8pm", sun: "11am – 6pm" },
     tags: ["recreational"],
     description: "Waterbury's cannabis corridor landmark on the road between Burlington and Stowe.",
+    platform: "leafly",
+    merchant_id: "31-north",
   },
   {
     id: "zenbarn-farms",
