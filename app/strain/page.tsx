@@ -1,8 +1,22 @@
 import StrainClient from "@/components/StrainClient";
 import { getLiveProducts } from "@/lib/inventory-public";
+import { dispensaries } from "@/lib/dispensaries";
 
-export default async function StrainPage() {
-  const liveProducts = await getLiveProducts();
+export default async function StrainPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}) {
+  const [liveProducts, params] = await Promise.all([
+    getLiveProducts(),
+    searchParams,
+  ]);
+
+  // Build a lean shop-name → {lat, lng} lookup for client-side distance sort
+  const shopLocations: Record<string, { lat: number; lng: number }> = {};
+  for (const d of dispensaries) {
+    shopLocations[d.name] = { lat: d.lat, lng: d.lng };
+  }
 
   return (
     <main className="min-h-screen bg-forest-deep text-cream">
@@ -15,7 +29,11 @@ export default async function StrainPage() {
             A live feed of every product currently in stock at connected Vermont dispensaries — synced from their menus throughout the day.
           </p>
         </div>
-        <StrainClient liveProducts={liveProducts} />
+        <StrainClient
+          liveProducts={liveProducts}
+          initialType={params.type}
+          shopLocations={shopLocations}
+        />
       </div>
     </main>
   );

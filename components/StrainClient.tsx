@@ -1,9 +1,25 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import type { LiveProduct } from "@/lib/inventory-public";
 import { productIcon } from "@/lib/product-icons";
+
+/** Haversine distance in miles between two lat/lng points. */
+function haversineDistance(
+  lat1: number, lng1: number,
+  lat2: number, lng2: number
+): number {
+  const R = 3958.8;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
 interface FilterChoice {
   value: string;
@@ -102,7 +118,7 @@ function classifySubcategory(product: LiveProduct, mainType: string): string[] {
   return tags;
 }
 
-function LiveProductCard({ product }: { product: LiveProduct }) {
+function LiveProductCard({ product, distance }: { product: LiveProduct; distance?: number }) {
   const typeLabel = product.type[0].toUpperCase() + product.type.slice(1);
   const thc =
     product.thcMin !== null && product.thcMax !== null
@@ -171,6 +187,11 @@ function LiveProductCard({ product }: { product: LiveProduct }) {
             aria-hidden="true"
           />
           <span className="truncate">{product.shops.join(" · ")}</span>
+          {distance !== undefined && (
+            <span className="shrink-0 text-cream-muted/70 tabular-nums">
+              · {distance < 1 ? `${(distance * 5280).toFixed(0)} ft` : `${distance.toFixed(1)} mi`}
+            </span>
+          )}
         </p>
       </div>
     </div>
@@ -209,15 +230,56 @@ function Pill({
 
 export default function StrainClient({
   liveProducts,
+  initialType,
+  shopLocations,
 }: {
   liveProducts?: LiveProduct[];
+  initialType?: string;
+  shopLocations?: Record<string, { lat: number; lng: number }>;
 }) {
+  // Resolve initial category from URL ?type= param
+  const validTypes = LIVE_TYPE_FILTERS.map((f) => f.value);
+  const startType =
+    initialType && validTypes.includes(initialType) ? initialType : "all";
+
   const [query, setQuery] = useState("");
-  const [liveType, setLiveType] = useState<string>("all");
+  const [liveType, setLiveType] = useState<string>(startType);
   const [liveSubcat, setLiveSubcat] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">(
-    "default"
-  );
+  const [sortBy, setSortBy] = useState<
+    "default" | "price-asc" | "price-desc" | "distance"
+  >("default");
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [locating, setLocating] = useState(false);
+
+  /** Request GPS, then set sortBy to distance once we have coords. */
+  const requestLocationSort = useCallback(() => {
+    if (userLocation) {
+      // Already have location — just flip the sort
+      setSortBy("distance");
+      return;
+    }
+    if (!navigator.geolocation) return;
+    setLocating(true);
+    setSortBy("distance");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        setUserLocation(loc);
+        setLocating(false);
+        // Persist to Cove DB (fire-and-forget)
+        fetch("/api/user/location", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(loc),
+        }).catch(() => {});
+      },
+      () => setLocating(false),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }, [userLocation]);
 
   // Slider position 0..STEPS. STEPS means "no filter" (Any).
   const STEPS = 100;
@@ -293,6 +355,27 @@ export default function StrainClient({
     return sortedPrices[Math.max(0, idx)];
   }, [sortedPrices, pricePct]);
 
+  /** For distance sort: compute min distance from user to any shop carrying the product. */
+  const distanceMap = useMemo(() => {
+    if (sortBy !== "distance" || !userLocation || !shopLocations) return null;
+    const map = new Map<string, number>();
+    for (const p of categoryFiltered) {
+      let minDist = Infinity;
+      for (const shopName of p.shops) {
+        const loc = shopLocations[shopName];
+        if (loc) {
+          const d = haversineDistance(
+            userLocation.lat, userLocation.lng,
+            loc.lat, loc.lng
+          );
+          if (d < minDist) minDist = d;
+        }
+      }
+      map.set(p.key, minDist === Infinity ? 9999 : minDist);
+    }
+    return map;
+  }, [categoryFiltered, sortBy, userLocation, shopLocations]);
+
   const filteredLive = useMemo(() => {
     let result = categoryFiltered;
 
@@ -300,10 +383,12 @@ export default function StrainClient({
       result = result.filter((p) => (p.priceMin ?? 0) <= priceCap);
     }
 
-    // Sort. Products without a price are always pushed to the bottom
-    // so the sort visually reflects "by price" without N/As cluttering
-    // the top.
-    if (sortBy !== "default") {
+    // Sort
+    if (sortBy === "distance" && distanceMap) {
+      result = [...result].sort((a, b) => {
+        return (distanceMap.get(a.key) ?? 9999) - (distanceMap.get(b.key) ?? 9999);
+      });
+    } else if (sortBy === "price-asc" || sortBy === "price-desc") {
       const dir = sortBy === "price-asc" ? 1 : -1;
       result = [...result].sort((a, b) => {
         const ap = a.priceMin;
@@ -316,7 +401,7 @@ export default function StrainClient({
     }
 
     return result;
-  }, [categoryFiltered, priceCap, sortBy]);
+  }, [categoryFiltered, priceCap, sortBy, distanceMap]);
 
   const subcategoryRow = liveType !== "all" ? LIVE_SUBCATEGORIES[liveType] : null;
   const labelForType = LIVE_TYPE_LABELS[liveType] ?? "products";
@@ -364,8 +449,13 @@ export default function StrainClient({
             <select
               value={sortBy}
               onChange={(e) => {
-                setSortBy(e.target.value as typeof sortBy);
+                const val = e.target.value as typeof sortBy;
                 tapHaptic();
+                if (val === "distance") {
+                  requestLocationSort();
+                } else {
+                  setSortBy(val);
+                }
               }}
               aria-label="Sort products"
               className="appearance-none bg-forest border border-forest-mid text-cream text-xs font-bold tracking-widest uppercase pl-3 pr-8 py-2 rounded-full hover:border-amber/50 focus:border-amber/60 outline-none transition-colors min-h-[36px] cursor-pointer"
@@ -373,6 +463,9 @@ export default function StrainClient({
               <option value="default">Sort</option>
               <option value="price-asc">Price ↑ Low–High</option>
               <option value="price-desc">Price ↓ High–Low</option>
+              <option value="distance">
+                {locating ? "Locating…" : "Distance ↑ Nearest"}
+              </option>
             </select>
             <span
               className="absolute right-3 top-1/2 -translate-y-1/2 text-amber/70 text-[10px] pointer-events-none"
@@ -494,7 +587,11 @@ export default function StrainClient({
       {filteredLive.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
           {filteredLive.map((p) => (
-            <LiveProductCard key={p.key} product={p} />
+            <LiveProductCard
+              key={p.key}
+              product={p}
+              distance={distanceMap?.get(p.key)}
+            />
           ))}
         </div>
       ) : (
