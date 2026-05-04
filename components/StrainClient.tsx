@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import type { LiveProduct } from "@/lib/inventory-public";
-import { productIcon } from "@/lib/product-icons";
 
 interface FilterChoice {
   value: string;
@@ -119,23 +118,9 @@ function LiveProductCard({ product }: { product: LiveProduct }) {
 
   return (
     <div
-      className="bg-forest border border-forest-mid rounded-md hover:border-amber/40 transition-colors px-4 py-3.5 flex gap-3"
+      className="bg-forest border border-forest-mid rounded-md hover:border-amber/40 transition-colors px-4 py-3.5 flex flex-col"
       style={{ boxShadow: "inset 0 0 0 2px rgba(255,185,0,0.05)" }}
     >
-      {/* 3D product icon */}
-      <div className="shrink-0 w-12 h-12 relative mt-0.5">
-        <Image
-          src={productIcon(product.type, "3d")}
-          alt=""
-          width={48}
-          height={48}
-          className="object-contain drop-shadow-sm"
-          aria-hidden="true"
-        />
-      </div>
-
-      {/* Text content */}
-      <div className="flex-1 min-w-0 flex flex-col">
         <div className="flex items-start gap-2 mb-2">
           <h3 className="flex-1 text-cream text-[15px] sm:text-base font-semibold leading-snug break-words">
             {product.displayName}
@@ -172,7 +157,6 @@ function LiveProductCard({ product }: { product: LiveProduct }) {
           />
           <span className="truncate">{product.shops.join(" · ")}</span>
         </p>
-      </div>
     </div>
   );
 }
