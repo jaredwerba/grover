@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Cove AAI — Augmented & Artificial Intelligence for Cannabis",
@@ -64,6 +65,7 @@ export default function CoveAIPage() {
 
           <div className="grid gap-6 sm:grid-cols-2 pt-2">
             <Card
+              icon="/images/icons/photo/flower.png"
               label="Cove Connect"
               text="A headless connector mesh that polls dispensary menus in
               real-time via platform-specific adapters — SSR hydration
@@ -74,6 +76,7 @@ export default function CoveAIPage() {
               deduplicated, and written to a low-latency key-value store."
             />
             <Card
+              icon="/images/icons/3d/flower.png"
               label="Strain Entity Resolution"
               text='Fuzzy entity matching pipeline that resolves dispensary
               product names to canonical strain identities using
@@ -83,6 +86,7 @@ export default function CoveAIPage() {
               class of naming inversions common in craft cannabis.'
             />
             <Card
+              icon="/images/icons/3d/misc.png"
               label="Cove AI Chat"
               text="Retrieval-augmented generation (RAG) grounded in
               hyperlocal Vermont dispensary data, real-time product
@@ -93,6 +97,7 @@ export default function CoveAIPage() {
               regulatory constraints."
             />
             <Card
+              icon="/images/icons/3d/seeds.png"
               label="Cannatrail"
               text="Geospatial dispensary intelligence — an interactive map
               of every licensed retail cannabis location in the state,
@@ -178,6 +183,7 @@ export default function CoveAIPage() {
 
           <div className="grid gap-5 sm:grid-cols-2 pt-2">
             <FutureCard
+              icon="/images/icons/photo/accessory.png"
               label="IoT Sensor Mesh"
               text="High-density environmental telemetry — temperature,
               relative humidity, VPD, CO2 concentration, photosynthetically
@@ -186,6 +192,7 @@ export default function CoveAIPage() {
               feeding a local time-series database."
             />
             <FutureCard
+              icon="/images/icons/photo/capsules.png"
               label="Closed-Loop Actuation"
               text="AI-driven control surfaces for HVAC, CO2 injection,
               irrigation drip schedules, LED spectrum tuning, and
@@ -195,6 +202,7 @@ export default function CoveAIPage() {
               never a cloud console."
             />
             <FutureCard
+              icon="/images/icons/photo/concentrate.png"
               label="Computer Vision Phenotyping"
               text="Multispectral canopy imaging for early pathogen
               detection, trichome maturity staging, nutrient deficiency
@@ -203,6 +211,7 @@ export default function CoveAIPage() {
               milliseconds, not round-trips."
             />
             <FutureCard
+              icon="/images/icons/3d/flower-v2.png"
               label="Biological Pest Management"
               text="A fully autonomous farm needs zero pesticides and zero
               insecticides. Cove's vision system identifies pest
@@ -267,29 +276,53 @@ export default function CoveAIPage() {
 
 /* ── Reusable sub-components (server components, no "use client") ──── */
 
-function Card({ label, text }: { label: string; text: string }) {
+function Card({ label, text, icon }: { label: string; text: string; icon?: string }) {
   return (
     <div
       className="rounded-sm p-5 border border-forest-mid/40"
       style={{ background: "rgba(255,185,0,0.03)" }}
     >
-      <p className="text-amber text-[10px] tracking-[0.3em] uppercase font-bold mb-2">
-        {label}
-      </p>
+      <div className="flex items-center gap-3 mb-2">
+        {icon && (
+          <Image
+            src={icon}
+            alt=""
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain"
+            aria-hidden="true"
+          />
+        )}
+        <p className="text-amber text-[10px] tracking-[0.3em] uppercase font-bold">
+          {label}
+        </p>
+      </div>
       <p className="text-cream-muted text-sm leading-relaxed">{text}</p>
     </div>
   );
 }
 
-function FutureCard({ label, text }: { label: string; text: string }) {
+function FutureCard({ label, text, icon }: { label: string; text: string; icon?: string }) {
   return (
     <div
       className="rounded-sm p-5 border border-amber/15"
       style={{ background: "rgba(255,185,0,0.05)" }}
     >
-      <p className="text-cream text-xs tracking-[0.25em] uppercase font-bold mb-2">
-        {label}
-      </p>
+      <div className="flex items-center gap-3 mb-2">
+        {icon && (
+          <Image
+            src={icon}
+            alt=""
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain"
+            aria-hidden="true"
+          />
+        )}
+        <p className="text-cream text-xs tracking-[0.25em] uppercase font-bold">
+          {label}
+        </p>
+      </div>
       <p className="text-cream-muted text-sm leading-relaxed">{text}</p>
     </div>
   );

@@ -121,6 +121,45 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Browse by Category — 3D product icons */}
+      <section className="w-full">
+        <div className="px-6 pb-16 max-w-5xl mx-auto">
+          <p className="text-amber/70 text-xs tracking-[0.3em] uppercase font-semibold mb-3 text-center">
+            Browse by Category
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-groovy text-cream tracking-wide text-center mb-8">
+            What are you looking for?
+          </h2>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 sm:gap-4">
+            {[
+              { type: "flower", label: "Flower" },
+              { type: "preroll", label: "Pre-Rolls" },
+              { type: "vape", label: "Vapes" },
+              { type: "edible", label: "Edibles" },
+              { type: "concentrate", label: "Concentrates" },
+              { type: "drink", label: "Drinks" },
+            ].map(({ type, label }) => (
+              <Link
+                key={type}
+                href={`/strain?type=${type}`}
+                className="group flex flex-col items-center gap-2 p-3 sm:p-4 rounded-md border border-forest-mid/60 bg-forest/50 hover:border-amber/40 hover:bg-forest transition-all"
+              >
+                <Image
+                  src={`/images/icons/3d/${type === "preroll" ? "preroll" : type}.png`}
+                  alt={label}
+                  width={64}
+                  height={64}
+                  className="w-12 h-12 sm:w-16 sm:h-16 object-contain drop-shadow-md group-hover:scale-110 transition-transform"
+                />
+                <span className="text-cream-muted group-hover:text-cream text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-colors">
+                  {label}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Value props */}
       <section className="w-full">
         <div className="px-6 pb-24 max-w-5xl mx-auto">
@@ -139,12 +178,13 @@ export default function LandingPage() {
               href: "/vermont-first",
             },
             {
-              icon: "/images/weed.svg",
+              icon: "/images/icons/3d/flower.png",
               title: "Strain Library",
               body: "Explore Vermont cannabis strains — effects, terpenes, flavors, and potency data for every cultivar on the Cannatrail.",
               href: "/strain",
+              noFilter: true,
             },
-          ].map(({ icon, title, body, href }) => (
+          ].map(({ icon, title, body, href, noFilter }: { icon: string; title: string; body: string; href: string; noFilter?: boolean }) => (
             <div
               key={title}
               className="bg-forest border-2 border-forest-mid p-6 rounded-sm relative flex gap-5 items-start"
@@ -155,8 +195,8 @@ export default function LandingPage() {
               <img
                 src={icon}
                 alt=""
-                className="shrink-0 w-14 h-14 sm:w-16 sm:h-16"
-                style={{
+                className="shrink-0 w-14 h-14 sm:w-16 sm:h-16 object-contain"
+                style={noFilter ? undefined : {
                   filter: "brightness(0) saturate(100%) invert(80%) sepia(100%) saturate(600%) hue-rotate(358deg) brightness(105%)",
                 }}
               />

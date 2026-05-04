@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import type { LiveProduct } from "@/lib/inventory-public";
+import { productIcon } from "@/lib/product-icons";
 
 interface FilterChoice {
   value: string;
@@ -17,6 +19,16 @@ const LIVE_TYPE_FILTERS: FilterChoice[] = [
   { value: "concentrate", label: "Concentrates" },
   { value: "drink", label: "Drinks" },
 ];
+
+/** Category pill icon paths — 2D white line art for dark bg, dark for amber active bg. */
+const PILL_ICON: Record<string, { white: string; dark: string }> = {
+  flower: { white: "/images/icons/2d-white/flower.png", dark: "/images/icons/2d-dark/flower.png" },
+  preroll: { white: "/images/icons/2d-white/preroll.png", dark: "/images/icons/2d-dark/preroll.png" },
+  vape: { white: "/images/icons/2d-white/vape.png", dark: "/images/icons/2d-dark/vape.png" },
+  edible: { white: "/images/icons/2d-white/edible.png", dark: "/images/icons/2d-dark/edible.png" },
+  concentrate: { white: "/images/icons/2d-white/concentrate.png", dark: "/images/icons/2d-dark/concentrate.png" },
+  drink: { white: "/images/icons/2d-white/drink.png", dark: "/images/icons/2d-dark/drink.png" },
+};
 
 /** Sub-categories per main type. "all" is implied. Empty = no sub-pills. */
 const LIVE_SUBCATEGORIES: Record<string, FilterChoice[]> = {
@@ -107,45 +119,60 @@ function LiveProductCard({ product }: { product: LiveProduct }) {
 
   return (
     <div
-      className="bg-forest border border-forest-mid rounded-md hover:border-amber/40 transition-colors px-4 py-3.5 flex flex-col"
+      className="bg-forest border border-forest-mid rounded-md hover:border-amber/40 transition-colors px-4 py-3.5 flex gap-3"
       style={{ boxShadow: "inset 0 0 0 2px rgba(255,185,0,0.05)" }}
     >
-      <div className="flex items-start gap-2 mb-2">
-        <h3 className="flex-1 text-cream text-[15px] sm:text-base font-semibold leading-snug break-words">
-          {product.displayName}
-        </h3>
-        <span className="shrink-0 text-[10px] border border-forest-light/50 text-forest-light px-1.5 py-0.5 rounded font-bold tracking-widest uppercase">
-          {typeLabel}
-        </span>
-      </div>
-
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
-        {price && <span className="text-cream text-base font-bold">{price}</span>}
-        {thc && <span className="text-amber text-xs font-bold tracking-wide">THC {thc}</span>}
-      </div>
-
-      <div className="flex items-center justify-between gap-2 mt-auto pt-1 text-[11px] text-cream-muted/85">
-        <span className="font-medium leading-snug truncate flex-1 min-w-0">
-          {product.brands.length > 0 && (
-            <>
-              <span className="text-cream-muted">by </span>
-              {product.brands.slice(0, 2).join(", ")}
-              {product.brands.length > 2 && ` +${product.brands.length - 2}`}
-            </>
-          )}
-        </span>
-        <span className="text-cream-muted/70 font-medium tabular-nums shrink-0">
-          {product.skuCount} SKU{product.skuCount !== 1 ? "s" : ""}
-        </span>
-      </div>
-
-      <p className="mt-1.5 text-[11px] text-amber/90 font-medium tracking-wide flex items-center gap-1.5 leading-snug">
-        <span
-          className="inline-block w-1.5 h-1.5 rounded-full bg-amber/80 shrink-0 animate-pulse"
+      {/* 3D product icon */}
+      <div className="shrink-0 w-12 h-12 relative mt-0.5">
+        <Image
+          src={productIcon(product.type, "3d")}
+          alt=""
+          width={48}
+          height={48}
+          className="object-contain drop-shadow-sm"
           aria-hidden="true"
         />
-        <span className="truncate">{product.shops.join(" · ")}</span>
-      </p>
+      </div>
+
+      {/* Text content */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        <div className="flex items-start gap-2 mb-2">
+          <h3 className="flex-1 text-cream text-[15px] sm:text-base font-semibold leading-snug break-words">
+            {product.displayName}
+          </h3>
+          <span className="shrink-0 text-[10px] border border-forest-light/50 text-forest-light px-1.5 py-0.5 rounded font-bold tracking-widest uppercase">
+            {typeLabel}
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
+          {price && <span className="text-cream text-base font-bold">{price}</span>}
+          {thc && <span className="text-amber text-xs font-bold tracking-wide">THC {thc}</span>}
+        </div>
+
+        <div className="flex items-center justify-between gap-2 mt-auto pt-1 text-[11px] text-cream-muted/85">
+          <span className="font-medium leading-snug truncate flex-1 min-w-0">
+            {product.brands.length > 0 && (
+              <>
+                <span className="text-cream-muted">by </span>
+                {product.brands.slice(0, 2).join(", ")}
+                {product.brands.length > 2 && ` +${product.brands.length - 2}`}
+              </>
+            )}
+          </span>
+          <span className="text-cream-muted/70 font-medium tabular-nums shrink-0">
+            {product.skuCount} SKU{product.skuCount !== 1 ? "s" : ""}
+          </span>
+        </div>
+
+        <p className="mt-1.5 text-[11px] text-amber/90 font-medium tracking-wide flex items-center gap-1.5 leading-snug">
+          <span
+            className="inline-block w-1.5 h-1.5 rounded-full bg-amber/80 shrink-0 animate-pulse"
+            aria-hidden="true"
+          />
+          <span className="truncate">{product.shops.join(" · ")}</span>
+        </p>
+      </div>
     </div>
   );
 }
@@ -169,7 +196,7 @@ function Pill({
   return (
     <button
       onClick={onClick}
-      className={`shrink-0 rounded-full font-bold tracking-widest uppercase transition-colors ${sizeClasses} ${
+      className={`shrink-0 rounded-full font-bold tracking-widest uppercase transition-colors flex items-center gap-1.5 ${sizeClasses} ${
         active
           ? "bg-amber text-forest-deep"
           : "bg-forest border border-forest-mid text-cream-muted hover:border-amber/50 hover:text-cream"
@@ -388,15 +415,28 @@ export default function StrainClient({
           there's a natural "more →" affordance when content overflows. */}
       <div className="-mx-4 sm:mx-0 px-4 sm:px-0 overflow-x-auto scrollbar-hidden">
         <div className="flex gap-2 min-w-max">
-          {LIVE_TYPE_FILTERS.map((t) => (
-            <Pill
-              key={t.value}
-              active={liveType === t.value}
-              onClick={() => pickType(t.value)}
-            >
-              {t.label}
-            </Pill>
-          ))}
+          {LIVE_TYPE_FILTERS.map((t) => {
+            const icon = PILL_ICON[t.value];
+            return (
+              <Pill
+                key={t.value}
+                active={liveType === t.value}
+                onClick={() => pickType(t.value)}
+              >
+                {icon && (
+                  <Image
+                    src={liveType === t.value ? icon.dark : icon.white}
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="inline-block w-4 h-4 object-contain"
+                    aria-hidden="true"
+                  />
+                )}
+                {t.label}
+              </Pill>
+            );
+          })}
         </div>
       </div>
 
