@@ -97,6 +97,13 @@ export default function TrailClient({
         const uLng = pos.coords.longitude;
         setUserLocation({ lat: uLat, lng: uLng });
 
+        // Persist to Cove DB (fire-and-forget — ok if user is not logged in)
+        fetch("/api/user/location", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lat: uLat, lng: uLng }),
+        }).catch(() => {});
+
         // Find nearest dispensary from full list (ignore filters so we always find one)
         let nearest: Dispensary | null = null;
         let minDist = Infinity;
