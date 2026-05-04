@@ -9,11 +9,6 @@ interface Message {
 }
 
 const SUGGESTIONS: Record<Persona, string[]> = {
-  toker: [
-    "What's my most-used strain?",
-    "How much did I spend this month?",
-    "Which effect do I log most?",
-  ],
   grower: [
     "When does Blue Dream #3 finish?",
     "Is my humidity in range?",
@@ -27,14 +22,6 @@ const SUGGESTIONS: Record<Persona, string[]> = {
 };
 
 const FAKE_RESPONSES: Record<Persona, Record<string, string>> = {
-  toker: {
-    "What's my most-used strain?":
-      "Your most-used strain is **Blue Dream** with 12 sessions this month — that's 44% of your total. It looks like you tend to reach for it on weekend evenings.",
-    "How much did I spend this month?":
-      "You've spent **$124** so far this month across 3 dispensaries. Ceres Natural Remedies accounts for most of that. You're tracking slightly under your $150 monthly budget.",
-    "Which effect do I log most?":
-      "**Relaxed** leads at 45%, followed by Creative at 28%. You mostly log effects on weekday evenings — looks like it's part of your wind-down routine.",
-  },
   grower: {
     "When does Blue Dream #3 finish?":
       "Blue Dream #3 is on day 38 of a 56-day cycle — **18 days to harvest**. It's deep in flowering right now. Keep your temps in the 68–72°F range and watch the trichomes this week.",

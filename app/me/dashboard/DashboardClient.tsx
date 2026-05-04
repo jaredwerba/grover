@@ -1,27 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import TokerTab from "./tabs/TokerTab";
 import GrowerTab from "./tabs/GrowerTab";
 import DispenserTab from "./tabs/DispenserTab";
 import DashboardChat from "./DashboardChat";
 
-export type Persona = "toker" | "grower" | "dispenser";
+export type Persona = "grower" | "dispenser";
 
 const TABS: { id: Persona; label: string; sub: string }[] = [
-  { id: "toker", label: "Consumer", sub: "Cannabis Consumer" },
   { id: "grower", label: "Plant Manager", sub: "Cultivator Manufacture" },
   { id: "dispenser", label: "Sales Manager", sub: "Retail" },
 ];
 
 function isPersona(v: string | null): v is Persona {
-  return v === "toker" || v === "grower" || v === "dispenser";
+  return v === "grower" || v === "dispenser";
 }
 
 export default function DashboardClient({ email }: { email: string }) {
-  const [persona, setPersona] = useState<Persona>("toker");
+  const [persona, setPersona] = useState<Persona>("grower");
 
-  // On mount, hydrate persona from URL (?tab=…). Default is "toker".
+  // On mount, hydrate persona from URL (?tab=…). Default is "grower".
   useEffect(() => {
     const tab = new URLSearchParams(window.location.search).get("tab");
     if (isPersona(tab)) setPersona(tab);
@@ -88,7 +86,6 @@ export default function DashboardClient({ email }: { email: string }) {
 
       {/* Tab content — key forces remount + re-animation on switch */}
       <div className="max-w-2xl mx-auto px-4 pb-32">
-        {persona === "toker" && <TokerTab key="toker" />}
         {persona === "grower" && <GrowerTab key="grower" />}
         {persona === "dispenser" && <DispenserTab key="dispenser" />}
       </div>

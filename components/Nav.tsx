@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { exportDashboardPdf } from "@/lib/export-pdf";
 
-type Persona = "toker" | "grower" | "dispenser";
+type Persona = "grower" | "dispenser";
 
 export default function Nav({
   isAuthenticated,
@@ -25,7 +25,7 @@ export default function Nav({
     const search = new URLSearchParams(window.location.search);
     const raw = search.get("tab");
     const persona: Persona =
-      raw === "grower" || raw === "dispenser" ? raw : "toker";
+      raw === "dispenser" ? raw : "grower";
     if (!email) return;
     await exportDashboardPdf({ email, persona });
   }

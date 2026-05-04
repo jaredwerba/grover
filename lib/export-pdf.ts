@@ -8,7 +8,7 @@ const AMBER = "#FFB900";
 const CREAM = "#f0ebe0";
 const CREAM_MUTED = "#c8c0b0";
 
-type Persona = "toker" | "grower" | "dispenser";
+type Persona = "grower" | "dispenser";
 
 interface ExportArgs {
   email: string;
@@ -137,7 +137,7 @@ export async function exportDashboardPdf({ email, persona }: ExportArgs): Promis
     charSpace: 2,
   });
 
-  const filename = `Cove-${persona === "grower" ? "PlantManager" : persona === "dispenser" ? "SalesManager" : "Consumer"}-${new Date().toISOString().slice(0, 10)}.pdf`;
+  const filename = `Cove-${persona === "grower" ? "PlantManager" : "SalesManager"}-${new Date().toISOString().slice(0, 10)}.pdf`;
 
   // iOS share sheet: use Web Share API with files when supported.
   // navigator.share({ files }) is available on iOS 15+ Safari and modern
@@ -213,7 +213,6 @@ function drawSection(
 }
 
 const PERSONA_LABEL: Record<Persona, string> = {
-  toker: "Consumer",
   grower: "Plant Manager",
   dispenser: "Sales Manager",
 };
@@ -221,35 +220,6 @@ const PERSONA_LABEL: Record<Persona, string> = {
 // Snapshot data matching what's displayed in each tab. Update these
 // alongside the tab components when the displayed numbers change.
 const DATA: Record<Persona, Section[]> = {
-  toker: [
-    {
-      title: "This Week",
-      metrics: [
-        { label: "Sessions", value: "7" },
-        { label: "Streak", value: "4 days" },
-        { label: "Month spend", value: "$124" },
-      ],
-    },
-    {
-      title: "Top Strains",
-      metrics: [
-        { label: "Blue Dream", value: "12 sessions" },
-        { label: "OG Kush", value: "8 sessions" },
-        { label: "Sour Diesel", value: "5 sessions" },
-        { label: "Pineapple Express", value: "3 sessions" },
-      ],
-    },
-    {
-      title: "Effects Logged",
-      metrics: [
-        { label: "Relaxed", value: "45%" },
-        { label: "Creative", value: "28%" },
-        { label: "Sleepy", value: "18%" },
-        { label: "Energized", value: "9%" },
-      ],
-    },
-  ],
-
   grower: [
     {
       title: "Overview",
