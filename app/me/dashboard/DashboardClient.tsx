@@ -9,7 +9,7 @@ import DashboardChat from "./DashboardChat";
 export type Persona = "toker" | "grower" | "dispenser";
 
 const TABS: { id: Persona; label: string; sub: string }[] = [
-  { id: "toker", label: "Toker", sub: "Consumer" },
+  { id: "toker", label: "Consumer", sub: "Cannabis Consumer" },
   { id: "grower", label: "Plant Manager", sub: "Cultivator Manufacture" },
   { id: "dispenser", label: "Sales Manager", sub: "Retail" },
 ];

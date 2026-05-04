@@ -423,8 +423,8 @@ export default function StrainClient({
 
       {/* Compact inline price slider — full width, label inline, no card. */}
       <div className="flex items-center gap-3 px-1">
-        <span className="text-[10px] uppercase tracking-widest font-bold text-cream-muted shrink-0">
-          Max
+        <span className="text-xs font-bold text-cream-muted shrink-0">
+          $
         </span>
         <input
           type="range"
@@ -445,8 +445,8 @@ export default function StrainClient({
             background: `linear-gradient(to right, rgb(255 185 0) 0%, rgb(255 185 0) ${sliderPct}%, rgb(255 255 255 / 0.1) ${sliderPct}%, rgb(255 255 255 / 0.1) 100%)`,
           }}
         />
-        <span className="text-amber font-bold text-sm tabular-nums min-w-[52px] text-right shrink-0">
-          {priceCap === null ? "Any" : `$${priceCap}`}
+        <span className="text-xs font-bold text-cream-muted shrink-0">
+          $$$$
         </span>
       </div>
 

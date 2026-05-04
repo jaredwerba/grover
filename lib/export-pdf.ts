@@ -29,9 +29,15 @@ interface Section {
 /**
  * Cove-branded snapshot of the dashboard as it appears for a given
  * persona. Generated client-side with jsPDF — no server round-trip.
- * Saves a file named like `Cove-PlantManager-2026-04-20.pdf`.
+ *
+ * On iOS / mobile Safari: triggers the native share sheet with the PDF
+ * attached via the Web Share API (navigator.share with files). This
+ * lets the user AirDrop, Message, Mail, or save to Files in one tap.
+ *
+ * On desktop browsers: falls back to a regular file download
+ * (Cove-PlantManager-2026-04-20.pdf).
  */
-export function exportDashboardPdf({ email, persona }: ExportArgs): void {
+export async function exportDashboardPdf({ email, persona }: ExportArgs): Promise<void> {
   const doc = new jsPDF({ unit: "pt", format: "letter" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -131,7 +137,29 @@ export function exportDashboardPdf({ email, persona }: ExportArgs): void {
     charSpace: 2,
   });
 
-  const filename = `Cove-${persona === "grower" ? "PlantManager" : persona === "dispenser" ? "SalesManager" : "Toker"}-${new Date().toISOString().slice(0, 10)}.pdf`;
+  const filename = `Cove-${persona === "grower" ? "PlantManager" : persona === "dispenser" ? "SalesManager" : "Consumer"}-${new Date().toISOString().slice(0, 10)}.pdf`;
+
+  // iOS share sheet: use Web Share API with files when supported.
+  // navigator.share({ files }) is available on iOS 15+ Safari and modern
+  // Android Chrome. Triggers the native share sheet with the PDF attached
+  // — AirDrop, Messages, Mail, Files, etc.
+  const pdfBlob = doc.output("blob");
+  const pdfFile = new File([pdfBlob], filename, { type: "application/pdf" });
+
+  if (typeof navigator !== "undefined" && navigator.canShare?.({ files: [pdfFile] })) {
+    try {
+      await navigator.share({
+        title: `Cove Dashboard — ${PERSONA_LABEL[persona]}`,
+        files: [pdfFile],
+      });
+      return;
+    } catch {
+      // User cancelled the share sheet or share failed — fall through
+      // to regular download so the PDF isn't lost.
+    }
+  }
+
+  // Desktop fallback: regular browser download.
   doc.save(filename);
 }
 
@@ -185,7 +213,7 @@ function drawSection(
 }
 
 const PERSONA_LABEL: Record<Persona, string> = {
-  toker: "Toker",
+  toker: "Consumer",
   grower: "Plant Manager",
   dispenser: "Sales Manager",
 };

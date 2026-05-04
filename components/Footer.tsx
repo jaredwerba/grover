@@ -10,15 +10,18 @@ export default function Footer() {
         About
       </Link>
       <span className="text-forest-deep/40 text-[10px] font-bold">·</span>
-      <p className="text-forest-deep text-[10px] tracking-widest uppercase font-bold whitespace-nowrap">
+      <Link
+        href="/about/cove-ai"
+        className="text-forest-deep text-[10px] tracking-widest uppercase font-bold hover:text-forest-deep/70 transition-colors whitespace-nowrap"
+      >
         Cove AI
-      </p>
+      </Link>
       <span className="text-forest-deep/40 text-[10px] font-bold">·</span>
       <Link
         href="/me"
         className="text-forest-deep text-[10px] tracking-widest uppercase font-bold hover:text-forest-deep/70 transition-colors whitespace-nowrap"
       >
-        Me: Login
+        AAI: Login
       </Link>
     </footer>
   );

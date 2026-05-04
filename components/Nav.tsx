@@ -19,7 +19,7 @@ export default function Nav({
   const isMePage = pathname === "/me";
   const isDashboard = pathname === "/me/dashboard";
 
-  function handleExport() {
+  async function handleExport() {
     // Read the current tab from the URL at click time — DashboardClient
     // syncs the tab state to ?tab=. Default to toker if missing.
     const search = new URLSearchParams(window.location.search);
@@ -27,7 +27,7 @@ export default function Nav({
     const persona: Persona =
       raw === "grower" || raw === "dispenser" ? raw : "toker";
     if (!email) return;
-    exportDashboardPdf({ email, persona });
+    await exportDashboardPdf({ email, persona });
   }
 
   return (
