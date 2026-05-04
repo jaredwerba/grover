@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from "react-leaflet";
 import L, { LatLngBoundsExpression } from "leaflet";
 import { Dispensary } from "@/lib/dispensaries";
 
@@ -57,6 +57,7 @@ interface MapClientProps {
   dispensaries: Dispensary[];
   selected: Dispensary | null;
   onSelect: (d: Dispensary) => void;
+  userLocation?: { lat: number; lng: number } | null;
 }
 
 // Vermont bounding box — SW corner to NE corner
@@ -65,7 +66,7 @@ const VERMONT_BOUNDS: LatLngBoundsExpression = [
   [45.017, -71.464], // NE — northern tip near Derby Line
 ];
 
-export default function MapClient({ dispensaries, selected, onSelect }: MapClientProps) {
+export default function MapClient({ dispensaries, selected, onSelect, userLocation }: MapClientProps) {
   const mapRef = useRef<L.Map | null>(null);
 
   return (
@@ -122,6 +123,50 @@ export default function MapClient({ dispensaries, selected, onSelect }: MapClien
           </Popup>
         </Marker>
       ))}
+
+      {/* User location blue dot */}
+      {userLocation && (
+        <>
+          <CircleMarker
+            center={[userLocation.lat, userLocation.lng]}
+            radius={18}
+            pathOptions={{
+              color: "transparent",
+              fillColor: "#4A90D9",
+              fillOpacity: 0.15,
+            }}
+          />
+          <CircleMarker
+            center={[userLocation.lat, userLocation.lng]}
+            radius={7}
+            pathOptions={{
+              color: "#fff",
+              weight: 2,
+              fillColor: "#4A90D9",
+              fillOpacity: 1,
+            }}
+          >
+            <Popup
+              className="cove-popup"
+              closeButton={false}
+            >
+              <div
+                style={{
+                  background: "#0f2d1c",
+                  border: "1px solid rgba(74,144,217,0.4)",
+                  borderRadius: "2px",
+                  padding: "8px 12px",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.5)",
+                }}
+              >
+                <p style={{ color: "#4A90D9", fontWeight: 700, fontSize: "12px" }}>
+                  You are here
+                </p>
+              </div>
+            </Popup>
+          </CircleMarker>
+        </>
+      )}
     </MapContainer>
   );
 }
