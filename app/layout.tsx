@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Fascinate, Quicksand } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AgeGate from "@/components/AgeGate";
 import Nav from "@/components/Nav";
@@ -79,6 +80,7 @@ export default async function RootLayout({
           <div className="flex-1 flex flex-col">{children}</div>
         </AgeGate>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
