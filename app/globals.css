@@ -160,6 +160,39 @@ body {
   display: none;
 }
 
+/* ── Hero entrance animations ── */
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes sunburst-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.hero-logo {
+  opacity: 0;
+  animation: hero-scale-in 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+}
+.hero-motto {
+  opacity: 0;
+  animation: hero-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+}
+.hero-tagline {
+  opacity: 0;
+  animation: hero-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.75s forwards;
+}
+.hero-cta {
+  opacity: 0;
+  animation: hero-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
+}
+.sunburst {
+  animation: sunburst-spin 120s linear infinite;
+}
+
 /* ── Subtle icon animations for landing page value props ── */
 @keyframes cove-float {
   0%, 100% { transform: translateY(0); }

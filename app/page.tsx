@@ -7,26 +7,54 @@ export default function LandingPage() {
       {/* Solid content area — ski map hidden behind this */}
       <div style={{ background: "#0b2d1b", position: "relative", zIndex: 1 }}>
       {/* Hero — vintage Vermont poster layout */}
-      <section className="flex flex-col items-center justify-center flex-1 text-center px-6 py-20">
+      <section className="relative flex flex-col items-center justify-center flex-1 text-center px-6 py-24 sm:py-32 overflow-hidden">
 
+        {/* Sunburst — radial amber rays behind the logo, slow spin */}
+        <div
+          className="sunburst pointer-events-none absolute"
+          aria-hidden="true"
+          style={{
+            top: "38%",
+            left: "50%",
+            width: "min(800px, 140vw)",
+            height: "min(800px, 140vw)",
+            background: `repeating-conic-gradient(
+              from 0deg,
+              rgba(255,185,0,0.04) 0deg 5deg,
+              transparent 5deg 10deg
+            )`,
+            borderRadius: "50%",
+            maskImage: "radial-gradient(circle, black 20%, transparent 70%)",
+            WebkitMaskImage: "radial-gradient(circle, black 20%, transparent 70%)",
+          }}
+        />
+
+        {/* Logo */}
         <Image
           src="/images/logotrans.png"
           alt="Cove"
-          width={260}
-          height={109}
-          className="block mb-10"
+          width={280}
+          height={118}
+          className="hero-logo block mb-6 relative z-10"
           priority
         />
 
-        <p className="text-base text-cream-muted mb-10 max-w-sm leading-relaxed">
+        {/* Motto — groovy display font, vintage poster headline */}
+        <p className="hero-motto font-groovy text-amber text-lg sm:text-2xl tracking-wide mb-8 relative z-10">
+          Vermont&apos;s Cannabis Companion
+        </p>
+
+        {/* Tagline */}
+        <p className="hero-tagline text-base text-cream-muted mb-10 max-w-md leading-relaxed relative z-10">
           Explore the Cannatrail, discover local dispensaries, and get expert
           guidance — all in one place.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4">
+        {/* CTAs */}
+        <div className="hero-cta flex flex-col sm:flex-row gap-4 relative z-10">
           <Link
             href="/join"
-            className="bg-amber text-forest-deep font-bold px-10 py-4 rounded-sm hover:bg-amber-hover transition-colors text-base tracking-wide uppercase text-sm"
+            className="bg-amber text-forest-deep font-bold px-10 py-4 rounded-sm hover:bg-amber-hover transition-colors text-sm tracking-wide uppercase"
           >
             Join
           </Link>
