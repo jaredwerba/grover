@@ -170,31 +170,37 @@ export default function LandingPage() {
               title: "The Cannatrail",
               body: "Vermont's curated network of licensed dispensaries — browse menus, hours, and locations across the state.",
               href: "/trail",
+              animClass: "icon-float",
             },
             {
               icon: "/images/icons/2d-white/seeds.png",
               title: "Craft Growers",
               body: "Built for the Vermont market. Local knowledge, local dispensaries, and a community that knows the Green Mountain State.",
               href: "/vermont-first",
+              animClass: "icon-float-delayed-1",
             },
             {
               icon: "/images/icons/2d-white/flower.png",
               title: "Products",
               body: "Explore Vermont cannabis strains — effects, terpenes, flavors, and potency data for every cultivar on the Cannatrail.",
               href: "/strain",
+              animClass: "icon-float-delayed-2",
             },
-          ].map(({ icon, title, body, href }) => (
+          ].map(({ icon, title, body, href, animClass }) => (
             <div
               key={title}
               className="bg-forest border-2 border-forest-mid p-6 rounded-sm relative flex gap-5 items-start"
               style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.07)" }}
             >
-              {/* Icon — left-anchored, scales with viewport */}
+              {/* Icon — left-anchored, amber-tinted, subtle float animation */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={icon}
                 alt=""
-                className="shrink-0 w-14 h-14 sm:w-16 sm:h-16 object-contain"
+                className={`shrink-0 w-14 h-14 sm:w-16 sm:h-16 object-contain ${animClass}`}
+                style={{
+                  filter: "brightness(0) saturate(100%) invert(80%) sepia(100%) saturate(600%) hue-rotate(358deg) brightness(105%)",
+                }}
               />
               {/* Text */}
               <div className="flex flex-col">
