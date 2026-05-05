@@ -166,25 +166,24 @@ export default function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
             {
-              icon: "/images/mountain.svg",
+              icon: "/images/icons/2d-white/misc.png",
               title: "The Cannatrail",
               body: "Vermont's curated network of licensed dispensaries — browse menus, hours, and locations across the state.",
               href: "/trail",
             },
             {
-              icon: "/images/vermont.svg",
+              icon: "/images/icons/2d-white/seeds.png",
               title: "Craft Growers",
               body: "Built for the Vermont market. Local knowledge, local dispensaries, and a community that knows the Green Mountain State.",
               href: "/vermont-first",
             },
             {
-              icon: "/images/icons/3d/flower.png",
-              title: "Strain Library",
+              icon: "/images/icons/2d-white/flower.png",
+              title: "Products",
               body: "Explore Vermont cannabis strains — effects, terpenes, flavors, and potency data for every cultivar on the Cannatrail.",
               href: "/strain",
-              noFilter: true,
             },
-          ].map(({ icon, title, body, href, noFilter }: { icon: string; title: string; body: string; href: string; noFilter?: boolean }) => (
+          ].map(({ icon, title, body, href }) => (
             <div
               key={title}
               className="bg-forest border-2 border-forest-mid p-6 rounded-sm relative flex gap-5 items-start"
@@ -196,9 +195,6 @@ export default function LandingPage() {
                 src={icon}
                 alt=""
                 className="shrink-0 w-14 h-14 sm:w-16 sm:h-16 object-contain"
-                style={noFilter ? undefined : {
-                  filter: "brightness(0) saturate(100%) invert(80%) sepia(100%) saturate(600%) hue-rotate(358deg) brightness(105%)",
-                }}
               />
               {/* Text */}
               <div className="flex flex-col">
