@@ -135,8 +135,7 @@ function LiveProductCard({ product, distance }: { product: LiveProduct; distance
 
   return (
     <div
-      className="bg-forest border border-forest-mid rounded-md hover:border-amber/40 transition-colors px-4 py-3.5 flex gap-3"
-      style={{ boxShadow: "inset 0 0 0 2px rgba(255,185,0,0.05)" }}
+      className="liquid-glass-card px-4 py-3.5 flex gap-3"
     >
       {/* 3D product icon */}
       <div className="shrink-0 w-12 h-12 relative mt-0.5">

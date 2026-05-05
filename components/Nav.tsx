@@ -32,7 +32,7 @@ export default function Nav({
 
   return (
     <nav
-      className="liquid-glass-nav sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3"
+      className="liquid-glass-nav sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3 [&>*]:relative [&>*]:z-10"
     >
           {/* Logo — hidden on home page, shown on all other pages */}
           {isHome ? (

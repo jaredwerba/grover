@@ -170,8 +170,8 @@ body {
     inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
     inset 0 -1px 0 0 rgba(0, 0, 0, 0.1),
     0 1px 3px rgba(0, 0, 0, 0.2);
-  position: relative;
   overflow: hidden;
+  min-height: 48px;
 }
 /* Animated light refraction sweep */
 .liquid-glass-nav::after {
@@ -226,6 +226,92 @@ body {
 }
 .sunburst {
   animation: sunburst-spin 120s linear infinite;
+}
+
+/* ── Liquid glass product cards ── */
+.liquid-glass-card {
+  background: rgba(11, 45, 27, 0.35);
+  backdrop-filter: blur(16px) saturate(160%) brightness(1.02);
+  -webkit-backdrop-filter: blur(16px) saturate(160%) brightness(1.02);
+  border: 1px solid rgba(255, 185, 0, 0.08);
+  border-radius: 10px;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 0 0 0.5px rgba(255, 185, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+.liquid-glass-card:hover {
+  border-color: rgba(255, 185, 0, 0.25);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.25),
+    0 0 0 0.5px rgba(255, 185, 0, 0.12);
+}
+/* Light refraction highlight — subtle top-left glow */
+.liquid-glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 50% at 20% 10%,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+/* Glass edge highlight — bottom right glint */
+.liquid-glass-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(
+    to left,
+    rgba(255, 185, 0, 0.12),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* ── Strain Library texture background — Vermont pine & mountain ── */
+.strain-texture-bg {
+  background-color: #0f2d1c;
+  position: relative;
+  background-image:
+    /* ── Repeating pine treeline — tiles vertically for infinite scroll ── */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Cg opacity='0.12'%3E%3C!-- Row 1: varied pines near bottom --%3E%3Cpolygon fill='%23275e3c' points='25,600 45,480 65,600'/%3E%3Cpolygon fill='%23275e3c' points='80,600 105,460 130,600'/%3E%3Cpolygon fill='%23275e3c' points='155,600 170,500 185,600'/%3E%3Cpolygon fill='%23275e3c' points='210,600 235,440 260,600'/%3E%3Cpolygon fill='%23275e3c' points='290,600 305,490 320,600'/%3E%3Cpolygon fill='%23275e3c' points='350,600 375,450 400,600'/%3E%3Cpolygon fill='%23275e3c' points='420,600 438,510 456,600'/%3E%3Cpolygon fill='%23275e3c' points='480,600 505,445 530,600'/%3E%3Cpolygon fill='%23275e3c' points='560,600 575,485 590,600'/%3E%3Cpolygon fill='%23275e3c' points='620,600 645,455 670,600'/%3E%3Cpolygon fill='%23275e3c' points='700,600 718,495 736,600'/%3E%3Cpolygon fill='%23275e3c' points='760,600 780,470 800,600'/%3E%3C!-- Row 2: smaller pines mid-height --%3E%3Cpolygon fill='%231a4a2e' points='50,600 68,520 86,600'/%3E%3Cpolygon fill='%231a4a2e' points='180,600 195,530 210,600'/%3E%3Cpolygon fill='%231a4a2e' points='330,600 348,515 366,600'/%3E%3Cpolygon fill='%231a4a2e' points='460,600 478,525 496,600'/%3E%3Cpolygon fill='%231a4a2e' points='590,600 610,510 630,600'/%3E%3Cpolygon fill='%231a4a2e' points='720,600 735,535 750,600'/%3E%3C!-- Mountain ridge --%3E%3Cpath d='M0 600 L0 520 Q100 460 200 500 Q300 440 400 490 Q500 430 600 480 Q700 445 800 500 L800 600Z' fill='%230b2d1b' opacity='0.5'/%3E%3C/g%3E%3C/svg%3E"),
+    /* ── Subtle side vignettes ── */
+    radial-gradient(
+      ellipse at 0% 30%,
+      rgba(39, 94, 60, 0.12) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 100% 70%,
+      rgba(39, 94, 60, 0.1) 0%,
+      transparent 50%
+    ),
+    /* ── Warm amber accent glow ── */
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(255, 185, 0, 0.02) 0%,
+      transparent 40%
+    );
+  background-repeat: repeat-y, no-repeat, no-repeat, no-repeat;
+  background-size: 800px 600px, 100% 100%, 100% 100%, 100% 100%;
+  background-position: center bottom, center, center, top;
+}
+.strain-texture-bg > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Subtle icon animations for landing page value props ── */

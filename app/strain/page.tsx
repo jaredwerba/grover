@@ -19,7 +19,7 @@ export default async function StrainPage({
   }
 
   return (
-    <main className="min-h-screen bg-forest-deep text-cream">
+    <main className="min-h-screen strain-texture-bg text-cream">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-groovy text-cream mb-3 tracking-wide leading-tight">
