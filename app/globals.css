@@ -165,16 +165,12 @@ body {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-5px); }
 }
-@keyframes cove-glow {
-  0%, 100% { filter: drop-shadow(0 0 4px rgba(255,185,0,0.15)); }
-  50%      { filter: drop-shadow(0 0 10px rgba(255,185,0,0.35)); }
-}
 .icon-float {
-  animation: cove-float 4s ease-in-out infinite, cove-glow 4s ease-in-out infinite;
+  animation: cove-float 4s ease-in-out infinite;
 }
 .icon-float-delayed-1 {
-  animation: cove-float 4s ease-in-out 1.3s infinite, cove-glow 4s ease-in-out 1.3s infinite;
+  animation: cove-float 4s ease-in-out 1.3s infinite;
 }
 .icon-float-delayed-2 {
-  animation: cove-float 4s ease-in-out 2.6s infinite, cove-glow 4s ease-in-out 2.6s infinite;
+  animation: cove-float 4s ease-in-out 2.6s infinite;
 }
