@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { Dispensary } from "@/lib/dispensaries";
 import DispensaryCard from "./DispensaryCard";
@@ -137,11 +137,6 @@ export default function TrailClient({
       { enableHighAccuracy: true, timeout: 10000 }
     );
   }, [dispensaries]);
-
-  // Auto-request location on page load
-  useEffect(() => {
-    handleFindNearest();
-  }, [handleFindNearest]);
 
   return (
     <div className="flex flex-col gap-2 h-full">
