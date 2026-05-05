@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { exportDashboardPdf } from "@/lib/export-pdf";
-import LiquidGlass from "liquid-glass-react";
 
 type Persona = "grower" | "dispenser";
 
@@ -32,21 +31,9 @@ export default function Nav({
   }
 
   return (
-    <div className="sticky top-0 z-50">
-      <LiquidGlass
-        displacementScale={40}
-        blurAmount={0.05}
-        saturation={160}
-        aberrationIntensity={1}
-        elasticity={0.12}
-        cornerRadius={0}
-      >
-        <nav
-          className="flex items-center justify-between px-4 sm:px-6 py-3"
-          style={{
-            borderBottom: "1px solid rgba(255,185,0,0.12)",
-          }}
-        >
+    <nav
+      className="liquid-glass-nav sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3"
+    >
           {/* Logo — hidden on home page, shown on all other pages */}
           {isHome ? (
             <div className="w-0 sm:w-0" />
@@ -116,9 +103,7 @@ export default function Nav({
               </Link>
             )}
           </div>
-        </nav>
-      </LiquidGlass>
-    </div>
+    </nav>
   );
 }
 
