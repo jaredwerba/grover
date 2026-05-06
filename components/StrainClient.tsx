@@ -278,7 +278,7 @@ export default function StrainClient({
   const [liveType, setLiveType] = useState<string>(startType);
   const [liveSubcat, setLiveSubcat] = useState<string>("all");
   const [sortBy, setSortBy] = useState<
-    "default" | "price-asc" | "price-desc" | "distance"
+    "default" | "price-asc" | "price-desc" | "distance" | "favorites"
   >("default");
   const [userLocation, setUserLocation] = useState<{
     lat: number;
@@ -479,6 +479,11 @@ export default function StrainClient({
       result = result.filter((p) => (p.priceMin ?? 0) <= priceCap);
     }
 
+    // Favorites filter — show only hearted products
+    if (sortBy === "favorites") {
+      result = result.filter((p) => favorites.has(p.key));
+    }
+
     // Sort
     if (sortBy === "distance" && distanceMap) {
       result = [...result].sort((a, b) => {
@@ -497,7 +502,7 @@ export default function StrainClient({
     }
 
     return result;
-  }, [categoryFiltered, priceCap, sortBy, distanceMap]);
+  }, [categoryFiltered, priceCap, sortBy, distanceMap, favorites]);
 
   const subcategoryRow = liveType !== "all" ? LIVE_SUBCATEGORIES[liveType] : null;
   const labelForType = LIVE_TYPE_LABELS[liveType] ?? "products";
@@ -557,6 +562,7 @@ export default function StrainClient({
               className="appearance-none bg-forest border border-forest-mid text-cream text-xs font-bold tracking-widest uppercase pl-3 pr-8 py-2 rounded-full hover:border-amber/50 focus:border-amber/60 outline-none transition-colors min-h-[36px] cursor-pointer"
             >
               <option value="default">Sort</option>
+              <option value="favorites">♥ Favorites</option>
               <option value="price-asc">Price ↑ Low–High</option>
               <option value="price-desc">Price ↓ High–Low</option>
               <option value="distance">
