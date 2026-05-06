@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { getSession } from "@/lib/auth";
 import { COVE_SYSTEM_PROMPT } from "@/lib/cove-prompt";
 import { getLiveInventoryForPrompt } from "@/lib/inventory-public";
+import { getUserPreferences, getFavorites } from "@/lib/user-preferences";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -27,10 +28,31 @@ export async function POST(req: NextRequest) {
   // Cove Connect — append live inventory snapshot to the system
   // prompt at request time. Read failures fall back to "" so the
   // chat keeps working even if Redis is unreachable.
-  const liveInventory = await getLiveInventoryForPrompt();
-  const systemPrompt = liveInventory
-    ? `${COVE_SYSTEM_PROMPT}\n\n${liveInventory}`
-    : COVE_SYSTEM_PROMPT;
+  const [liveInventory, prefs, favs] = await Promise.all([
+    getLiveInventoryForPrompt(),
+    getUserPreferences(session.email).catch(() => null),
+    getFavorites(session.email).catch(() => []),
+  ]);
+
+  let systemPrompt = COVE_SYSTEM_PROMPT;
+  if (liveInventory) systemPrompt += `\n\n${liveInventory}`;
+
+  // Inject user preferences so Cove AI can personalize recommendations
+  if (prefs || favs.length > 0) {
+    const lines: string[] = ["--- USER PREFERENCES ---"];
+    if (prefs?.preferred_types?.length)
+      lines.push(`Preferred types: ${prefs.preferred_types.join(", ")}`);
+    if (prefs?.preferred_effects?.length)
+      lines.push(`Preferred effects: ${prefs.preferred_effects.join(", ")}`);
+    if (prefs?.preferred_category)
+      lines.push(`Tends toward: ${prefs.preferred_category}`);
+    if (favs.length > 0)
+      lines.push(`Favorites: ${favs.slice(-8).map((f) => f.name).join(", ")}`);
+    lines.push(
+      "Use these preferences to personalize recommendations. Don't mention that you have access to their preferences unless asked."
+    );
+    systemPrompt += `\n\n${lines.join("\n")}`;
+  }
 
   const stream = await openai.chat.completions.create({
     model: "gpt-4o",

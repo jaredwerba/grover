@@ -1,15 +1,17 @@
 import StrainClient from "@/components/StrainClient";
 import { getLiveProducts } from "@/lib/inventory-public";
 import { dispensaries } from "@/lib/dispensaries";
+import { getSession } from "@/lib/auth";
 
 export default async function StrainPage({
   searchParams,
 }: {
   searchParams: Promise<{ type?: string }>;
 }) {
-  const [liveProducts, params] = await Promise.all([
+  const [liveProducts, params, session] = await Promise.all([
     getLiveProducts(),
     searchParams,
+    getSession(),
   ]);
 
   // Build a lean shop-name → {lat, lng} lookup for client-side distance sort
@@ -33,6 +35,7 @@ export default async function StrainPage({
           liveProducts={liveProducts}
           initialType={params.type}
           shopLocations={shopLocations}
+          isAuthenticated={session !== null}
         />
       </div>
     </main>

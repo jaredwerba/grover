@@ -20,10 +20,12 @@ export default function ChatWindow({
   messages,
   isStreaming,
   onSuggest,
+  personalSuggestions,
 }: {
   messages: Message[];
   isStreaming: boolean;
   onSuggest: (msg: string) => void;
+  personalSuggestions?: string[];
 }) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +59,7 @@ export default function ChatWindow({
           role="list"
           aria-label="Suggested questions"
         >
-          {SUGGESTIONS.map((s) => (
+          {(personalSuggestions?.length ? personalSuggestions : SUGGESTIONS).map((s) => (
             <button
               key={s}
               role="listitem"

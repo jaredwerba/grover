@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatWindow from "./ChatWindow";
 import ChatInput from "./ChatInput";
 
@@ -16,6 +16,24 @@ const HISTORY_LIMIT = 16;
 export default function ChatApp() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [personalSuggestions, setPersonalSuggestions] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("/api/user/favorites")
+      .then((r) => (r.ok ? r.json() : { favorites: [] }))
+      .then((data) => {
+        const favs: { name: string }[] = data.favorites ?? [];
+        if (favs.length === 0) return;
+        const chips: string[] = [];
+        const recent = favs.slice(-3);
+        if (recent[0]) chips.push(`More strains like ${recent[0].name}`);
+        chips.push("What's new in stock near me?");
+        if (recent[1]) chips.push(`Compare ${recent[0].name} and ${recent[1].name}`);
+        chips.push("What should I try next based on my favorites?");
+        setPersonalSuggestions(chips);
+      })
+      .catch(() => {});
+  }, []);
 
   async function sendMessage(content: string) {
     const newMessages: Message[] = [
@@ -67,6 +85,7 @@ export default function ChatApp() {
         messages={messages}
         isStreaming={isStreaming}
         onSuggest={sendMessage}
+        personalSuggestions={personalSuggestions}
       />
       <ChatInput onSend={sendMessage} disabled={isStreaming} />
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "next/image";
 import type { LiveProduct } from "@/lib/inventory-public";
 import { productIcon } from "@/lib/product-icons";
@@ -118,7 +118,17 @@ function classifySubcategory(product: LiveProduct, mainType: string): string[] {
   return tags;
 }
 
-function LiveProductCard({ product, distance }: { product: LiveProduct; distance?: number }) {
+function LiveProductCard({
+  product,
+  distance,
+  isFavorite,
+  onToggle,
+}: {
+  product: LiveProduct;
+  distance?: number;
+  isFavorite: boolean;
+  onToggle: () => void;
+}) {
   const typeLabel = product.type[0].toUpperCase() + product.type.slice(1);
   const thc =
     product.thcMin !== null && product.thcMax !== null
@@ -155,6 +165,27 @@ function LiveProductCard({ product, distance }: { product: LiveProduct; distance
           <h3 className="flex-1 text-cream text-[15px] sm:text-base font-semibold leading-snug break-words">
             {product.displayName}
           </h3>
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggle(); }}
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            className="shrink-0 p-1 -mr-0.5 -mt-0.5 transition-transform active:scale-90"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              className={`w-5 h-5 transition-colors ${
+                isFavorite ? "fill-amber text-amber" : "fill-none text-cream-muted/50 hover:text-amber/60"
+              }`}
+              stroke="currentColor"
+              strokeWidth={isFavorite ? 0 : 1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+              />
+            </svg>
+          </button>
           <span className="shrink-0 text-[10px] border border-forest-light/50 text-forest-light px-1.5 py-0.5 rounded font-bold tracking-widest uppercase">
             {typeLabel}
           </span>
@@ -231,10 +262,12 @@ export default function StrainClient({
   liveProducts,
   initialType,
   shopLocations,
+  isAuthenticated,
 }: {
   liveProducts?: LiveProduct[];
   initialType?: string;
   shopLocations?: Record<string, { lat: number; lng: number }>;
+  isAuthenticated?: boolean;
 }) {
   // Resolve initial category from URL ?type= param
   const validTypes = LIVE_TYPE_FILTERS.map((f) => f.value);
@@ -279,6 +312,70 @@ export default function StrainClient({
       { enableHighAccuracy: true, timeout: 10000 }
     );
   }, [userLocation]);
+
+  // ── Favorites ──
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch("/api/user/favorites")
+      .then((r) => (r.ok ? r.json() : { favorites: [] }))
+      .then((data) =>
+        setFavorites(
+          new Set(
+            (data.favorites as { id: string }[]).map((f) => f.id)
+          )
+        )
+      )
+      .catch(() => {});
+  }, [isAuthenticated]);
+
+  const toggleFavorite = useCallback(
+    async (product: LiveProduct) => {
+      if (!isAuthenticated) {
+        window.location.href = "/join?return=/strain";
+        return;
+      }
+      const id = product.key;
+      const isFav = favorites.has(id);
+
+      // Optimistic UI
+      setFavorites((prev) => {
+        const next = new Set(prev);
+        isFav ? next.delete(id) : next.add(id);
+        return next;
+      });
+
+      try {
+        if (isFav) {
+          await fetch("/api/user/favorites", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id }),
+          });
+        } else {
+          await fetch("/api/user/favorites", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id,
+              kind: "product",
+              name: product.displayName,
+              type: product.type,
+            }),
+          });
+        }
+      } catch {
+        // Revert on failure
+        setFavorites((prev) => {
+          const next = new Set(prev);
+          isFav ? next.add(id) : next.delete(id);
+          return next;
+        });
+      }
+    },
+    [isAuthenticated, favorites]
+  );
 
   // Slider position 0..STEPS. STEPS means "no filter" (Any).
   const STEPS = 100;
@@ -590,6 +687,8 @@ export default function StrainClient({
               key={p.key}
               product={p}
               distance={distanceMap?.get(p.key)}
+              isFavorite={favorites.has(p.key)}
+              onToggle={() => toggleFavorite(p)}
             />
           ))}
         </div>
