@@ -2,6 +2,49 @@
 
 import { useState, useEffect } from "react";
 
+/* ── Types matching the insights API response ── */
+
+interface ShopInsights {
+  shop: {
+    name: string;
+    id: string;
+    lastSync: string | null;
+    productCount: number;
+    platform: string | null;
+  };
+  productPerformance: {
+    name: string;
+    type: string;
+    price: number | null;
+    favorites: number;
+  }[];
+  marketGaps: {
+    name: string;
+    type: string;
+    favoritedCount: number;
+    availableAt: string[];
+  }[];
+  priceComparison: {
+    name: string;
+    yourPrice: number;
+    avgPrice: number;
+    minPrice: number;
+    maxPrice: number;
+    shopsCompared: number;
+  }[];
+  demandSignals: {
+    type: string;
+    count: number;
+    topProducts: string[];
+  }[];
+  syncHealth: {
+    lastSync: string | null;
+    itemCount: number;
+    status: string;
+    platform: string | null;
+  };
+}
+
 function useCountUp(target: number, duration = 1200, delay = 0) {
   const [count, setCount] = useState(0);
   useEffect(() => {
@@ -15,65 +58,53 @@ function useCountUp(target: number, duration = 1200, delay = 0) {
         step++;
         const t = step / steps;
         setCount(Math.round(t * (2 - t) * target));
-        if (step >= steps) { setCount(target); clearInterval(interval); }
+        if (step >= steps) {
+          setCount(target);
+          clearInterval(interval);
+        }
       }, stepTime);
     }, delay);
-    return () => { clearTimeout(timeout); clearInterval(interval); };
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
   }, [target, duration, delay]);
   return count;
 }
 
-const TOP_SELLERS = [
-  { name: "Fresh Flower", units: 142, pct: 100, revenue: 4260 },
-  { name: "Pre Rolls", units: 98, pct: 69, revenue: 2940 },
-  { name: "Vapes", units: 76, pct: 54, revenue: 3420 },
-  { name: "Edibles", units: 64, pct: 45, revenue: 1920 },
-  { name: "Beverages", units: 41, pct: 29, revenue: 820 },
-];
-
-const HOURLY = [
-  { hour: "9a", val: 3 },
-  { hour: "10a", val: 7 },
-  { hour: "11a", val: 11 },
-  { hour: "12p", val: 14 },
-  { hour: "1p", val: 9 },
-  { hour: "2p", val: 8 },
-  { hour: "3p", val: 12 },
-  { hour: "4p", val: 18 },
-  { hour: "5p", val: 22 },
-  { hour: "6p", val: 15 },
-];
-
-const maxHourly = Math.max(...HOURLY.map((h) => h.val));
-
-const LOW_STOCK = [
-  { name: "Pineapple Express 7g", remaining: 4, reorder: 10 },
-  { name: "Gorilla Glue Vape", remaining: 2, reorder: 8 },
-  { name: "Gelato Pre-Roll 1pk", remaining: 6, reorder: 12 },
-];
-
-const WEEK_REV = [
-  { day: "M", val: 2840 },
-  { day: "T", val: 3120 },
-  { day: "W", val: 2670 },
-  { day: "T", val: 3450 },
-  { day: "F", val: 4180 },
-  { day: "S", val: 5220 },
-  { day: "S", val: 3890 },
-];
-
-const maxWeekRev = Math.max(...WEEK_REV.map((w) => w.val));
-
 export default function DispenserTab() {
   const [mounted, setMounted] = useState(false);
+  const [insights, setInsights] = useState<ShopInsights | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  const revenue = useCountUp(25370, 1300, 100);
-  const transactions = useCountUp(312, 1000, 200);
-  const avgBasket = useCountUp(81, 900, 300);
+  useEffect(() => {
+    fetch("/api/business/insights")
+      .then((r) => {
+        if (r.status === 404) {
+          setError("no_claim");
+          setLoading(false);
+          return null;
+        }
+        if (!r.ok) throw new Error("Failed to load insights");
+        return r.json();
+      })
+      .then((data) => {
+        if (data) setInsights(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("error");
+        setLoading(false);
+      });
+  }, []);
+
+  const productCount = useCountUp(insights?.shop.productCount ?? 0, 900, 100);
 
   function card(delay: number): React.CSSProperties {
     return {
@@ -83,131 +114,366 @@ export default function DispenserTab() {
     };
   }
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="bg-forest rounded-2xl border border-forest-mid p-5 h-28 animate-pulse"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // No claim — show claim prompt
+  if (error === "no_claim") {
+    return <ClaimPrompt onClaimed={() => window.location.reload()} />;
+  }
+
+  // Error state
+  if (error || !insights) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-cream-muted text-sm">Unable to load insights</p>
+      </div>
+    );
+  }
+
+  const maxFavs = Math.max(
+    ...insights.productPerformance.map((p) => p.favorites),
+    1
+  );
+
   return (
     <div className="space-y-4">
-      {/* Stats row */}
+      {/* Shop header */}
       <div className="grid grid-cols-3 gap-3" style={card(0)}>
-        <StatCard label="MTD Revenue" value={`$${revenue.toLocaleString()}`} />
-        <StatCard label="Transactions" value={`${transactions}`} unit="this month" />
-        <StatCard label="Avg Basket" value={`$${avgBasket}`} />
+        <StatCard label="Products" value={`${productCount}`} unit="in stock" />
+        <StatCard
+          label="Platform"
+          value={insights.shop.platform?.toUpperCase() ?? "—"}
+        />
+        <StatCard
+          label="Sync"
+          value={insights.syncHealth.status === "ok" ? "Live" : "Stale"}
+          unit={
+            insights.shop.lastSync
+              ? timeAgo(insights.shop.lastSync)
+              : "never"
+          }
+        />
       </div>
 
-      {/* Top Sellers */}
-      <div className="bg-forest rounded-2xl border border-forest-mid p-5" style={card(80)}>
-        <h3 className="text-cream font-semibold text-sm mb-4">Top Sellers</h3>
-        <div className="space-y-3">
-          {TOP_SELLERS.map((p, i) => (
-            <div key={p.name}>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-cream">{p.name}</span>
-                <span className="text-cream-muted">{p.units} units</span>
-              </div>
-              <div className="h-2 bg-forest-mid rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-amber rounded-full"
-                  style={{
-                    width: mounted ? `${p.pct}%` : "0%",
-                    opacity: 1 - i * 0.12,
-                    transition: `width 700ms cubic-bezier(0.16,1,0.3,1) ${120 + i * 90}ms`,
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Hourly Traffic */}
-      <div className="bg-forest rounded-2xl border border-forest-mid p-5" style={card(160)}>
-        <h3 className="text-cream font-semibold text-sm mb-1">Today&apos;s Traffic</h3>
-        <p className="text-cream-muted/60 text-[10px] mb-4">Transactions by hour</p>
-        <div className="flex items-end gap-1.5" style={{ height: 80 }}>
-          {HOURLY.map((h, i) => (
-            <div key={h.hour} className="flex-1 flex flex-col items-center gap-1">
-              <div className="w-full flex items-end" style={{ height: 60 }}>
-                <div
-                  className="w-full rounded-t-sm"
-                  style={{
-                    backgroundColor: h.hour === "5p" ? "#FFB900" : "rgba(255,185,0,0.45)",
-                    height: mounted ? `${(h.val / maxHourly) * 100}%` : "3px",
-                    minHeight: 3,
-                    transition: `height 500ms cubic-bezier(0.16,1,0.3,1) ${200 + i * 45}ms`,
-                  }}
-                />
-              </div>
-              <span className="text-[9px] text-cream-muted leading-none">{h.hour}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Weekly Revenue Sparkline */}
-      <div className="bg-forest rounded-2xl border border-forest-mid p-5" style={card(240)}>
-        <h3 className="text-cream font-semibold text-sm mb-1">Weekly Revenue</h3>
-        <p className="text-cream-muted/60 text-[10px] mb-4">This week vs daily</p>
-        <div className="flex items-end gap-2" style={{ height: 80 }}>
-          {WEEK_REV.map((w, i) => (
-            <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-              <div className="w-full flex items-end" style={{ height: 60 }}>
-                <div
-                  className="w-full rounded-t-sm"
-                  style={{
-                    backgroundColor: w.val === maxWeekRev ? "#FFB900" : "rgba(255,185,0,0.5)",
-                    height: mounted ? `${(w.val / maxWeekRev) * 100}%` : "3px",
-                    minHeight: 3,
-                    transition: `height 500ms cubic-bezier(0.16,1,0.3,1) ${280 + i * 55}ms`,
-                  }}
-                />
-              </div>
-              <span className="text-[10px] text-cream-muted">{w.day}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Low Stock Alerts */}
-      <div className="bg-forest rounded-2xl border border-forest-mid p-5" style={card(320)}>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-cream font-semibold text-sm">Low Stock Alerts</h3>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber/20 text-amber">
-            {LOW_STOCK.length} items
-          </span>
-        </div>
-        <div className="space-y-2.5">
-          {LOW_STOCK.map((item) => {
-            const pct = Math.round((item.remaining / item.reorder) * 100);
-            return (
-              <div key={item.name}>
+      {/* Product Performance */}
+      {insights.productPerformance.length > 0 && (
+        <div
+          className="bg-forest rounded-2xl border border-forest-mid p-5"
+          style={card(80)}
+        >
+          <h3 className="text-cream font-semibold text-sm mb-1">
+            Top Products by Demand
+          </h3>
+          <p className="text-cream-muted/60 text-[10px] mb-4">
+            Consumer favorites from your inventory
+          </p>
+          <div className="space-y-3">
+            {insights.productPerformance.slice(0, 6).map((p, i) => (
+              <div key={p.name}>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-cream">{item.name}</span>
-                  <span className="text-amber text-[10px]">{item.remaining} left</span>
+                  <span className="text-cream truncate flex-1 mr-2">
+                    {p.name}
+                  </span>
+                  <span className="text-cream-muted shrink-0">
+                    {p.favorites} ♥
+                  </span>
                 </div>
-                <div className="h-1.5 bg-forest-mid rounded-full overflow-hidden">
+                <div className="h-2 bg-forest-mid rounded-full overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-amber/60"
+                    className="h-full bg-amber rounded-full"
                     style={{
-                      width: mounted ? `${pct}%` : "0%",
-                      transition: `width 600ms cubic-bezier(0.16,1,0.3,1) 400ms`,
+                      width: mounted
+                        ? `${(p.favorites / maxFavs) * 100}%`
+                        : "0%",
+                      opacity: 1 - i * 0.12,
+                      transition: `width 700ms cubic-bezier(0.16,1,0.3,1) ${
+                        120 + i * 90
+                      }ms`,
                     }}
                   />
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Market Gaps */}
+      {insights.marketGaps.length > 0 && (
+        <div
+          className="bg-forest rounded-2xl border border-forest-mid p-5"
+          style={card(160)}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h3 className="text-cream font-semibold text-sm">Market Gaps</h3>
+              <p className="text-cream-muted/60 text-[10px]">
+                Popular nearby products you don&apos;t carry
+              </p>
+            </div>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber/20 text-amber">
+              {insights.marketGaps.length} gaps
+            </span>
+          </div>
+          <div className="space-y-2.5">
+            {insights.marketGaps.slice(0, 5).map((gap) => (
+              <div
+                key={gap.name}
+                className="flex items-center justify-between"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-cream text-xs truncate">{gap.name}</p>
+                  <p className="text-cream-muted/60 text-[10px] truncate">
+                    at {gap.availableAt.join(", ")}
+                  </p>
+                </div>
+                <span className="text-amber text-xs font-bold shrink-0 ml-2">
+                  {gap.favoritedCount} ♥
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Price Comparison */}
+      {insights.priceComparison.length > 0 && (
+        <div
+          className="bg-forest rounded-2xl border border-forest-mid p-5"
+          style={card(240)}
+        >
+          <h3 className="text-cream font-semibold text-sm mb-1">
+            Price Check
+          </h3>
+          <p className="text-cream-muted/60 text-[10px] mb-4">
+            Your pricing vs nearby competitors
+          </p>
+          <div className="space-y-3">
+            {insights.priceComparison.slice(0, 5).map((pc) => {
+              const diff = pc.yourPrice - pc.avgPrice;
+              const isHigher = diff > 0;
+              const isLower = diff < -0.5;
+              return (
+                <div key={pc.name} className="flex items-center gap-3">
+                  <span className="text-xs text-cream truncate flex-1 min-w-0">
+                    {pc.name}
+                  </span>
+                  <span className="text-xs text-cream-muted tabular-nums shrink-0">
+                    ${pc.yourPrice}
+                  </span>
+                  <span
+                    className={`text-[10px] font-bold shrink-0 ${
+                      isLower
+                        ? "text-emerald-400"
+                        : isHigher
+                        ? "text-rose-400"
+                        : "text-cream-muted"
+                    }`}
+                  >
+                    {isLower
+                      ? `$${Math.abs(diff).toFixed(0)} below`
+                      : isHigher
+                      ? `$${diff.toFixed(0)} above`
+                      : "at avg"}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-cream-muted/40 text-[9px] mt-3">
+            Compared across {insights.priceComparison[0]?.shopsCompared ?? 0}{" "}
+            nearby shops
+          </p>
+        </div>
+      )}
+
+      {/* Demand Signals */}
+      {insights.demandSignals.length > 0 && (
+        <div
+          className="bg-forest rounded-2xl border border-forest-mid p-5"
+          style={card(320)}
+        >
+          <h3 className="text-cream font-semibold text-sm mb-1">
+            Demand Radar
+          </h3>
+          <p className="text-cream-muted/60 text-[10px] mb-4">
+            What Vermont consumers want right now
+          </p>
+          <div className="space-y-2.5">
+            {insights.demandSignals.map((ds) => (
+              <div key={ds.type} className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-amber shrink-0" />
+                  <span className="text-cream text-sm capitalize">
+                    {ds.type}
+                  </span>
+                </div>
+                <span className="text-cream-muted/60 text-xs">
+                  {ds.count} favorites
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Sync Health */}
+      <div
+        className="bg-forest rounded-2xl border border-forest-mid p-5"
+        style={card(400)}
+      >
+        <h3 className="text-cream font-semibold text-sm mb-3">
+          Cove Connect Status
+        </h3>
+        <div className="space-y-2">
+          <Row label="Platform" value={insights.syncHealth.platform ?? "—"} />
+          <Row label="Products Indexed" value={`${insights.syncHealth.itemCount}`} />
+          <Row
+            label="Last Sync"
+            value={
+              insights.syncHealth.lastSync
+                ? timeAgo(insights.syncHealth.lastSync)
+                : "Never"
+            }
+          />
+          <Row
+            label="Status"
+            value={insights.syncHealth.status}
+            highlight={insights.syncHealth.status === "ok"}
+          />
         </div>
       </div>
     </div>
   );
 }
 
-function StatCard({ label, value, unit }: { label: string; value: string; unit?: string }) {
+/* ── Claim Prompt ── */
+
+function ClaimPrompt({ onClaimed }: { onClaimed: () => void }) {
+  const [shopId, setShopId] = useState("");
+  const [claiming, setClaiming] = useState(false);
+  const [shops, setShops] = useState<{ id: string; name: string }[]>([]);
+
+  useEffect(() => {
+    // Load dispensary list client-side
+    fetch("/api/business/shops")
+      .then((r) => (r.ok ? r.json() : { shops: [] }))
+      .then((data) => setShops(data.shops ?? []))
+      .catch(() => {});
+  }, []);
+
+  async function handleClaim() {
+    if (!shopId) return;
+    setClaiming(true);
+    try {
+      const res = await fetch("/api/business/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shopId }),
+      });
+      if (res.ok) onClaimed();
+    } finally {
+      setClaiming(false);
+    }
+  }
+
+  return (
+    <div className="text-center py-10 space-y-4">
+      <h3 className="text-cream font-semibold text-lg">Claim Your Shop</h3>
+      <p className="text-cream-muted text-sm max-w-xs mx-auto">
+        Select your dispensary to unlock real-time consumer insights, market
+        gaps, and competitive pricing data.
+      </p>
+      <div className="max-w-xs mx-auto space-y-3">
+        <select
+          value={shopId}
+          onChange={(e) => setShopId(e.target.value)}
+          className="w-full bg-forest border border-forest-mid text-cream text-sm rounded-xl px-4 py-3 outline-none focus:border-amber/60"
+        >
+          <option value="">Select a dispensary…</option>
+          {shops.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={handleClaim}
+          disabled={!shopId || claiming}
+          className="w-full bg-amber text-forest-deep font-bold text-sm py-3 rounded-xl disabled:opacity-50 transition-opacity"
+        >
+          {claiming ? "Claiming…" : "Claim This Shop"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Helper Components ── */
+
+function StatCard({
+  label,
+  value,
+  unit,
+}: {
+  label: string;
+  value: string;
+  unit?: string;
+}) {
   return (
     <div className="bg-forest rounded-2xl border border-forest-mid p-4">
       <p className="text-cream-muted text-[10px] uppercase tracking-widest mb-1.5 leading-none">
         {label}
       </p>
       <p className="text-amber font-bold text-xl leading-none">{value}</p>
-      {unit && <p className="text-cream-muted/60 text-[10px] mt-1">{unit}</p>}
+      {unit && (
+        <p className="text-cream-muted/60 text-[10px] mt-1">{unit}</p>
+      )}
     </div>
   );
+}
+
+function Row({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-cream-muted text-xs">{label}</span>
+      <span
+        className={`text-xs font-medium ${
+          highlight ? "text-emerald-400" : "text-cream"
+        }`}
+      >
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function timeAgo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
 }

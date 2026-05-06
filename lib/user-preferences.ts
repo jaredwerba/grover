@@ -1,5 +1,6 @@
 import { Redis } from "@upstash/redis";
 import { strains } from "./strains";
+import { incrementFavorite, decrementFavorite } from "./favorites-aggregate";
 
 const kv = new Redis({
   url: process.env.KV_REST_API_URL!,
@@ -73,8 +74,9 @@ export async function addFavorite(
 
   await kv.set(favKey(email), list, { ex: FAVORITES_TTL });
 
-  // Fire-and-forget preference recompute
+  // Fire-and-forget preference recompute + global aggregate
   recomputePreferences(email, list).catch(() => {});
+  incrementFavorite(item.id).catch(() => {});
 
   return list;
 }
@@ -87,8 +89,9 @@ export async function removeFavorite(
   list = list.filter((f) => f.id !== id);
   await kv.set(favKey(email), list, { ex: FAVORITES_TTL });
 
-  // Fire-and-forget preference recompute
+  // Fire-and-forget preference recompute + global aggregate
   recomputePreferences(email, list).catch(() => {});
+  decrementFavorite(id).catch(() => {});
 
   return list;
 }
