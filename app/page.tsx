@@ -135,11 +135,12 @@ export default function LandingPage() {
               readOnly
               className="flex-1 bg-transparent text-cream text-sm placeholder:text-cream-muted/40 outline-none"
             />
-            <button
+            <Link
+              href="/join"
               className="bg-amber text-forest-deep text-xs font-bold px-4 py-2 rounded-sm tracking-widest uppercase hover:bg-amber-hover transition-colors"
             >
-              Ask
-            </button>
+              Join
+            </Link>
           </div>
         </div>
 

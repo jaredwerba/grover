@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { dispensaries } from "@/lib/dispensaries";
 import TrailClient from "@/components/TrailClient";
 import { getInventorySnapshot } from "@/lib/inventory-public";
@@ -45,13 +46,20 @@ export default async function TrailPage() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3 mt-8">
-            {["Vermont Native", "Locally Grown", "Medical & Recreational", "Community First", "Green Mountain Proud"].map((tag) => (
-              <span
-                key={tag}
-                className="text-xs border border-amber/30 text-amber/70 px-3 py-1.5 rounded-sm font-semibold tracking-wider uppercase"
+            {([
+              { label: "Vermont Native", href: "/about#what-is-cannatrail" },
+              { label: "Locally Grown", href: "/about#best-afternoon-strain" },
+              { label: "Medical & Recreational", href: "/about#first-time-vermont" },
+              { label: "Community First", href: "/about#cannabis-safely-first-time" },
+              { label: "Green Mountain Proud", href: "/about#cannabis-legal-tourists-vermont" },
+            ]).map(({ label, href }) => (
+              <Link
+                key={label}
+                href={href}
+                className="text-xs border border-amber/30 text-amber/70 px-3 py-1.5 rounded-sm font-semibold tracking-wider uppercase hover:border-amber/60 hover:text-amber transition-colors"
               >
-                {tag}
-              </span>
+                {label}
+              </Link>
             ))}
           </div>
         </div>

@@ -140,28 +140,31 @@ export default function TrailClient({
 
   return (
     <div className="flex flex-col gap-2 h-full">
-      {/* Search + filter bar */}
+      {/* Search bar — full width */}
+      <div className="relative shrink-0">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-cream-muted/50 text-base pointer-events-none">
+          ⌕
+        </span>
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by name or town…"
+          className="w-full bg-forest border-2 border-forest-mid text-cream text-[15px] font-medium placeholder:text-cream-muted/40 pl-10 pr-10 py-3 rounded-full outline-none focus:border-amber/60 transition-colors min-h-[48px]"
+        />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-cream-muted/60 hover:text-cream hover:bg-forest-mid/40 text-lg leading-none transition-colors"
+            aria-label="Clear search"
+          >
+            ×
+          </button>
+        )}
+      </div>
+
+      {/* Filter buttons */}
       <div className="flex gap-2 shrink-0">
-        <div className="relative flex-1">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-cream-muted/50 text-sm pointer-events-none">
-            ⌕
-          </span>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name or town…"
-            className="w-full bg-forest border-2 border-forest-mid text-cream text-sm placeholder:text-cream-muted/40 pl-8 pr-4 py-2 rounded-sm outline-none focus:border-amber/60 transition-colors min-h-[40px]"
-          />
-          {query && (
-            <button
-              onClick={() => setQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-cream-muted/50 hover:text-cream text-lg leading-none"
-            >
-              ×
-            </button>
-          )}
-        </div>
         <button
           onClick={handleFindNearest}
           disabled={locating}
@@ -175,23 +178,21 @@ export default function TrailClient({
               <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
             </svg>
           )}
-          <span className="hidden sm:inline">Nearest</span>
+          Near Me
         </button>
-        <div className="flex gap-2 shrink-0">
-          {FILTERS.map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => setFilter(filter === value ? null : value)}
-              className={`px-3 py-2 rounded-sm text-xs font-bold tracking-widest uppercase transition-colors min-h-[40px] ${
-                filter === value
-                  ? "bg-amber text-forest-deep"
-                  : "border-2 border-forest-mid text-cream-muted hover:border-amber/40 hover:text-cream"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        {FILTERS.map(({ value, label }) => (
+          <button
+            key={value}
+            onClick={() => setFilter(filter === value ? null : value)}
+            className={`px-3 py-2 rounded-sm text-xs font-bold tracking-widest uppercase transition-colors min-h-[40px] ${
+              filter === value
+                ? "bg-amber text-forest-deep"
+                : "border-2 border-forest-mid text-cream-muted hover:border-amber/40 hover:text-cream"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* Result count */}
