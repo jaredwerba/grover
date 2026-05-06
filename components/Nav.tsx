@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { exportDashboardPdf } from "@/lib/export-pdf";
+import { useScrollDirection } from "@/hooks/useScrollDirection";
 
 type Persona = "grower" | "dispenser";
 
@@ -15,6 +16,7 @@ export default function Nav({
   email?: string | null;
 }) {
   const pathname = usePathname();
+  const hidden = useScrollDirection();
   const isHome = pathname === "/";
   const isMePage = pathname === "/me";
   const isDashboard = pathname === "/me/dashboard";
@@ -32,7 +34,9 @@ export default function Nav({
 
   return (
     <nav
-      className="liquid-glass-nav sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3 [&>*]:relative [&>*]:z-10"
+      className={`liquid-glass-nav sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3 [&>*]:relative [&>*]:z-10 transition-transform duration-300 ease-in-out ${
+        hidden ? "-translate-y-full" : "translate-y-0"
+      }`}
     >
           {/* Logo — hidden on home page, shown on all other pages */}
           {isHome ? (
@@ -99,7 +103,7 @@ export default function Nav({
                 href="/join"
                 className="bg-amber text-forest-deep text-xs font-bold px-4 py-2 rounded-sm hover:bg-amber-hover transition-colors tracking-widest uppercase"
               >
-                Join
+                Chat
               </Link>
             )}
           </div>
