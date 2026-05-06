@@ -260,33 +260,30 @@ body {
   pointer-events: none;
 }
 
-/* ── Strain Library texture background — Vermont pine & mountain ── */
+/* ── Strain Library texture background — natural bark texture ── */
 .strain-texture-bg {
   background-color: #0f2d1c;
   position: relative;
-  background-image:
-    /* ── Repeating pine treeline — tiles vertically for infinite scroll ── */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Cg opacity='0.12'%3E%3C!-- Row 1: varied pines near bottom --%3E%3Cpolygon fill='%23275e3c' points='25,600 45,480 65,600'/%3E%3Cpolygon fill='%23275e3c' points='80,600 105,460 130,600'/%3E%3Cpolygon fill='%23275e3c' points='155,600 170,500 185,600'/%3E%3Cpolygon fill='%23275e3c' points='210,600 235,440 260,600'/%3E%3Cpolygon fill='%23275e3c' points='290,600 305,490 320,600'/%3E%3Cpolygon fill='%23275e3c' points='350,600 375,450 400,600'/%3E%3Cpolygon fill='%23275e3c' points='420,600 438,510 456,600'/%3E%3Cpolygon fill='%23275e3c' points='480,600 505,445 530,600'/%3E%3Cpolygon fill='%23275e3c' points='560,600 575,485 590,600'/%3E%3Cpolygon fill='%23275e3c' points='620,600 645,455 670,600'/%3E%3Cpolygon fill='%23275e3c' points='700,600 718,495 736,600'/%3E%3Cpolygon fill='%23275e3c' points='760,600 780,470 800,600'/%3E%3C!-- Row 2: smaller pines mid-height --%3E%3Cpolygon fill='%231a4a2e' points='50,600 68,520 86,600'/%3E%3Cpolygon fill='%231a4a2e' points='180,600 195,530 210,600'/%3E%3Cpolygon fill='%231a4a2e' points='330,600 348,515 366,600'/%3E%3Cpolygon fill='%231a4a2e' points='460,600 478,525 496,600'/%3E%3Cpolygon fill='%231a4a2e' points='590,600 610,510 630,600'/%3E%3Cpolygon fill='%231a4a2e' points='720,600 735,535 750,600'/%3E%3C!-- Mountain ridge --%3E%3Cpath d='M0 600 L0 520 Q100 460 200 500 Q300 440 400 490 Q500 430 600 480 Q700 445 800 500 L800 600Z' fill='%230b2d1b' opacity='0.5'/%3E%3C/g%3E%3C/svg%3E"),
-    /* ── Subtle side vignettes ── */
-    radial-gradient(
-      ellipse at 0% 30%,
-      rgba(39, 94, 60, 0.12) 0%,
-      transparent 50%
+}
+.strain-texture-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    /* ── Dark forest overlay for readability ── */
+    linear-gradient(
+      to bottom,
+      rgba(15, 45, 28, 0.82) 0%,
+      rgba(11, 45, 27, 0.75) 50%,
+      rgba(15, 45, 28, 0.85) 100%
     ),
-    radial-gradient(
-      ellipse at 100% 70%,
-      rgba(39, 94, 60, 0.1) 0%,
-      transparent 50%
-    ),
-    /* ── Warm amber accent glow ── */
-    radial-gradient(
-      ellipse at 50% 0%,
-      rgba(255, 185, 0, 0.02) 0%,
-      transparent 40%
-    );
-  background-repeat: repeat-y, no-repeat, no-repeat, no-repeat;
-  background-size: 800px 600px, 100% 100%, 100% 100%, 100% 100%;
-  background-position: center bottom, center, center, top;
+    /* ── Bark texture image ── */
+    url("/texture.png");
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, repeat;
+  z-index: 0;
+  pointer-events: none;
 }
 .strain-texture-bg > * {
   position: relative;
