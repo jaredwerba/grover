@@ -173,27 +173,6 @@ body {
   overflow: hidden;
   min-height: 48px;
 }
-/* Animated light refraction sweep */
-.liquid-glass-nav::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 30%,
-    rgba(255, 185, 0, 0.04) 45%,
-    rgba(255, 255, 255, 0.06) 50%,
-    rgba(255, 185, 0, 0.04) 55%,
-    transparent 70%
-  );
-  background-size: 200% 100%;
-  animation: glass-sheen 6s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes glass-sheen {
-  0%, 100% { background-position: 200% 0; }
-  50%      { background-position: -200% 0; }
-}
 
 /* ── Hero entrance animations ── */
 @keyframes hero-fade-up {
