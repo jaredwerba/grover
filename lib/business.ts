@@ -51,6 +51,10 @@ export async function claimShop(
   return claim;
 }
 
+export async function unclaimShop(email: string): Promise<void> {
+  await kv.del(claimKey(email));
+}
+
 export async function isShopClaimed(shopId: string): Promise<boolean> {
   // For MVP, we don't enforce uniqueness — multiple users can claim
   // the same shop (e.g. multiple staff members). This is a simple check.

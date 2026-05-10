@@ -2,6 +2,13 @@
 
 import { useState, useEffect } from "react";
 
+/** Map internal platform IDs to user-facing display names. */
+function displayPlatform(p: string | null): string {
+  if (!p) return "—";
+  const map: Record<string, string> = { leafly: "CoveDB", tymber: "CoveDB", maui: "CoveDB" };
+  return map[p] ?? p.toUpperCase();
+}
+
 /* ── Types matching the insights API response ── */
 
 interface ShopInsights {
@@ -154,7 +161,7 @@ export default function DispenserTab() {
         <StatCard label="Products" value={`${productCount}`} unit="in stock" />
         <StatCard
           label="Platform"
-          value={insights.shop.platform?.toUpperCase() ?? "—"}
+          value={displayPlatform(insights.shop.platform)}
         />
         <StatCard
           label="Sync"
@@ -338,7 +345,7 @@ export default function DispenserTab() {
           Cove Connect Status
         </h3>
         <div className="space-y-2">
-          <Row label="Platform" value={insights.syncHealth.platform ?? "—"} />
+          <Row label="Platform" value={displayPlatform(insights.syncHealth.platform)} />
           <Row label="Products Indexed" value={`${insights.syncHealth.itemCount}`} />
           <Row
             label="Last Sync"

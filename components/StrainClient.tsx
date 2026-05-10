@@ -278,8 +278,9 @@ export default function StrainClient({
   const [liveType, setLiveType] = useState<string>(startType);
   const [liveSubcat, setLiveSubcat] = useState<string>("all");
   const [sortBy, setSortBy] = useState<
-    "default" | "price-asc" | "price-desc" | "distance" | "favorites"
+    "default" | "price-asc" | "price-desc" | "distance"
   >("default");
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
@@ -480,7 +481,7 @@ export default function StrainClient({
     }
 
     // Favorites filter — show only hearted products
-    if (sortBy === "favorites") {
+    if (showFavoritesOnly) {
       result = result.filter((p) => favorites.has(p.key));
     }
 
@@ -502,8 +503,9 @@ export default function StrainClient({
     }
 
     return result;
-  }, [categoryFiltered, priceCap, sortBy, distanceMap, favorites]);
+  }, [categoryFiltered, priceCap, sortBy, distanceMap, favorites, showFavoritesOnly]);
 
+  const maxPrice = sortedPrices.length > 0 ? sortedPrices[sortedPrices.length - 1] : null;
   const subcategoryRow = liveType !== "all" ? LIVE_SUBCATEGORIES[liveType] : null;
   const labelForType = LIVE_TYPE_LABELS[liveType] ?? "products";
 
@@ -545,36 +547,61 @@ export default function StrainClient({
             )}
           </p>
 
-          {/* Sort dropdown — native select for mobile-friendly OS picker */}
-          <div className="relative shrink-0">
-            <select
-              value={sortBy}
-              onChange={(e) => {
-                const val = e.target.value as typeof sortBy;
-                tapHaptic();
-                if (val === "distance") {
-                  requestLocationSort();
-                } else {
-                  setSortBy(val);
-                }
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Favorites toggle button */}
+            <button
+              onClick={() => {
+                if (!isAuthenticated) { window.location.href = "/join?return=/strain"; return; }
+                setShowFavoritesOnly((v) => !v); tapHaptic();
               }}
-              aria-label="Sort products"
-              className="appearance-none bg-forest border border-forest-mid text-cream text-xs font-bold tracking-widest uppercase pl-3 pr-8 py-2 rounded-full hover:border-amber/50 focus:border-amber/60 outline-none transition-colors min-h-[36px] cursor-pointer"
+              aria-label={showFavoritesOnly ? "Show all products" : "Show favorites only"}
+              aria-pressed={showFavoritesOnly}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-colors min-h-[36px] ${
+                showFavoritesOnly
+                  ? "bg-amber text-forest-deep"
+                  : "bg-forest border border-forest-mid text-cream-muted hover:border-amber/50 hover:text-cream"
+              }`}
             >
-              <option value="default">Sort</option>
-              <option value="favorites">♥ Favorites</option>
-              <option value="price-asc">Price ↑ Low–High</option>
-              <option value="price-desc">Price ↓ High–Low</option>
-              <option value="distance">
-                {locating ? "Locating…" : "Distance ↑ Nearest"}
-              </option>
-            </select>
-            <span
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-amber/70 text-[10px] pointer-events-none"
-              aria-hidden="true"
-            >
-              ▼
-            </span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current">
+                <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+              {favorites.size > 0 && (
+                <span className="tabular-nums">{favorites.size}</span>
+              )}
+            </button>
+
+            {/* Sort dropdown — native select for mobile-friendly OS picker */}
+            <div className="relative shrink-0">
+              <select
+                value={sortBy}
+                onChange={(e) => {
+                  const val = e.target.value as typeof sortBy;
+                  tapHaptic();
+                  if (val === "distance") {
+                    requestLocationSort();
+                  } else {
+                    setSortBy(val);
+                  }
+                  // Prevent scroll-jump when 1k+ items re-sort
+                  requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
+                }}
+                aria-label="Sort products"
+                className="appearance-none bg-forest border border-forest-mid text-cream text-xs font-bold tracking-widest uppercase pl-3 pr-8 py-2 rounded-full hover:border-amber/50 focus:border-amber/60 outline-none transition-colors min-h-[36px] cursor-pointer"
+              >
+                <option value="default">Sort</option>
+                <option value="price-asc">Price ↑ Low–High</option>
+                <option value="price-desc">Price ↓ High–Low</option>
+                <option value="distance">
+                  {locating ? "Locating…" : "Distance ↑ Nearest"}
+                </option>
+              </select>
+              <span
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-amber/70 text-[10px] pointer-events-none"
+                aria-hidden="true"
+              >
+                ▼
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -656,10 +683,10 @@ export default function StrainClient({
         </div>
       )}
 
-      {/* Compact inline price slider — full width, label inline, no card. */}
+      {/* Compact inline price slider — proportional to category max price. */}
       <div className="flex items-center gap-3 px-1">
-        <span className="text-xs font-bold text-cream-muted shrink-0">
-          $
+        <span className="text-[11px] font-bold shrink-0 tabular-nums min-w-[3.5rem] text-right text-amber/90">
+          {priceCap !== null ? `≤ $${priceCap}` : "Any"}
         </span>
         <input
           type="range"
@@ -680,8 +707,8 @@ export default function StrainClient({
             background: `linear-gradient(to right, rgb(255 185 0) 0%, rgb(255 185 0) ${sliderPct}%, rgb(255 255 255 / 0.1) ${sliderPct}%, rgb(255 255 255 / 0.1) 100%)`,
           }}
         />
-        <span className="text-xs font-bold text-cream-muted shrink-0">
-          $$$$
+        <span className="text-[11px] font-bold text-cream-muted/70 shrink-0 tabular-nums">
+          {maxPrice !== null ? `$${maxPrice}` : ""}
         </span>
       </div>
 

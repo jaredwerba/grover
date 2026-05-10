@@ -105,7 +105,7 @@ export default function DashboardChat({ persona }: { persona: Persona }) {
       {/* Floating button */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-6 right-6 z-50 px-5 py-3 rounded-full bg-amber shadow-lg flex items-center gap-2 transition-transform active:scale-95 text-forest-deep text-sm font-semibold"
+        className="fixed bottom-20 right-4 z-50 px-5 py-3 rounded-full bg-amber shadow-lg flex items-center gap-2 transition-transform active:scale-95 text-forest-deep text-sm font-semibold"
         aria-label={open ? "Close chat" : "Chat with Cove"}
       >
         {open ? (

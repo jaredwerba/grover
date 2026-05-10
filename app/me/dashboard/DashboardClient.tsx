@@ -33,7 +33,7 @@ export default function DashboardClient({ email }: { email: string }) {
   }, [persona]);
 
   async function handleSignOut() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch("/api/auth/logout", { method: "POST", redirect: "manual" });
     window.location.href = "/";
   }
 

@@ -8,6 +8,7 @@ import {
   decodePublicKey,
 } from "@/lib/passkey-kv";
 import { createSession } from "@/lib/auth";
+import { getAccountStatus } from "@/lib/account-status";
 
 export async function POST(req: NextRequest) {
   const body = await req.json() as {
@@ -60,6 +61,17 @@ export async function POST(req: NextRequest) {
   }
 
   await updateCredentialCounter(cred.credentialId, verification.authenticationInfo.newCounter);
+
+  // ── Account approval gate ──
+  const status = await getAccountStatus(cred.email);
+  if (status?.status === "pending") {
+    return NextResponse.json({ error: "account_pending" }, { status: 403 });
+  }
+  if (status?.status === "denied") {
+    return NextResponse.json({ error: "account_denied" }, { status: 403 });
+  }
+  // approved or null (grandfathered pre-gating users) → proceed
+
   await createSession(cred.email);
 
   return NextResponse.json({ success: true });

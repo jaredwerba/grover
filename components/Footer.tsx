@@ -56,7 +56,7 @@ export default function Footer() {
         </svg>
       </FooterLink>
 
-      <FooterLink href="/me" label="Me" active={pathname?.startsWith("/me") ?? false}>
+      <FooterLink href="/me" label="AAI" active={pathname?.startsWith("/me") ?? false}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
           <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
           <circle cx="12" cy="7" r="4" />

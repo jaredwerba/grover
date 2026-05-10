@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { exportDashboardPdf } from "@/lib/export-pdf";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
@@ -20,6 +21,20 @@ export default function Nav({
   const isHome = pathname === "/";
   const isMePage = pathname === "/me";
   const isDashboard = pathname === "/me/dashboard";
+
+  // Easter egg: double-tap logo → Spotify playlist
+  const lastTap = useRef(0);
+  const handleLogoTap = useCallback((e: React.MouseEvent) => {
+    const now = Date.now();
+    if (now - lastTap.current < 400) {
+      e.preventDefault();
+      window.open(
+        "https://open.spotify.com/playlist/0yXxCQ6Lr1H20kScZsvBUV?si=kJAY1n3rQSCDgof2NsylkA&pi=BbMhqPUKQSqN3",
+        "_blank"
+      );
+    }
+    lastTap.current = now;
+  }, []);
 
   async function handleExport() {
     // Read the current tab from the URL at click time — DashboardClient
@@ -42,7 +57,7 @@ export default function Nav({
           {isHome ? (
             <div className="w-0 sm:w-0" />
           ) : (
-            <Link href="/" className="flex items-center shrink-0">
+            <Link href="/" className="flex items-center shrink-0" onClick={handleLogoTap}>
               <Image
                 src="/images/logotrans.png"
                 alt="Cove"

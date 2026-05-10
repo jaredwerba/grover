@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 type LoadingAction = "register" | "signin" | null;
+type AccountState = "idle" | "pending" | "denied";
 
 export default function MePage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [accountState, setAccountState] = useState<AccountState>("idle");
 
   const isValidEmail = email.includes("@") && email.includes(".");
   const busy = loadingAction !== null;
@@ -39,9 +41,21 @@ export default function MePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ challengeToken, registrationResponse, email }),
       });
+      const verifyData = await verifyRes.json();
+
       if (!verifyRes.ok) {
-        const data = await verifyRes.json();
-        throw new Error(data.error ?? "Registration failed");
+        if (verifyData.error === "account_denied") {
+          setAccountState("denied");
+          setLoadingAction(null);
+          return;
+        }
+        throw new Error(verifyData.error ?? "Registration failed");
+      }
+
+      if (verifyData.pending) {
+        setAccountState("pending");
+        setLoadingAction(null);
+        return;
       }
 
       router.push("/me/dashboard");
@@ -91,6 +105,16 @@ export default function MePage() {
       });
       if (!verifyRes.ok) {
         const data = await verifyRes.json();
+        if (data.error === "account_pending") {
+          setAccountState("pending");
+          setLoadingAction(null);
+          return;
+        }
+        if (data.error === "account_denied") {
+          setAccountState("denied");
+          setLoadingAction(null);
+          return;
+        }
         throw new Error(data.error ?? "Sign in failed");
       }
 
@@ -106,6 +130,53 @@ export default function MePage() {
     }
   }
 
+  // ── Pending approval state ──
+  if (accountState === "pending") {
+    return (
+      <div className="min-h-screen bg-forest-deep flex items-center justify-center px-4 py-16">
+        <div className="w-full max-w-sm bg-forest rounded-2xl border border-forest-mid p-8 text-center">
+          <div className="text-5xl mb-4" aria-hidden="true">&#128337;</div>
+          <h1 className="text-2xl font-groovy text-amber mb-3 tracking-wide">
+            Account Submitted
+          </h1>
+          <p className="text-cream-muted text-sm leading-relaxed mb-6">
+            Your account is pending approval. You will receive an email at{" "}
+            <strong className="text-cream">{email}</strong> once approved.
+          </p>
+          <Link
+            href="/"
+            className="inline-block border border-amber/60 text-amber font-semibold py-3 px-8 rounded-full hover:bg-amber/10 transition-colors text-sm"
+          >
+            Back to Cove
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Denied state ──
+  if (accountState === "denied") {
+    return (
+      <div className="min-h-screen bg-forest-deep flex items-center justify-center px-4 py-16">
+        <div className="w-full max-w-sm bg-forest rounded-2xl border border-forest-mid p-8 text-center">
+          <div className="text-5xl mb-4" aria-hidden="true">&#10007;</div>
+          <h1 className="text-2xl font-groovy text-red-400 mb-3 tracking-wide">
+            Account Not Approved
+          </h1>
+          <p className="text-cream-muted text-sm leading-relaxed mb-6">
+            Your account request was not approved. If you believe this is an error, please reach out.
+          </p>
+          <Link
+            href="/"
+            className="inline-block border border-amber/60 text-amber font-semibold py-3 px-8 rounded-full hover:bg-amber/10 transition-colors text-sm"
+          >
+            Back to Cove
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-forest-deep flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-sm bg-forest rounded-2xl border border-forest-mid p-8">
@@ -113,7 +184,7 @@ export default function MePage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-groovy text-cream mb-2 tracking-wide leading-tight">
-            Me
+            AAI
           </h1>
           <p className="text-cream-muted text-sm">Your personal Cove space</p>
         </div>

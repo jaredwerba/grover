@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { claimShop, getBusinessClaim } from "@/lib/business";
+import { claimShop, getBusinessClaim, unclaimShop } from "@/lib/business";
 
 export async function GET() {
   const session = await getSession();
@@ -29,4 +29,14 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ claim });
+}
+
+export async function DELETE() {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
+  }
+
+  await unclaimShop(session.email);
+  return NextResponse.json({ ok: true });
 }
