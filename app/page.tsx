@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import HeroVideo from "@/components/HeroVideo";
+import HeroLogo from "@/components/HeroLogo";
 
 export default function LandingPage() {
   return (
@@ -33,15 +34,8 @@ export default function LandingPage() {
           }}
         />
 
-        {/* Logo */}
-        <Image
-          src="/images/logotrans.png"
-          alt="Cove"
-          width={280}
-          height={118}
-          className="hero-logo block mb-6 relative z-10"
-          priority
-        />
+        {/* Logo — double-tap opens Spotify playlist */}
+        <HeroLogo />
 
         {/* Motto — groovy display font, vintage poster headline */}
         <p className="hero-motto font-groovy text-amber text-lg sm:text-2xl tracking-wide mb-8 relative z-10">
