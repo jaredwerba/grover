@@ -38,4 +38,7 @@ export const growers: Grower[] = [
   { name: "Vermont Select", town: "Vermont", website: "https://www.vermontselect.com/" },
   { name: "Satori Vermont", town: "Middlebury", website: "https://satorivt.com/" },
   { name: "High Pines Cultivation", town: "Vermont", website: "https://www.highpinescultivation.com/" },
+  { name: "Bushy Beard Cultivation", town: "Newport", website: "https://www.bushybeardcultivation.com/" },
+  { name: "Shindig & G's Craft Cannabis", town: "Irasburg", website: "https://dutchie.com/dispensary/kushies-llc/brands/shindig-gs" },
+  { name: "Bern Legacy", town: "Burlington", website: "https://bernlegacy.com/" },
 ];
