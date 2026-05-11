@@ -52,6 +52,7 @@ export default function Nav({
       className={`liquid-glass-nav sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3 [&>*]:relative [&>*]:z-10 transition-transform duration-300 ease-in-out ${
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
+      style={isHome ? { background: "rgba(11, 45, 27, 0.2)" } : undefined}
     >
           {/* Logo — hidden on home page, shown on all other pages */}
           {isHome ? (
