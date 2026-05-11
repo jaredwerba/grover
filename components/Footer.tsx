@@ -15,7 +15,7 @@ export default function Footer() {
         hidden ? "translate-y-full" : "translate-y-0"
       }`}
       style={{
-        background: "rgba(11, 45, 27, 0.75)",
+        background: "rgba(11, 45, 27, 0.92)",
         borderBottom: "none",
         borderTop: "1px solid rgba(255, 185, 0, 0.1)",
         boxShadow:
