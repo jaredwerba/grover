@@ -238,7 +238,7 @@ const DATA: Record<Persona, Section[]> = {
       ],
     },
     {
-      title: "Compliance",
+      title: "Intelligence",
       metrics: [
         { label: "Room Count", value: "3 / 6 limit" },
         { label: "Canopy", value: "10,000 sq ft" },

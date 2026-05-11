@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import HeroVideo from "@/components/HeroVideo";
 
 export default function LandingPage() {
   return (
@@ -8,6 +9,9 @@ export default function LandingPage() {
       <div style={{ background: "#0b2d1b", position: "relative", zIndex: 1 }}>
       {/* Hero — vintage Vermont poster layout */}
       <section className="relative flex flex-col items-center justify-center flex-1 text-center px-6 py-24 sm:py-32 overflow-hidden">
+
+        {/* Background video with gradient overlay */}
+        <HeroVideo />
 
         {/* Sunburst — radial amber rays behind the logo, slow spin */}
         <div
@@ -20,7 +24,7 @@ export default function LandingPage() {
             height: "min(800px, 140vw)",
             background: `repeating-conic-gradient(
               from 0deg,
-              rgba(255,185,0,0.04) 0deg 5deg,
+              rgba(255,185,0,0.03) 0deg 5deg,
               transparent 5deg 10deg
             )`,
             borderRadius: "50%",

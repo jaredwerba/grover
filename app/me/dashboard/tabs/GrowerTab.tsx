@@ -288,9 +288,9 @@ export default function GrowerTab() {
         </div>
       </div>
 
-      {/* Compliance */}
+      {/* Intelligence */}
       <div className="bg-forest rounded-2xl border border-forest-mid p-5" style={card(320)}>
-        <h3 className="text-cream font-semibold text-sm mb-3">Compliance</h3>
+        <h3 className="text-cream font-semibold text-sm mb-3">Intelligence</h3>
         <div className="space-y-2.5">
           {COMPLIANCE.map((c) => (
             <div key={c.label} className="flex items-center justify-between">
