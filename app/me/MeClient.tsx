@@ -137,11 +137,11 @@ export default function MePage() {
         <div className="w-full max-w-sm bg-forest rounded-2xl border border-forest-mid p-8 text-center">
           <div className="text-5xl mb-4" aria-hidden="true">&#128337;</div>
           <h1 className="text-2xl font-groovy text-amber mb-3 tracking-wide">
-            Account Submitted
+            Account Being Provisioned
           </h1>
           <p className="text-cream-muted text-sm leading-relaxed mb-6">
-            Your account is pending approval. You will receive an email at{" "}
-            <strong className="text-cream">{email}</strong> once approved.
+            Your account is being processed. Check your email at{" "}
+            <strong className="text-cream">{email}</strong> shortly for a confirmation that your account is ready.
           </p>
           <Link
             href="/"

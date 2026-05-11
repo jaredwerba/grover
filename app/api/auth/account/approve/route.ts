@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
           <p style="color:#c8c0b0;margin:0 0 28px;font-size:15px;line-height:1.5;">
             Your Cove account has been approved. You can now sign in with Face ID and access your dashboard.
           </p>
-          <a href="${process.env.NEXT_PUBLIC_BASE_URL ?? "https://covebud.com"}/me"
+          <a href="https://covebud.com/me"
              style="display:inline-block;padding:14px 32px;background:#d4a843;color:#122a1e;border-radius:50px;font-weight:700;font-size:15px;text-decoration:none;">
             Sign in to Cove
           </a>
