@@ -1,10 +1,19 @@
 import Link from "next/link";
 import { dispensaries } from "@/lib/dispensaries";
+import { growers } from "@/lib/growers";
 import TrailClient from "@/components/TrailClient";
 import { getInventorySnapshot } from "@/lib/inventory-public";
 
 export default async function TrailPage() {
   const { metas } = await getInventorySnapshot();
+
+  // Shuffle growers so no one is always first
+  const shuffled = [...growers];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
   return (
     <main className="bg-forest-deep text-cream flex flex-col min-h-screen">
       {/* Header — compact */}
@@ -61,6 +70,69 @@ export default async function TrailPage() {
                 {label}
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Craft Growers */}
+      <section className="px-4 sm:px-6 pb-16 max-w-3xl mx-auto w-full">
+        <div className="border-t border-forest-mid/50 pt-12">
+          <p className="text-amber/70 text-xs tracking-[0.3em] uppercase font-semibold mb-4">
+            Vermont
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-groovy text-cream tracking-wide leading-tight mb-3">
+            Craft Growers
+          </h2>
+          <p className="text-cream-muted text-sm sm:text-base max-w-xl leading-relaxed mb-8">
+            Vermont&apos;s licensed cannabis cultivators — grown right here in the Green Mountain State.
+            Support local farmers and discover what Vermont soil produces.
+          </p>
+
+          {/* Growers table */}
+          <div
+            className="border-2 border-forest-mid rounded-sm overflow-hidden"
+            style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)" }}
+          >
+            <div
+              className="grid gap-x-3 px-4 py-3 border-b border-forest-mid bg-forest-mid/30"
+              style={{ gridTemplateColumns: "1fr auto" }}
+            >
+              <span className="text-amber/70 text-xs tracking-widest uppercase font-bold">Grower</span>
+              <span className="text-amber/70 text-xs tracking-widest uppercase font-bold text-right">Town</span>
+            </div>
+
+            {shuffled.map((g, i) => (
+              <div
+                key={g.name}
+                className={`grid gap-x-3 px-4 py-3.5 border-b border-forest-mid/50 hover:bg-forest-mid/20 transition-colors items-center ${
+                  i === shuffled.length - 1 ? "border-b-0" : ""
+                }`}
+                style={{ gridTemplateColumns: "1fr auto" }}
+              >
+                <a
+                  href={g.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-amber hover:text-amber-hover transition-colors text-sm font-semibold truncate"
+                >
+                  {g.name} ↗
+                </a>
+                <span className="text-cream-muted text-xs whitespace-nowrap text-right">
+                  {g.town}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-cream-muted/50 text-xs tracking-wide text-center mt-4">
+            {growers.length} cultivators · Vermont Cannabis Control Board & Vermont Growers Association
+          </p>
+
+          <div className="mt-12 border-t border-forest-mid pt-6 text-center">
+            <p className="text-cream-muted text-xs leading-relaxed max-w-xl mx-auto">
+              For adults 21+ only. Vermont recreational cannabis law applies.
+              Listings are informational — always verify directly with the cultivator.
+            </p>
           </div>
         </div>
       </section>

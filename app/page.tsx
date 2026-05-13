@@ -87,33 +87,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Craft Growers callout */}
-      <section className="w-full">
-        <div className="px-6 pb-24 max-w-2xl mx-auto">
-          <div
-            className="bg-forest border-2 border-forest-mid p-6 rounded-sm relative flex gap-5 items-start"
-            style={{ boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.07)" }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/icons/2d-white/seeds.png"
-              alt=""
-              className="shrink-0 w-14 h-14 sm:w-16 sm:h-16 object-contain icon-float"
-              style={{
-                filter: "brightness(0) saturate(100%) invert(80%) sepia(100%) saturate(600%) hue-rotate(358deg) brightness(105%)",
-              }}
-            />
-            <div className="flex flex-col">
-              <h3 className="text-cream font-groovy text-2xl leading-tight tracking-wide mb-2">Craft Growers</h3>
-              <p className="text-cream-muted text-sm leading-relaxed mb-3">Built for the Vermont market. Local knowledge, local dispensaries, and a community that knows the Green Mountain State.</p>
-              <Link href="/vermont-first" className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber-hover transition-colors">
-                Explore ↗
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       </div>{/* end solid content area */}
 
     </main>
