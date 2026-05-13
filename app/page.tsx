@@ -3,6 +3,7 @@ import Image from "next/image";
 import HeroVideo from "@/components/HeroVideo";
 import HeroLogo from "@/components/HeroLogo";
 import HeroChat from "@/components/HeroChat";
+import HeroAAI from "@/components/HeroAAI";
 
 export default function LandingPage() {
   return (
@@ -86,6 +87,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* AAI — Augmented & Autonomous Intelligence showcase */}
+      <HeroAAI />
 
       </div>{/* end solid content area */}
 

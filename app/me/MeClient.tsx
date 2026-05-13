@@ -186,7 +186,7 @@ export default function MePage() {
           <h1 className="text-3xl font-groovy text-cream mb-2 tracking-wide leading-tight">
             AAI
           </h1>
-          <p className="text-cream-muted text-sm">Your personal Cove space</p>
+          <p className="text-cream-muted text-sm">Exclusive invite only</p>
         </div>
 
         {/* Error */}
@@ -224,7 +224,7 @@ export default function MePage() {
             ) : (
               <>
                 <FaceIdIcon />
-                Create account with Face ID
+                Request Access
               </>
             )}
           </button>
