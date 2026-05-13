@@ -19,22 +19,27 @@ export default function Nav({
   const pathname = usePathname();
   const hidden = useScrollDirection();
   const isHome = pathname === "/";
+  const isTrail = pathname === "/trail";
   const isMePage = pathname === "/me";
   const isDashboard = pathname === "/me/dashboard";
 
-  // Easter egg: double-tap logo → Spotify playlist
+  // Easter egg: double-tap logo → Spotify playlist (single-tap on trail page)
   const lastTap = useRef(0);
+  const spotifyUrl =
+    "https://open.spotify.com/playlist/0yXxCQ6Lr1H20kScZsvBUV?si=kJAY1n3rQSCDgof2NsylkA&pi=BbMhqPUKQSqN3";
   const handleLogoTap = useCallback((e: React.MouseEvent) => {
+    if (isTrail) {
+      e.preventDefault();
+      window.open(spotifyUrl, "_blank");
+      return;
+    }
     const now = Date.now();
     if (now - lastTap.current < 400) {
       e.preventDefault();
-      window.open(
-        "https://open.spotify.com/playlist/0yXxCQ6Lr1H20kScZsvBUV?si=kJAY1n3rQSCDgof2NsylkA&pi=BbMhqPUKQSqN3",
-        "_blank"
-      );
+      window.open(spotifyUrl, "_blank");
     }
     lastTap.current = now;
-  }, []);
+  }, [isTrail]);
 
   async function handleExport() {
     // Read the current tab from the URL at click time — DashboardClient
@@ -52,7 +57,7 @@ export default function Nav({
       className={`liquid-glass-nav sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3 [&>*]:relative [&>*]:z-10 transition-transform duration-300 ease-in-out ${
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
-      style={isHome ? { background: "rgba(11, 45, 27, 0.2)" } : undefined}
+      style={isHome ? { background: "transparent", backdropFilter: "none", WebkitBackdropFilter: "none", boxShadow: "none", borderBottom: "none" } : undefined}
     >
           {/* Logo — hidden on home page, shown on all other pages */}
           {isHome ? (

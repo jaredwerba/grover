@@ -28,13 +28,13 @@ export default function HeroVideo() {
         <source src="/videos/covehero.mp4" type="video/mp4" />
       </video>
 
-      {/* Gradient overlay for text readability */}
+      {/* Gradient overlay — light at top to let sky breathe, solid at bottom seam */}
       <div
         className="absolute inset-0"
         aria-hidden="true"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(11,45,27,0.15) 0%, rgba(11,45,27,0.45) 55%, #0b2d1b 100%)",
+            "linear-gradient(to bottom, rgba(11,45,27,0.05) 0%, rgba(11,45,27,0.15) 35%, rgba(11,45,27,0.5) 75%, #0b2d1b 100%)",
         }}
       />
     </>
