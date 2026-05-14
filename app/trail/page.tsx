@@ -26,11 +26,8 @@ export default async function TrailPage() {
         </p>
       </div>
 
-      {/* Map + card row — fixed viewport height */}
-      <div
-        className="px-4 sm:px-6 flex flex-col shrink-0"
-        style={{ height: "calc(100svh - 120px)" }}
-      >
+      {/* Map + card row */}
+      <div className="px-4 sm:px-6 flex flex-col shrink-0 w-full max-w-2xl mx-auto">
         <TrailClient dispensaries={dispensaries} inventoryMetas={metas} />
       </div>
 

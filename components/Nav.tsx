@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { exportDashboardPdf } from "@/lib/export-pdf";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
@@ -19,27 +18,8 @@ export default function Nav({
   const pathname = usePathname();
   const hidden = useScrollDirection();
   const isHome = pathname === "/";
-  const isTrail = pathname === "/trail";
   const isMePage = pathname === "/me";
   const isDashboard = pathname === "/me/dashboard";
-
-  // Easter egg: double-tap logo → Spotify playlist (single-tap on trail page)
-  const lastTap = useRef(0);
-  const spotifyUrl =
-    "https://open.spotify.com/playlist/0yXxCQ6Lr1H20kScZsvBUV?si=kJAY1n3rQSCDgof2NsylkA&pi=BbMhqPUKQSqN3";
-  const handleLogoTap = useCallback((e: React.MouseEvent) => {
-    if (isTrail) {
-      e.preventDefault();
-      window.open(spotifyUrl, "_blank");
-      return;
-    }
-    const now = Date.now();
-    if (now - lastTap.current < 400) {
-      e.preventDefault();
-      window.open(spotifyUrl, "_blank");
-    }
-    lastTap.current = now;
-  }, [isTrail]);
 
   async function handleExport() {
     // Read the current tab from the URL at click time — DashboardClient
@@ -63,7 +43,7 @@ export default function Nav({
           {isHome ? (
             <div className="w-0 sm:w-0" />
           ) : (
-            <Link href="/" className="flex items-center shrink-0" onClick={handleLogoTap}>
+            <Link href="/" className="flex items-center shrink-0">
               <Image
                 src="/images/logotrans.png"
                 alt="Cove"
@@ -89,12 +69,14 @@ export default function Nav({
                     Export
                   </button>
                 )}
-                <Link
-                  href="/chat"
-                  className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"
-                >
-                  Chat
-                </Link>
+                {!isDashboard && (
+                  <Link
+                    href="/chat"
+                    className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"
+                  >
+                    Chat
+                  </Link>
+                )}
                 <Link
                   href="/me/dashboard"
                   className="text-cream-muted hover:text-cream transition-colors text-xs px-3 py-2 rounded-sm hover:bg-forest/60 tracking-wide uppercase"

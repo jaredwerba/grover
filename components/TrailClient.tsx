@@ -201,9 +201,9 @@ export default function TrailClient({
         {query && <span className="text-amber/70"> · &ldquo;{query}&rdquo;</span>}
       </p>
 
-      {/* Map — fills all remaining space */}
+      {/* Map — square aspect ratio so the page scrolls past easily */}
       <div
-        className="w-full rounded-sm overflow-hidden border-2 border-forest-mid flex-1 min-h-0"
+        className="w-full rounded-sm overflow-hidden border-2 border-forest-mid aspect-square shrink-0"
         style={{
           boxShadow: "inset 0 0 0 3px rgba(255,185,0,0.06)",
         }}

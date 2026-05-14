@@ -62,7 +62,8 @@ const LIVE_SUBCATEGORIES: Record<string, FilterChoice[]> = {
   ],
   vape: [
     { value: "all", label: "All" },
-    { value: "live", label: "Rosin / Resin" },
+    { value: "rosin", label: "Rosin" },
+    { value: "resin", label: "Resin" },
     { value: "solventless", label: "Solventless" },
     { value: "distillate", label: "Distillate" },
   ],
@@ -111,8 +112,11 @@ function classifySubcategory(product: LiveProduct, mainType: string): string[] {
     else tags.push("other");
   }
   if (mainType === "vape") {
-    if (/live\s*(resin|rosin)/i.test(haystack)) tags.push("live");
-    else if (/\b(solventless|rosin)\b/i.test(haystack)) tags.push("solventless");
+    // Rosin (incl. live rosin) and resin (live resin) are now separate filters.
+    // Check rosin first so "live rosin" tags as rosin, not resin.
+    if (/\brosin\b/i.test(haystack)) tags.push("rosin");
+    else if (/\bresin\b/i.test(haystack)) tags.push("resin");
+    else if (/\bsolventless\b/i.test(haystack)) tags.push("solventless");
     else if (/\bdistillate\b/i.test(haystack)) tags.push("distillate");
   }
   return tags;
