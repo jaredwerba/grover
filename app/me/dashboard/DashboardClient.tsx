@@ -46,9 +46,11 @@ export default function DashboardClient({ email }: { email: string }) {
             <h1 className="text-3xl font-groovy text-amber tracking-wide leading-none mb-1">
               Me
             </h1>
-            <p className="text-cream-muted text-sm break-all">
-              Welcome back,{" "}
-              <span className="text-cream font-medium">{email}</span>
+            <p className="text-cream-muted text-xs uppercase tracking-widest">
+              Welcome back
+            </p>
+            <p className="text-cream text-sm font-medium break-all mt-0.5">
+              {email}
             </p>
           </div>
           <button

@@ -17,6 +17,29 @@ export default function ChatApp() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [personalSuggestions, setPersonalSuggestions] = useState<string[]>([]);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [locating, setLocating] = useState(false);
+
+  function requestLocation() {
+    if (!navigator.geolocation) return;
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setUserLocation({ lat, lng });
+        // Persist for future sessions / cross-page reuse (fire-and-forget)
+        fetch("/api/user/location", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lat, lng }),
+        }).catch(() => {});
+        setLocating(false);
+      },
+      () => setLocating(false),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
 
   useEffect(() => {
     fetch("/api/user/favorites")
@@ -47,7 +70,10 @@ export default function ChatApp() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages.slice(-HISTORY_LIMIT) }),
+        body: JSON.stringify({
+          messages: newMessages.slice(-HISTORY_LIMIT),
+          userLocation,
+        }),
       });
 
       if (!res.ok || !res.body) throw new Error(`Error ${res.status}`);
@@ -87,7 +113,13 @@ export default function ChatApp() {
         onSuggest={sendMessage}
         personalSuggestions={personalSuggestions}
       />
-      <ChatInput onSend={sendMessage} disabled={isStreaming} />
+      <ChatInput
+        onSend={sendMessage}
+        disabled={isStreaming}
+        onRequestLocation={requestLocation}
+        locating={locating}
+        locationActive={!!userLocation}
+      />
     </div>
   );
 }

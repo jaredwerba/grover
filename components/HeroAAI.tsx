@@ -256,7 +256,7 @@ function DispenserPreview({ visible }: { visible: boolean }) {
       {/* Left column */}
       <div className="space-y-4">
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-3" style={card(150)}>
+        <div className="grid grid-cols-3 gap-2 sm:gap-3" style={card(150)}>
           <MiniStat label="Products" value={`${productCount}`} unit="in stock" />
           <MiniStat label="Platform" value="CoveDB" />
           <MiniStat label="Sync" value="Live" unit="12m ago" />
@@ -368,7 +368,7 @@ function GrowerPreview({ visible }: { visible: boolean }) {
       {/* Left column */}
       <div className="space-y-4">
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-3" style={card(150)}>
+        <div className="grid grid-cols-3 gap-2 sm:gap-3" style={card(150)}>
           <MiniStat label="Grow Rooms" value="3" unit="active" />
           <MiniStat label="Yield" value={`${totalGrams.toLocaleString()}g`} />
           <MiniStat label="Revenue" value={`$${revenue.toLocaleString()}`} />
@@ -536,7 +536,7 @@ function ManufacturePreview({ visible }: { visible: boolean }) {
       {/* Left column */}
       <div className="space-y-4">
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-3" style={card(150)}>
+        <div className="grid grid-cols-3 gap-2 sm:gap-3" style={card(150)}>
           <MiniStat label="Units / Mo" value={unitsProduced.toLocaleString()} unit="produced" />
           <MiniStat label="Extraction" value={`${extractionYield}%`} unit="yield" />
           <MiniStat label="Lab Tests" value="4/4" unit="passing" />
@@ -704,21 +704,25 @@ function ManufacturePreview({ visible }: { visible: boolean }) {
 /* ── Mini stat card ── */
 
 function MiniStat({ label, value, unit }: { label: string; value: string; unit?: string }) {
+  // Mobile cards are ~78px wide on a 375px screen — shrink longer values
+  // hard at the small breakpoint to avoid truncation, restore size at sm+.
   const valueSize =
     value.length >= 9
-      ? "text-[13px] sm:text-base"
+      ? "text-[11px] sm:text-base"
       : value.length >= 7
-      ? "text-sm sm:text-lg"
-      : "text-xl";
+      ? "text-xs sm:text-lg"
+      : value.length >= 5
+      ? "text-sm sm:text-xl"
+      : "text-base sm:text-xl";
   return (
-    <div className="bg-forest rounded-2xl border border-forest-mid p-4 min-w-0">
-      <p className="text-cream-muted text-[10px] uppercase tracking-widest mb-1.5 leading-none">
+    <div className="bg-forest rounded-2xl border border-forest-mid p-3 sm:p-4 min-w-0">
+      <p className="text-cream-muted text-[10px] uppercase tracking-widest mb-1.5 leading-none truncate">
         {label}
       </p>
       <p className={`text-amber font-bold leading-none tabular-nums truncate ${valueSize}`}>
         {value}
       </p>
-      {unit && <p className="text-cream-muted/60 text-[10px] mt-1">{unit}</p>}
+      {unit && <p className="text-cream-muted/60 text-[10px] mt-1 truncate">{unit}</p>}
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { getSession } from "@/lib/auth";
 import { COVE_SYSTEM_PROMPT } from "@/lib/cove-prompt";
 import { getLiveInventoryForPrompt } from "@/lib/inventory-public";
 import { getUserPreferences, getFavorites } from "@/lib/user-preferences";
+import { dispensaries } from "@/lib/dispensaries";
+import { haversineDistance } from "@/lib/geo";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -21,7 +23,13 @@ export async function POST(req: NextRequest) {
     return new Response("OPENAI_API_KEY is not configured", { status: 500 });
   }
 
-  const { messages }: { messages: Message[] } = await req.json();
+  const {
+    messages,
+    userLocation,
+  }: {
+    messages: Message[];
+    userLocation?: { lat: number; lng: number } | null;
+  } = await req.json();
 
   const openai = new OpenAI({ apiKey });
 
@@ -51,6 +59,27 @@ export async function POST(req: NextRequest) {
     lines.push(
       "Use these preferences to personalize recommendations. Don't mention that you have access to their preferences unless asked."
     );
+    systemPrompt += `\n\n${lines.join("\n")}`;
+  }
+
+  // Inject proximity context if the user shared their location.
+  // Computes the 3 nearest licensed dispensaries so Cove can ground
+  // recommendations in real distances instead of guessing.
+  if (userLocation && typeof userLocation.lat === "number" && typeof userLocation.lng === "number") {
+    const ranked = dispensaries
+      .map((d) => ({
+        d,
+        dist: haversineDistance(userLocation.lat, userLocation.lng, d.lat, d.lng),
+      }))
+      .sort((a, b) => a.dist - b.dist)
+      .slice(0, 3);
+    const lines = [
+      "--- USER LOCATION CONTEXT ---",
+      `Coordinates: ${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`,
+      "Nearest licensed dispensaries:",
+      ...ranked.map(({ d, dist }) => `- ${d.name} (${d.city}) — ${dist.toFixed(1)} mi`),
+      "When recommending where to buy, prefer dispensaries from this list and reference their town and distance naturally (e.g. \"Higher Elevation in Burlington, about 4 miles away\"). Don't quote raw coordinates.",
+    ];
     systemPrompt += `\n\n${lines.join("\n")}`;
   }
 
