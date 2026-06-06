@@ -100,6 +100,7 @@ export default function StickerScanner({
     handledRef.current = false;
     setStatus("scanning");
     setErrorKind(null);
+    setErrorMessage("");
   }, [open]);
 
   // Lock body scroll while the scanner is full-screen — prevents the
@@ -117,6 +118,14 @@ export default function StickerScanner({
   const onDetect = useCallback(
     (codes: IDetectedBarcode[]) => {
       if (handledRef.current) return;
+      // Log every batch the library emits so we can confirm on a real
+      // device whether the detector is matching frames at all.
+      if (typeof console !== "undefined" && codes.length > 0) {
+        console.log(
+          "[StickerScanner] onScan",
+          codes.map((c) => ({ format: c.format, rawValue: c.rawValue }))
+        );
+      }
       for (const code of codes) {
         const token = extractToken(code.rawValue);
         if (!token) continue;
@@ -131,14 +140,44 @@ export default function StickerScanner({
   );
 
   // The library emits a typed IScannerError with a `kind` discriminant.
-  // Map each kind to the right fallback panel; default to the generic
-  // error UI. We stash the kind in state too so ERROR_PANELS can render
-  // tailored copy for "in-use" / "insecure-context" / "overconstrained".
+  // We track the kind + message so the fallback panel can show useful
+  // detail for debugging on real devices.
   const [errorKind, setErrorKind] = useState<IScannerError["kind"] | null>(
     null
   );
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  // Earlier this handler flipped to status="error" on every kind that
+  // wasn't permission-denied or no-camera. That was too aggressive: the
+  // library also fires onError on transient camera hiccups (and on iOS
+  // sometimes mid-scan if a frame fails to decode). Those bumped us
+  // into the "Scanner unavailable" panel even though the camera was
+  // still streaming fine. Now we only switch to a fatal status for
+  // the kinds that truly mean "the camera is not going to work":
+  //   permission-denied, no-camera, in-use, insecure-context, unsupported
+  // Everything else (aborted, overconstrained, unknown) we log + ignore
+  // so the camera keeps running and the user can keep aiming.
+  const FATAL_KINDS = new Set<IScannerError["kind"]>([
+    "permission-denied",
+    "no-camera",
+    "in-use",
+    "insecure-context",
+    "unsupported",
+  ]);
+
   const onError = useCallback((err: IScannerError) => {
+    // Surface every error to the console so we can debug from a real
+    // device. Safe to keep in prod — quiet for the happy path.
+    if (typeof console !== "undefined") {
+      console.warn("[StickerScanner] onError", {
+        kind: err.kind,
+        message: err.message,
+        cause: err.cause,
+      });
+    }
+    if (!FATAL_KINDS.has(err.kind)) return; // transient — keep scanning
     setErrorKind(err.kind);
+    setErrorMessage(err.message ?? "");
     if (err.kind === "permission-denied") {
       setStatus("denied");
     } else if (err.kind === "no-camera") {
@@ -235,10 +274,16 @@ export default function StickerScanner({
               (errorKind && ERROR_PANELS[errorKind]?.body) ??
               "Something went wrong starting the camera. Try again, or use your phone's native camera app to scan the QR."
             }
+            debug={
+              errorKind
+                ? `kind: ${errorKind}${errorMessage ? ` · ${errorMessage}` : ""}`
+                : undefined
+            }
             ctaLabel="Try again"
             onCta={() => {
               setStatus("scanning");
               setErrorKind(null);
+              setErrorMessage("");
               handledRef.current = false;
             }}
             onClose={onClose}
@@ -260,12 +305,14 @@ export default function StickerScanner({
 function FallbackPanel({
   title,
   body,
+  debug,
   ctaLabel,
   onCta,
   onClose,
 }: {
   title: string;
   body: string;
+  debug?: string;
   ctaLabel: string;
   onCta: () => void;
   onClose: () => void;
@@ -290,6 +337,11 @@ function FallbackPanel({
           Close
         </button>
       </div>
+      {debug && (
+        <p className="text-cream-muted/40 text-[10px] font-mono mt-6 max-w-xs break-all">
+          {debug}
+        </p>
+      )}
     </div>
   );
 }
