@@ -62,19 +62,38 @@ const ERROR_PANELS: Partial<Record<IScannerError["kind"], ErrorPanel>> = {
   },
 };
 
-function extractToken(raw: string): string | null {
-  // Accept either a full URL (https://covebud.com/crave-passport/scan?t=...)
-  // or just the raw JWT (so a sticker printed without a domain still works).
+/**
+ * Decide where to navigate based on a decoded QR string. We accept:
+ *
+ *   • Short slug URL: https://covebud.com/s/papa-g-dispensary
+ *     → navigate to /s/papa-g-dispensary (server mints the JWT)
+ *   • Direct scan URL: https://covebud.com/crave-passport/scan?t=<jwt>
+ *     → navigate to /crave-passport/scan?t=<jwt>
+ *   • Bare JWT (legacy stickers printed without a domain)
+ *     → navigate to /crave-passport/scan?t=<jwt>
+ *
+ * Returns the in-app path to push, or null if the decoded value
+ * doesn't look like ours and we should keep scanning.
+ */
+function extractScanTarget(raw: string): string | null {
   try {
     const u = new URL(raw);
-    const t = u.searchParams.get("t");
-    if (t) return t;
+    // Same-origin redirects we recognize.
+    const path = u.pathname;
+    // Short-URL: /s/<slug>
+    if (/^\/s\/[a-z0-9-]+$/i.test(path)) {
+      return path;
+    }
+    // Direct scan URL
+    if (path === "/crave-passport/scan" && u.searchParams.get("t")) {
+      return `${path}?t=${encodeURIComponent(u.searchParams.get("t")!)}`;
+    }
   } catch {
     // not a URL
   }
-  // Heuristic: JWTs are three base64url segments separated by dots.
+  // Bare JWT (three base64url segments separated by dots)
   if (/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(raw)) {
-    return raw;
+    return `/crave-passport/scan?t=${encodeURIComponent(raw)}`;
   }
   return null;
 }
@@ -127,12 +146,14 @@ export default function StickerScanner({
         );
       }
       for (const code of codes) {
-        const token = extractToken(code.rawValue);
-        if (!token) continue;
+        const target = extractScanTarget(code.rawValue);
+        if (!target) continue;
         handledRef.current = true;
-        // Close the camera modal then navigate to the scan route.
+        // Close the camera modal then navigate. `target` is already a
+        // valid in-app path — either /s/<slug> (server redirects to
+        // /crave-passport/scan) or /crave-passport/scan?t=<jwt>.
         onClose();
-        router.push(`/crave-passport/scan?t=${encodeURIComponent(token)}`);
+        router.push(target);
         return;
       }
     },
@@ -291,12 +312,30 @@ export default function StickerScanner({
         )}
       </div>
 
-      {/* Bottom hint */}
+      {/* Bottom hint + manual fallback */}
       <div className="shrink-0 px-6 py-4 bg-forest-deep/90 backdrop-blur-sm text-center">
-        <p className="text-cream-muted text-xs leading-relaxed">
+        <p className="text-cream-muted text-xs leading-relaxed mb-2">
           Point your camera at a CRAVE sticker QR. Sticker is auto-collected
           when detected.
         </p>
+        <button
+          onClick={() => {
+            const raw = window.prompt(
+              "Having trouble scanning?\n\nEnter the shop ID printed on the sticker (e.g. papa-g-dispensary):"
+            );
+            if (!raw) return;
+            const slug = raw.trim().toLowerCase();
+            if (!/^[a-z0-9-]+$/.test(slug)) {
+              window.alert("That doesn't look like a valid CRAVE shop ID.");
+              return;
+            }
+            onClose();
+            router.push(`/s/${slug}`);
+          }}
+          className="text-cream-muted/60 hover:text-cream text-[11px] underline underline-offset-2"
+        >
+          Can&apos;t scan? Enter shop ID manually
+        </button>
       </div>
     </div>
   );

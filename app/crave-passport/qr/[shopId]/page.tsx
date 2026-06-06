@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import QRCode from "qrcode";
 import { dispensaries } from "@/lib/dispensaries";
-import { signStickerToken } from "@/lib/sticker-tokens";
 
 export const metadata: Metadata = {
   title: "CRAVE Sticker QR",
@@ -27,15 +26,16 @@ export default async function StickerQrPage({
   const shop = dispensaries.find((d) => d.id === shopId);
   if (!shop) notFound();
 
-  const token = await signStickerToken(shop.id);
-
-  // Build an absolute URL so a phone's native camera app can also open
-  // the QR. Reads the actual request host/proto so this works on
-  // localhost, Vercel preview, and production without config.
+  // Build an absolute SHORT URL so a phone's native camera app can also
+  // open the QR. The /s/<slug> route mints + signs the token on demand
+  // and redirects to /crave-passport/scan, so the QR itself only needs
+  // to carry the shop slug (~30-40 chars) — a far sparser pattern than
+  // embedding the JWT directly (~280 chars). Easier to scan with any
+  // camera, especially at arm's length.
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "covebud.com";
   const proto = h.get("x-forwarded-proto") ?? "https";
-  const scanUrl = `${proto}://${host}/crave-passport/scan?t=${encodeURIComponent(token)}`;
+  const scanUrl = `${proto}://${host}/s/${shop.id}`;
 
   // Server-side QR generation as a data URL — keeps us within the CSP
   // (which allows `data:` in img-src) without needing an external host.
