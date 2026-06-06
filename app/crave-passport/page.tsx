@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { dispensaries } from "@/lib/dispensaries";
 import { getSession } from "@/lib/auth";
 import { getStickers } from "@/lib/stickers";
@@ -32,10 +31,10 @@ interface PageProps {
 }
 
 export default async function CravePassportPage({ searchParams }: PageProps) {
-  // Auth gate — passport is signed-in-only. Matches the pattern in
-  // app/chat/page.tsx.
+  // Browsable without sign-in — anyone can flip through the passport.
+  // Collecting still requires a session (the /scan route enforces it).
   const session = await getSession();
-  if (!session) redirect("/join?next=/crave-passport");
+  const isSignedIn = !!session;
 
   // Keep printed-brochure order: by region, then alphabetical
   const TRAIL_ORDER = [
@@ -51,7 +50,8 @@ export default async function CravePassportPage({ searchParams }: PageProps) {
       .sort((a, b) => a.name.localeCompare(b.name))
   );
 
-  const stickers = await getStickers(session.email);
+  // Only signed-in users have a sticker collection.
+  const stickers = session ? await getStickers(session.email) : [];
   // Map shopId -> StickerEntry for O(1) lookup in the page renderer
   const collectedMap: Record<string, { collected_at: string }> = {};
   for (const s of stickers) {
@@ -95,6 +95,7 @@ export default async function CravePassportPage({ searchParams }: PageProps) {
           justCollectedShopId={justCollectedShopId}
           newlyCollected={newlyCollected}
           errorCode={errorCode}
+          isSignedIn={isSignedIn}
         />
       </section>
 

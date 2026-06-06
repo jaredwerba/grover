@@ -22,6 +22,13 @@ export interface Dispensary {
   /** CRAVE region/trail this dispensary belongs to. */
   region?: Region;
   /**
+   * Optional transparent-background logo. Local path (e.g.
+   * `/images/dispensary-logos/lake-effect-vt.png`) or a remote URL
+   * approved by the site CSP `img-src` allowlist. When absent, the
+   * UI falls back to a styled initial badge.
+   */
+  logoUrl?: string;
+  /**
    * Cove Connect — which platform powers this shop's online menu, and
    * the platform-specific merchant identifier the connector uses to
    * fetch their inventory. Optional: shops without a known platform
@@ -106,7 +113,7 @@ export const dispensaries: Dispensary[] = [
     lat: 44.4612,
     lng: -73.2198,
     phone: "",
-    website: "",
+    website: "https://upstateelevator.com",
     menu_url: "",
     hours: DEFAULT_HOURS,
     tags: ["recreational"],
@@ -136,7 +143,7 @@ export const dispensaries: Dispensary[] = [
     lat: 44.4759,
     lng: -73.2121,
     phone: "",
-    website: "",
+    website: "https://berngallery.com",
     menu_url: "",
     hours: DEFAULT_HOURS,
     tags: ["recreational"],
@@ -151,7 +158,7 @@ export const dispensaries: Dispensary[] = [
     lat: 44.4821,
     lng: -73.2098,
     phone: "",
-    website: "",
+    website: "https://theherbclosetvt.com",
     menu_url: "",
     hours: DEFAULT_HOURS,
     tags: ["recreational"],
@@ -213,7 +220,7 @@ export const dispensaries: Dispensary[] = [
     lat: 44.3631,
     lng: -72.7470,
     phone: "",
-    website: "",
+    website: "https://zenbarnfarms.com",
     menu_url: "",
     hours: DEFAULT_HOURS,
     tags: ["recreational"],
@@ -639,7 +646,7 @@ export const dispensaries: Dispensary[] = [
     lat: 44.4759,
     lng: -73.2121,
     phone: "",
-    website: "",
+    website: "https://covebud.com",
     menu_url: "",
     hours: DEFAULT_HOURS,
     tags: ["recreational"],

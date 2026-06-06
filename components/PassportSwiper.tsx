@@ -50,12 +50,14 @@ export default function PassportSwiper({
   justCollectedShopId,
   newlyCollected = false,
   errorCode,
+  isSignedIn = false,
 }: {
   dispensaries: Dispensary[];
   collectedMap?: Record<string, { collected_at: string }>;
   justCollectedShopId?: string;
   newlyCollected?: boolean;
   errorCode?: string;
+  isSignedIn?: boolean;
 }) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
@@ -73,6 +75,11 @@ export default function PassportSwiper({
     1,
   ]);
   const [scannerOpen, setScannerOpen] = useState(false);
+  // Stable identities for the modal — passing `() => …` inline would
+  // give StickerScanner a new function each render, which would
+  // recreate the Scanner's onScan binding and reset the camera mid-scan.
+  const openScanner = useCallback(() => setScannerOpen(true), []);
+  const closeScanner = useCallback(() => setScannerOpen(false), []);
   const [showError, setShowError] = useState(!!errorCode);
   const [celebrate, setCelebrate] = useState(false);
   // Stash the just-collected ID in local state so the celebration
@@ -175,15 +182,26 @@ export default function PassportSwiper({
         )}
       </AnimatePresence>
 
-      {/* Scan button */}
-      {supportsCamera && (
-        <button
-          onClick={() => setScannerOpen(true)}
+      {/* Scan button — signed-in users open the camera; signed-out
+          users get nudged to sign in first. */}
+      {isSignedIn ? (
+        supportsCamera && (
+          <button
+            onClick={openScanner}
+            className="mb-5 inline-flex items-center gap-2 bg-amber text-forest-deep font-bold px-6 py-3 rounded-full text-xs tracking-widest uppercase shadow-lg shadow-amber/20 hover:bg-amber-hover transition-colors"
+          >
+            <CameraIcon />
+            Scan Sticker
+          </button>
+        )
+      ) : (
+        <a
+          href="/join?next=/crave-passport"
           className="mb-5 inline-flex items-center gap-2 bg-amber text-forest-deep font-bold px-6 py-3 rounded-full text-xs tracking-widest uppercase shadow-lg shadow-amber/20 hover:bg-amber-hover transition-colors"
         >
           <CameraIcon />
-          Scan Sticker
-        </button>
+          Sign In to Collect
+        </a>
       )}
 
       {/* Passport stack */}
@@ -353,7 +371,7 @@ export default function PassportSwiper({
       </p>
 
       {/* Camera scanner modal */}
-      <StickerScanner open={scannerOpen} onClose={() => setScannerOpen(false)} />
+      <StickerScanner open={scannerOpen} onClose={closeScanner} />
     </div>
   );
 }

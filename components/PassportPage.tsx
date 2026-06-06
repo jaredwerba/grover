@@ -91,9 +91,15 @@ export default function PassportPage({
       />
 
       {/* Dispensary header */}
-      <div className="relative px-6 pt-3 pb-4 text-center shrink-0">
+      <div className="relative px-6 pt-2 pb-3 text-center shrink-0">
+        <DispensaryLogo
+          name={dispensary.name}
+          logoUrl={dispensary.logoUrl}
+          website={dispensary.website}
+          accent={accent.color}
+        />
         <h2
-          className="font-groovy text-2xl sm:text-3xl leading-tight tracking-wide mb-1"
+          className="font-groovy text-xl sm:text-2xl leading-tight tracking-wide mb-1 mt-2"
           style={{ color: "#0f2d1c" }}
         >
           {dispensary.name}
@@ -104,6 +110,11 @@ export default function PassportPage({
         <p className="text-forest-deep/70 text-xs">
           {dispensary.city}, VT
         </p>
+        <DispensaryLink
+          website={dispensary.website}
+          shopId={dispensary.id}
+          accent={accent.color}
+        />
       </div>
 
       {/* Sticker placeholder / collected stamp — centerpiece */}
@@ -365,5 +376,105 @@ function CollectedStamp({
         </div>
       </div>
     </div>
+  );
+}
+
+/* Dispensary logo — small circular badge above the name. Priority:
+   1) explicit `logoUrl` (future: hand-curated transparent PNG)
+   2) Google's S2 favicon proxy when a `website` is set
+   3) styled initial badge as the always-available fallback
+*/
+function DispensaryLogo({
+  name,
+  logoUrl,
+  website,
+  accent,
+}: {
+  name: string;
+  logoUrl?: string;
+  website?: string;
+  accent: string;
+}) {
+  const faviconUrl = (() => {
+    if (logoUrl) return logoUrl;
+    if (!website) return null;
+    try {
+      const host = new URL(website).hostname;
+      return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+        host
+      )}&sz=128`;
+    } catch {
+      return null;
+    }
+  })();
+
+  const size = 44;
+
+  return (
+    <div
+      className="mx-auto rounded-full flex items-center justify-center overflow-hidden"
+      style={{
+        width: size,
+        height: size,
+        background: "#fff",
+        border: `2px solid ${accent}`,
+        boxShadow: `0 2px 6px rgba(0,0,0,0.15), inset 0 0 0 2px ${accent}1a`,
+      }}
+      aria-hidden="true"
+    >
+      {faviconUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={faviconUrl}
+          alt=""
+          width={32}
+          height={32}
+          className="object-contain"
+          style={{ width: 32, height: 32 }}
+        />
+      ) : (
+        <span
+          className="font-groovy leading-none"
+          style={{
+            fontSize: 22,
+            color: accent,
+            transform: "translateY(1px)",
+          }}
+        >
+          {name.charAt(0)}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* External "Visit Website" link, or in-app "View on Map" fallback when
+   we don't have an external URL for the shop. */
+function DispensaryLink({
+  website,
+  shopId,
+  accent,
+}: {
+  website?: string;
+  shopId: string;
+  accent: string;
+}) {
+  const href = website || `/trail?shop=${shopId}`;
+  const label = website ? "Visit Website" : "View on Map";
+  const external = !!website;
+  return (
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className="inline-flex items-center gap-1 mt-2 text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full"
+      style={{
+        background: `${accent}1a`,
+        color: accent,
+        border: `1px solid ${accent}55`,
+      }}
+    >
+      {label} {external ? "↗" : "→"}
+    </a>
   );
 }

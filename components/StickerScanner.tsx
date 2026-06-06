@@ -19,6 +19,20 @@ import { Scanner, type IDetectedBarcode } from "@yudiel/react-qr-scanner";
 
 type Status = "scanning" | "denied" | "no-camera" | "error";
 
+// Hoist Scanner props to module scope so React identity is stable
+// across every render of this component. If any of these were defined
+// inline they'd be new references each render — the camera library
+// would treat that as a config change and re-initialize the video
+// stream, which manifests as "the scanner closes immediately".
+const SCANNER_CONSTRAINTS: MediaTrackConstraints = {
+  facingMode: "environment",
+};
+const SCANNER_FORMATS = ["qr_code"] as const;
+const SCANNER_STYLES = {
+  container: { width: "100%", height: "100%" },
+  video: { width: "100%", height: "100%", objectFit: "cover" as const },
+};
+
 function extractToken(raw: string): string | null {
   // Accept either a full URL (https://covebud.com/crave-passport/scan?t=...)
   // or just the raw JWT (so a sticker printed without a domain still works).
@@ -135,13 +149,10 @@ export default function StickerScanner({
             <Scanner
               onScan={onDetect}
               onError={onError}
-              constraints={{ facingMode: "environment" }}
-              formats={["qr_code"]}
-              scanDelay={250}
-              styles={{
-                container: { width: "100%", height: "100%" },
-                video: { width: "100%", height: "100%", objectFit: "cover" },
-              }}
+              constraints={SCANNER_CONSTRAINTS}
+              formats={SCANNER_FORMATS as unknown as ["qr_code"]}
+              scanDelay={400}
+              styles={SCANNER_STYLES}
             />
             {/* Targeting reticle overlay */}
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
