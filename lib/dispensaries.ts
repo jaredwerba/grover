@@ -629,4 +629,21 @@ export const dispensaries: Dispensary[] = [
     description: "Montpelier's Capital Cannabis Co. on Main St. Part of the Granite Capital Trail.",
     region: "Granite Capital",
   },
+
+  /* ── TEST FIXTURE — used for CRAVE Passport scan-flow verification ── */
+  {
+    id: "papa-g-dispensary",
+    name: "Papa G Dispensary",
+    address: "Test Location",
+    city: "Burlington",
+    lat: 44.4759,
+    lng: -73.2121,
+    phone: "",
+    website: "",
+    menu_url: "",
+    hours: DEFAULT_HOURS,
+    tags: ["recreational"],
+    description: "CRAVE Passport test dispensary — used for development and end-to-end QR scan verification.",
+    region: "Champlain Valley",
+  },
 ];
