@@ -3,64 +3,23 @@
 /**
  * In-app QR scanner for the CRAVE Passport. Opens a fullscreen modal,
  * requests rear-camera access, and on a successful decode routes to
- * the existing /crave-passport/scan?t=<jwt> server route so the
- * in-app path and a phone's-native-camera path are unified.
+ * the same server route a phone's-native-camera scan hits so the
+ * code paths are unified.
  *
- * iOS Safari notes:
- * - getUserMedia requires HTTPS (Vercel preview/prod is fine;
- *   localhost is also allowed). A LAN IP over plain HTTP will fail
- *   silently — use the Vercel preview URL when testing on a phone.
- * - @yudiel/react-qr-scanner sets playsInline internally for iOS.
+ * Uses `html5-qrcode` (ZXing-based) rather than `@yudiel/react-qr-scanner`
+ * because the latter's BarcodeDetector polyfill was silently failing
+ * on iOS Safari — camera streamed fine, no errors fired, but onScan
+ * never received any codes. `html5-qrcode` is the most battle-tested
+ * QR library for iOS Safari (PayPal, GitHub Education, etc).
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Scanner,
-  type IDetectedBarcode,
-  type IScannerError,
-} from "@yudiel/react-qr-scanner";
+import { Html5Qrcode } from "html5-qrcode";
 
-type Status = "scanning" | "denied" | "no-camera" | "error";
+type Status = "starting" | "scanning" | "denied" | "no-camera" | "error";
 
-// Hoist Scanner props to module scope so React identity is stable
-// across every render of this component. If any of these were defined
-// inline they'd be new references each render — the camera library
-// would treat that as a config change and re-initialize the video
-// stream, which manifests as "the scanner closes immediately".
-const SCANNER_CONSTRAINTS: MediaTrackConstraints = {
-  facingMode: "environment",
-};
-const SCANNER_STYLES = {
-  container: { width: "100%", height: "100%" },
-  video: { width: "100%", height: "100%", objectFit: "cover" as const },
-};
-// iOS Safari's <video>.play() can take well over the library's 3000ms
-// default after the permission prompt resolves. Push the start timeout
-// way up so we don't trip the timeout-then-show-error path before the
-// camera has even warmed up.
-const SCANNER_START_TIMEOUT_MS = 15000;
-
-// Custom copy per IScannerError kind. Anything not listed here falls
-// through to the generic "Scanner unavailable" panel.
-type ErrorPanel = { title: string; body: string };
-const ERROR_PANELS: Partial<Record<IScannerError["kind"], ErrorPanel>> = {
-  "in-use": {
-    title: "Camera in use",
-    body:
-      "Another app is using the camera. Close that app and tap Try Again.",
-  },
-  "insecure-context": {
-    title: "Secure connection required",
-    body:
-      "Camera access only works over HTTPS. Open Cove on covebud.com (or localhost) and try again.",
-  },
-  overconstrained: {
-    title: "Camera not compatible",
-    body:
-      "We couldn't open a camera that matches the scanner's settings. Try a different device.",
-  },
-};
+const SCANNER_ELEMENT_ID = "crave-sticker-scanner-region";
 
 /**
  * Decide where to navigate based on a decoded QR string. We accept:
@@ -78,20 +37,16 @@ const ERROR_PANELS: Partial<Record<IScannerError["kind"], ErrorPanel>> = {
 function extractScanTarget(raw: string): string | null {
   try {
     const u = new URL(raw);
-    // Same-origin redirects we recognize.
     const path = u.pathname;
-    // Short-URL: /s/<slug>
     if (/^\/s\/[a-z0-9-]+$/i.test(path)) {
       return path;
     }
-    // Direct scan URL
     if (path === "/crave-passport/scan" && u.searchParams.get("t")) {
       return `${path}?t=${encodeURIComponent(u.searchParams.get("t")!)}`;
     }
   } catch {
     // not a URL
   }
-  // Bare JWT (three base64url segments separated by dots)
   if (/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(raw)) {
     return `/crave-passport/scan?t=${encodeURIComponent(raw)}`;
   }
@@ -106,25 +61,12 @@ export default function StickerScanner({
   onClose: () => void;
 }) {
   const router = useRouter();
-  const [status, setStatus] = useState<Status>("scanning");
-  // Ref instead of state so the next onScan tick from the camera lib
-  // sees the updated value immediately — useState wouldn't commit
-  // until the next React render, which could let a duplicate detection
-  // sneak through and double-navigate.
+  const [status, setStatus] = useState<Status>("starting");
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const handledRef = useRef(false);
+  const scannerRef = useRef<Html5Qrcode | null>(null);
 
-  // Reset state every time the modal reopens.
-  useEffect(() => {
-    if (!open) return;
-    handledRef.current = false;
-    setStatus("scanning");
-    setErrorKind(null);
-    setErrorMessage("");
-  }, [open]);
-
-  // Lock body scroll while the scanner is full-screen — prevents the
-  // passport behind from accepting touches and avoids iOS rubber-banding
-  // behind the camera viewport.
+  // Lock body scroll while the scanner is full-screen.
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -134,81 +76,102 @@ export default function StickerScanner({
     };
   }, [open]);
 
-  const onDetect = useCallback(
-    (codes: IDetectedBarcode[]) => {
+  const handleDetected = useCallback(
+    (decodedText: string) => {
       if (handledRef.current) return;
-      // Log every batch the library emits so we can confirm on a real
-      // device whether the detector is matching frames at all.
-      if (typeof console !== "undefined" && codes.length > 0) {
-        console.log(
-          "[StickerScanner] onScan",
-          codes.map((c) => ({ format: c.format, rawValue: c.rawValue }))
-        );
+      const target = extractScanTarget(decodedText);
+      if (typeof console !== "undefined") {
+        console.log("[StickerScanner] decoded", { decodedText, target });
       }
-      for (const code of codes) {
-        const target = extractScanTarget(code.rawValue);
-        if (!target) continue;
-        handledRef.current = true;
-        // Close the camera modal then navigate. `target` is already a
-        // valid in-app path — either /s/<slug> (server redirects to
-        // /crave-passport/scan) or /crave-passport/scan?t=<jwt>.
-        onClose();
-        router.push(target);
-        return;
-      }
+      if (!target) return; // not a CRAVE QR — keep scanning
+      handledRef.current = true;
+      // Best-effort stop the camera, then navigate. Don't await — we
+      // want the navigation to feel instant.
+      void scannerRef.current?.stop().catch(() => {});
+      onClose();
+      router.push(target);
     },
     [onClose, router]
   );
 
-  // The library emits a typed IScannerError with a `kind` discriminant.
-  // We track the kind + message so the fallback panel can show useful
-  // detail for debugging on real devices.
-  const [errorKind, setErrorKind] = useState<IScannerError["kind"] | null>(
-    null
-  );
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  // Start the scanner whenever the modal opens. We tear it down on
+  // close (or unmount) — same library instance is reused if the user
+  // taps "Try Again" by re-opening.
+  useEffect(() => {
+    if (!open) return;
+    handledRef.current = false;
+    setStatus("starting");
+    setErrorMessage("");
 
-  // Earlier this handler flipped to status="error" on every kind that
-  // wasn't permission-denied or no-camera. That was too aggressive: the
-  // library also fires onError on transient camera hiccups (and on iOS
-  // sometimes mid-scan if a frame fails to decode). Those bumped us
-  // into the "Scanner unavailable" panel even though the camera was
-  // still streaming fine. Now we only switch to a fatal status for
-  // the kinds that truly mean "the camera is not going to work":
-  //   permission-denied, no-camera, in-use, insecure-context, unsupported
-  // Everything else (aborted, overconstrained, unknown) we log + ignore
-  // so the camera keeps running and the user can keep aiming.
-  const FATAL_KINDS = new Set<IScannerError["kind"]>([
-    "permission-denied",
-    "no-camera",
-    "in-use",
-    "insecure-context",
-    "unsupported",
-  ]);
+    const instance = new Html5Qrcode(SCANNER_ELEMENT_ID, {
+      verbose: false,
+    });
+    scannerRef.current = instance;
 
-  const onError = useCallback((err: IScannerError) => {
-    // Surface every error to the console so we can debug from a real
-    // device. Safe to keep in prod — quiet for the happy path.
-    if (typeof console !== "undefined") {
-      console.warn("[StickerScanner] onError", {
-        kind: err.kind,
-        message: err.message,
-        cause: err.cause,
+    let cancelled = false;
+
+    instance
+      .start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          // qrbox uses a function so it adapts to the actual rendered
+          // viewport size on first frame — keeps the targeting box
+          // visible whether the user is in portrait or landscape.
+          qrbox: (vw, vh) => {
+            const side = Math.floor(Math.min(vw, vh) * 0.7);
+            return { width: side, height: side };
+          },
+          aspectRatio: window.innerWidth / window.innerHeight,
+        },
+        (decodedText) => {
+          handleDetected(decodedText);
+        },
+        // The "scan error" callback fires on every frame that doesn't
+        // contain a QR. We intentionally swallow it — it's not actually
+        // an error condition.
+        () => {}
+      )
+      .then(() => {
+        if (cancelled) return;
+        setStatus("scanning");
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        const msg = err instanceof Error ? err.message : String(err);
+        if (typeof console !== "undefined") {
+          console.warn("[StickerScanner] start() failed", { msg, err });
+        }
+        setErrorMessage(msg);
+        if (/NotAllowed|Permission|denied/i.test(msg)) {
+          setStatus("denied");
+        } else if (/NotFound|no.*camera|DevicesNotFound/i.test(msg)) {
+          setStatus("no-camera");
+        } else {
+          setStatus("error");
+        }
       });
-    }
-    if (!FATAL_KINDS.has(err.kind)) return; // transient — keep scanning
-    setErrorKind(err.kind);
-    setErrorMessage(err.message ?? "");
-    if (err.kind === "permission-denied") {
-      setStatus("denied");
-    } else if (err.kind === "no-camera") {
-      setStatus("no-camera");
-    } else {
-      setStatus("error");
-    }
-  }, []);
+
+    return () => {
+      cancelled = true;
+      // Best-effort stop + clear. html5-qrcode throws if you call
+      // stop() when it isn't running, and clear() is synchronous void
+      // (no promise), so wrap in try/catch rather than .catch().
+      void instance.stop().catch(() => {});
+      try {
+        instance.clear();
+      } catch {
+        // ignore
+      }
+      if (scannerRef.current === instance) {
+        scannerRef.current = null;
+      }
+    };
+  }, [open, handleDetected]);
 
   if (!open) return null;
+
+  const showCamera = status === "starting" || status === "scanning";
 
   return (
     <div
@@ -230,7 +193,15 @@ export default function StickerScanner({
           aria-label="Close scanner"
           className="w-10 h-10 rounded-full border border-forest-mid text-cream hover:text-amber hover:border-amber/60 transition-colors flex items-center justify-center"
         >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            className="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
@@ -238,28 +209,34 @@ export default function StickerScanner({
 
       {/* Camera viewport */}
       <div className="relative flex-1 overflow-hidden">
-        {status === "scanning" && (
-          <>
-            <Scanner
-              onScan={onDetect}
-              onError={onError}
-              constraints={SCANNER_CONSTRAINTS}
-              startTimeoutMs={SCANNER_START_TIMEOUT_MS}
-              styles={SCANNER_STYLES}
+        {/* The html5-qrcode library mounts its <video> into this div by
+            id. We always render it (even on error states) so that a
+            "Try Again" can re-mount cleanly. Hidden when the fallback
+            panels are shown. */}
+        <div
+          id={SCANNER_ELEMENT_ID}
+          className="absolute inset-0 w-full h-full"
+          style={{ display: showCamera ? "block" : "none" }}
+        />
+
+        {showCamera && status === "scanning" && (
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+            <div
+              className="rounded-3xl border-2 border-amber/80"
+              style={{
+                width: "min(70vw, 320px)",
+                height: "min(70vw, 320px)",
+                boxShadow:
+                  "0 0 0 9999px rgba(0,0,0,0.45), 0 0 30px rgba(255,185,0,0.4)",
+              }}
             />
-            {/* Targeting reticle overlay */}
-            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-              <div
-                className="rounded-3xl border-2 border-amber/80"
-                style={{
-                  width: "min(70vw, 320px)",
-                  height: "min(70vw, 320px)",
-                  boxShadow:
-                    "0 0 0 9999px rgba(0,0,0,0.45), 0 0 30px rgba(255,185,0,0.4)",
-                }}
-              />
-            </div>
-          </>
+          </div>
+        )}
+
+        {showCamera && status === "starting" && (
+          <div className="absolute inset-0 flex items-center justify-center text-cream-muted text-sm">
+            Starting camera…
+          </div>
         )}
 
         {status === "denied" && (
@@ -268,7 +245,7 @@ export default function StickerScanner({
             body="Cove needs your camera to read CRAVE stickers. Enable camera access for this site in your browser settings, then try again."
             ctaLabel="Try again"
             onCta={() => {
-              setStatus("scanning");
+              setStatus("starting");
               handledRef.current = false;
             }}
             onClose={onClose}
@@ -287,23 +264,12 @@ export default function StickerScanner({
 
         {status === "error" && (
           <FallbackPanel
-            title={
-              (errorKind && ERROR_PANELS[errorKind]?.title) ??
-              "Scanner unavailable"
-            }
-            body={
-              (errorKind && ERROR_PANELS[errorKind]?.body) ??
-              "Something went wrong starting the camera. Try again, or use your phone's native camera app to scan the QR."
-            }
-            debug={
-              errorKind
-                ? `kind: ${errorKind}${errorMessage ? ` · ${errorMessage}` : ""}`
-                : undefined
-            }
+            title="Scanner unavailable"
+            body="Something went wrong starting the camera. Try again, or use your phone's native camera app to scan the QR."
+            debug={errorMessage}
             ctaLabel="Try again"
             onCta={() => {
-              setStatus("scanning");
-              setErrorKind(null);
+              setStatus("starting");
               setErrorMessage("");
               handledRef.current = false;
             }}
