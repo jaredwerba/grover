@@ -15,7 +15,11 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Scanner, type IDetectedBarcode } from "@yudiel/react-qr-scanner";
+import {
+  Scanner,
+  type IDetectedBarcode,
+  type IScannerError,
+} from "@yudiel/react-qr-scanner";
 
 type Status = "scanning" | "denied" | "no-camera" | "error";
 
@@ -27,10 +31,35 @@ type Status = "scanning" | "denied" | "no-camera" | "error";
 const SCANNER_CONSTRAINTS: MediaTrackConstraints = {
   facingMode: "environment",
 };
-const SCANNER_FORMATS = ["qr_code"] as const;
 const SCANNER_STYLES = {
   container: { width: "100%", height: "100%" },
   video: { width: "100%", height: "100%", objectFit: "cover" as const },
+};
+// iOS Safari's <video>.play() can take well over the library's 3000ms
+// default after the permission prompt resolves. Push the start timeout
+// way up so we don't trip the timeout-then-show-error path before the
+// camera has even warmed up.
+const SCANNER_START_TIMEOUT_MS = 15000;
+
+// Custom copy per IScannerError kind. Anything not listed here falls
+// through to the generic "Scanner unavailable" panel.
+type ErrorPanel = { title: string; body: string };
+const ERROR_PANELS: Partial<Record<IScannerError["kind"], ErrorPanel>> = {
+  "in-use": {
+    title: "Camera in use",
+    body:
+      "Another app is using the camera. Close that app and tap Try Again.",
+  },
+  "insecure-context": {
+    title: "Secure connection required",
+    body:
+      "Camera access only works over HTTPS. Open Cove on covebud.com (or localhost) and try again.",
+  },
+  overconstrained: {
+    title: "Camera not compatible",
+    body:
+      "We couldn't open a camera that matches the scanner's settings. Try a different device.",
+  },
 };
 
 function extractToken(raw: string): string | null {
@@ -70,6 +99,7 @@ export default function StickerScanner({
     if (!open) return;
     handledRef.current = false;
     setStatus("scanning");
+    setErrorKind(null);
   }, [open]);
 
   // Lock body scroll while the scanner is full-screen — prevents the
@@ -100,14 +130,18 @@ export default function StickerScanner({
     [onClose, router]
   );
 
-  const onError = useCallback((err: unknown) => {
-    const msg = err instanceof Error ? err.message : String(err);
-    if (
-      /NotAllowed|Permission/i.test(msg) ||
-      /denied/i.test(msg)
-    ) {
+  // The library emits a typed IScannerError with a `kind` discriminant.
+  // Map each kind to the right fallback panel; default to the generic
+  // error UI. We stash the kind in state too so ERROR_PANELS can render
+  // tailored copy for "in-use" / "insecure-context" / "overconstrained".
+  const [errorKind, setErrorKind] = useState<IScannerError["kind"] | null>(
+    null
+  );
+  const onError = useCallback((err: IScannerError) => {
+    setErrorKind(err.kind);
+    if (err.kind === "permission-denied") {
       setStatus("denied");
-    } else if (/NotFound|DevicesNotFound/i.test(msg)) {
+    } else if (err.kind === "no-camera") {
       setStatus("no-camera");
     } else {
       setStatus("error");
@@ -150,8 +184,7 @@ export default function StickerScanner({
               onScan={onDetect}
               onError={onError}
               constraints={SCANNER_CONSTRAINTS}
-              formats={SCANNER_FORMATS as unknown as ["qr_code"]}
-              scanDelay={400}
+              startTimeoutMs={SCANNER_START_TIMEOUT_MS}
               styles={SCANNER_STYLES}
             />
             {/* Targeting reticle overlay */}
@@ -194,11 +227,18 @@ export default function StickerScanner({
 
         {status === "error" && (
           <FallbackPanel
-            title="Scanner unavailable"
-            body="Something went wrong starting the camera. Try again, or use your phone's native camera app to scan the QR."
+            title={
+              (errorKind && ERROR_PANELS[errorKind]?.title) ??
+              "Scanner unavailable"
+            }
+            body={
+              (errorKind && ERROR_PANELS[errorKind]?.body) ??
+              "Something went wrong starting the camera. Try again, or use your phone's native camera app to scan the QR."
+            }
             ctaLabel="Try again"
             onCta={() => {
               setStatus("scanning");
+              setErrorKind(null);
               handledRef.current = false;
             }}
             onClose={onClose}

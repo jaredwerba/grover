@@ -151,67 +151,35 @@ export default function PassportPage({
         </svg>
       </div>
 
-      {/* Brands + QR row */}
+      {/* Brands row */}
       <div className="relative px-5 pb-4 shrink-0">
-        <div className="flex items-end justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <p
-              className="text-[10px] font-bold leading-tight mb-2"
-              style={{ color: "#0f2d1c" }}
-            >
-              Participating
-              <br />
-              CRAVE Brands
-            </p>
-            <div className="flex flex-wrap gap-1.5">
-              {brands.map((b) => (
-                <span
-                  key={b.name}
-                  className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full text-forest-deep"
-                  style={{
-                    background: "rgba(15, 45, 28, 0.08)",
-                    border: "1px solid rgba(15, 45, 28, 0.15)",
-                  }}
-                  title={b.name}
-                >
-                  <span aria-hidden="true">{b.emoji}</span>
-                  <span>{b.name}</span>
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* "Scan to Explore" QR placeholder */}
-          <div className="shrink-0 flex flex-col items-center gap-1">
-            <div
-              className="w-14 h-14 rounded-sm grid grid-cols-5 grid-rows-5 gap-0 p-1"
-              style={{
-                background: "#fff",
-                border: "1px solid rgba(15,45,28,0.2)",
-              }}
-              aria-hidden="true"
-            >
-              {/* Pseudo-QR grid — deterministic, decorative only */}
-              {Array.from({ length: 25 }).map((_, i) => {
-                const seed = dispensary.id.charCodeAt(i % dispensary.id.length) + i;
-                const filled = seed % 3 === 0;
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      background: filled ? "#0f2d1c" : "transparent",
-                    }}
-                  />
-                );
-              })}
-            </div>
-            <p className="text-[8px] font-bold uppercase tracking-widest text-forest-deep/80">
-              Scan to<br />Explore
-            </p>
+        <div className="min-w-0">
+          <p
+            className="text-[10px] font-bold leading-tight mb-2"
+            style={{ color: "#0f2d1c" }}
+          >
+            Participating CRAVE Brands
+          </p>
+          <div className="flex flex-wrap gap-1.5 pr-12">
+            {brands.map((b) => (
+              <span
+                key={b.name}
+                className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full text-forest-deep"
+                style={{
+                  background: "rgba(15, 45, 28, 0.08)",
+                  border: "1px solid rgba(15, 45, 28, 0.15)",
+                }}
+                title={b.name}
+              >
+                <span aria-hidden="true">{b.emoji}</span>
+                <span>{b.name}</span>
+              </span>
+            ))}
           </div>
         </div>
 
-        {/* Page counter — bottom corner */}
+        {/* Page counter — bottom corner. pr-12 above keeps brand chips
+            from running into this. */}
         <div className="absolute bottom-1.5 right-4 text-[9px] font-mono text-forest-deep/40 tabular-nums">
           {index + 1} / {total}
         </div>
