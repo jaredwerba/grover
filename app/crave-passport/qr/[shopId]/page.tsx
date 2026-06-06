@@ -39,11 +39,14 @@ export default async function StickerQrPage({
 
   // Server-side QR generation as a data URL — keeps us within the CSP
   // (which allows `data:` in img-src) without needing an external host.
+  // Bumped to 640px and error correction H so that even a phone camera
+  // at arm's length can resolve every module reliably. Bigger margin
+  // gives the detector a clean quiet zone.
   const qrDataUrl = await QRCode.toDataURL(scanUrl, {
-    margin: 2,
-    width: 320,
+    margin: 4,
+    width: 640,
     color: { dark: "#0f2d1c", light: "#ffffff" },
-    errorCorrectionLevel: "M",
+    errorCorrectionLevel: "H",
   });
 
   return (
@@ -60,14 +63,15 @@ export default async function StickerQrPage({
         </p>
 
         {/* QR rendered server-side as a data URL — works inline within
-            the existing CSP and on any printed surface. */}
+            the existing CSP and on any printed surface. The image is
+            generated at 640px so it stays sharp when scaled up. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={qrDataUrl}
           alt={`QR code for ${shop.name} CRAVE sticker`}
-          width={320}
-          height={320}
-          className="mx-auto rounded-lg"
+          width={640}
+          height={640}
+          className="mx-auto rounded-lg w-full max-w-[480px] h-auto"
         />
 
         <p className="text-[10px] text-forest-deep/50 mt-6 leading-relaxed break-all">
