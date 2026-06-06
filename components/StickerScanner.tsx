@@ -15,7 +15,14 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Html5Qrcode } from "html5-qrcode";
+// NOTE: html5-qrcode is dynamically imported inside the start effect
+// (`await import("html5-qrcode")`) instead of statically here. Reasons:
+//  1. Defers loading the QR/ZXing bundle (~250kb) until the user
+//     actually taps "Scan Sticker".
+//  2. Lets us catch any throws-during-module-evaluation in our
+//     try/catch instead of letting them propagate to the Next.js
+//     error boundary and crash the whole page.
+type Html5QrcodeInstance = import("html5-qrcode").Html5Qrcode;
 
 type Status = "starting" | "scanning" | "denied" | "no-camera" | "error";
 
@@ -64,7 +71,7 @@ export default function StickerScanner({
   const [status, setStatus] = useState<Status>("starting");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const handledRef = useRef(false);
-  const scannerRef = useRef<Html5Qrcode | null>(null);
+  const scannerRef = useRef<Html5QrcodeInstance | null>(null);
 
   // Lock body scroll while the scanner is full-screen.
   useEffect(() => {
@@ -94,53 +101,64 @@ export default function StickerScanner({
     [onClose, router]
   );
 
-  // Start the scanner whenever the modal opens. We tear it down on
-  // close (or unmount) — same library instance is reused if the user
-  // taps "Try Again" by re-opening.
+  // Start the scanner whenever the modal opens.
+  // Everything — including the library import and the constructor
+  // call — runs inside a single try/catch so a sync throw lands in our
+  // error UI instead of bubbling up to Next.js's error boundary and
+  // crashing the page (which is what was happening on iOS Safari when
+  // CSP blocked the library's blob: worker).
   useEffect(() => {
     if (!open) return;
     handledRef.current = false;
     setStatus("starting");
     setErrorMessage("");
 
-    const instance = new Html5Qrcode(SCANNER_ELEMENT_ID, {
-      verbose: false,
-    });
-    scannerRef.current = instance;
-
     let cancelled = false;
+    let instance: Html5QrcodeInstance | null = null;
 
-    instance
-      .start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          // qrbox uses a function so it adapts to the actual rendered
-          // viewport size on first frame — keeps the targeting box
-          // visible whether the user is in portrait or landscape.
-          qrbox: (vw, vh) => {
-            const side = Math.floor(Math.min(vw, vh) * 0.7);
-            return { width: side, height: side };
-          },
-          aspectRatio: window.innerWidth / window.innerHeight,
-        },
-        (decodedText) => {
-          handleDetected(decodedText);
-        },
-        // The "scan error" callback fires on every frame that doesn't
-        // contain a QR. We intentionally swallow it — it's not actually
-        // an error condition.
-        () => {}
-      )
-      .then(() => {
+    (async () => {
+      try {
+        const mod = await import("html5-qrcode");
         if (cancelled) return;
+
+        instance = new mod.Html5Qrcode(SCANNER_ELEMENT_ID, {
+          verbose: false,
+        });
+        scannerRef.current = instance;
+
+        await instance.start(
+          { facingMode: "environment" },
+          {
+            fps: 10,
+            // qrbox uses a function so it adapts to the actual rendered
+            // viewport size on first frame — keeps the targeting box
+            // visible in both portrait and landscape.
+            qrbox: (vw, vh) => {
+              const side = Math.floor(Math.min(vw, vh) * 0.7);
+              return { width: side, height: side };
+            },
+            // No aspectRatio — html5-qrcode will fall back to whatever
+            // the actual camera reports, which avoids overconstrained
+            // errors on iOS where the inner-window ratio can be weird.
+          },
+          (decodedText) => {
+            handleDetected(decodedText);
+          },
+          // Per-frame "no QR in this frame" callback — not a real
+          // error, intentionally swallowed.
+          () => {}
+        );
+
+        if (cancelled) {
+          void instance.stop().catch(() => {});
+          return;
+        }
         setStatus("scanning");
-      })
-      .catch((err: unknown) => {
+      } catch (err) {
         if (cancelled) return;
         const msg = err instanceof Error ? err.message : String(err);
         if (typeof console !== "undefined") {
-          console.warn("[StickerScanner] start() failed", { msg, err });
+          console.warn("[StickerScanner] init failed", { msg, err });
         }
         setErrorMessage(msg);
         if (/NotAllowed|Permission|denied/i.test(msg)) {
@@ -150,20 +168,23 @@ export default function StickerScanner({
         } else {
           setStatus("error");
         }
-      });
+      }
+    })();
 
     return () => {
       cancelled = true;
       // Best-effort stop + clear. html5-qrcode throws if you call
       // stop() when it isn't running, and clear() is synchronous void
-      // (no promise), so wrap in try/catch rather than .catch().
-      void instance.stop().catch(() => {});
-      try {
-        instance.clear();
-      } catch {
-        // ignore
+      // (no promise), so wrap clear() in try/catch.
+      if (instance) {
+        void instance.stop().catch(() => {});
+        try {
+          instance.clear();
+        } catch {
+          // ignore
+        }
       }
-      if (scannerRef.current === instance) {
+      if (instance && scannerRef.current === instance) {
         scannerRef.current = null;
       }
     };
