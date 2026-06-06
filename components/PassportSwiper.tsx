@@ -339,32 +339,6 @@ export default function PassportSwiper({
         </button>
       </div>
 
-      {/* Dot scrubber */}
-      <div className="w-full max-w-sm sm:max-w-md mt-4 px-1">
-        <div className="flex gap-1 flex-wrap justify-center">
-          {dispensaries.map((d, i) => {
-            const isCollected = !!collectedMap[d.id];
-            return (
-              <button
-                key={d.id}
-                onClick={() => goTo(i, i > index ? 1 : -1)}
-                aria-label={`Jump to ${d.name}`}
-                className="h-1.5 rounded-full transition-all"
-                style={{
-                  width: i === index ? 18 : 6,
-                  background:
-                    i === index
-                      ? "#FFB900"
-                      : isCollected
-                      ? "rgba(255, 185, 0, 0.45)"
-                      : "rgba(196, 184, 154, 0.3)",
-                }}
-              />
-            );
-          })}
-        </div>
-      </div>
-
       {/* Hint text */}
       <p className="text-cream-muted/50 text-[10px] tracking-widest uppercase mt-5">
         Swipe or use arrow keys
