@@ -44,7 +44,7 @@ const growerContext = growers
   .map((g) => `${g.name} | ${g.town} | ${g.website}`)
   .join("\n");
 
-const DATA = `--- CANNATRAIL DISPENSARIES (${dispensaries.length} Vermont locations) ---
+const DATA = `--- CRAVE DISPENSARIES (${dispensaries.length} Vermont locations) ---
 ${dispensaryContext}
 
 --- CRAFT GROWERS (Vermont cultivators) ---

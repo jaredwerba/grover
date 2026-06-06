@@ -169,10 +169,10 @@ export default function HeroAAI() {
         </div>
 
         {/* Tab switcher */}
-        <div className="flex justify-center gap-2 mb-8" style={headerCard(100)}>
+        <div className="flex justify-center gap-1.5 sm:gap-2 mb-8 px-2" style={headerCard(100)}>
           <button
             onClick={() => selectTab("dispenser")}
-            className={`text-xs font-bold px-5 py-2.5 rounded-full border transition-colors tracking-widest uppercase ${
+            className={`text-[11px] sm:text-xs font-bold px-3 sm:px-5 py-2.5 rounded-full border transition-colors tracking-wide sm:tracking-widest uppercase whitespace-nowrap ${
               tab === "dispenser"
                 ? "bg-amber text-forest-deep border-amber"
                 : "bg-transparent text-cream-muted border-forest-mid hover:border-amber/40 hover:text-cream"
@@ -182,7 +182,7 @@ export default function HeroAAI() {
           </button>
           <button
             onClick={() => selectTab("grower")}
-            className={`text-xs font-bold px-5 py-2.5 rounded-full border transition-colors tracking-widest uppercase ${
+            className={`text-[11px] sm:text-xs font-bold px-3 sm:px-5 py-2.5 rounded-full border transition-colors tracking-wide sm:tracking-widest uppercase whitespace-nowrap ${
               tab === "grower"
                 ? "bg-amber text-forest-deep border-amber"
                 : "bg-transparent text-cream-muted border-forest-mid hover:border-amber/40 hover:text-cream"
@@ -192,7 +192,7 @@ export default function HeroAAI() {
           </button>
           <button
             onClick={() => selectTab("manufacture")}
-            className={`text-xs font-bold px-5 py-2.5 rounded-full border transition-colors tracking-widest uppercase ${
+            className={`text-[11px] sm:text-xs font-bold px-3 sm:px-5 py-2.5 rounded-full border transition-colors tracking-wide sm:tracking-widest uppercase whitespace-nowrap ${
               tab === "manufacture"
                 ? "bg-amber text-forest-deep border-amber"
                 : "bg-transparent text-cream-muted border-forest-mid hover:border-amber/40 hover:text-cream"
@@ -268,7 +268,7 @@ function DispenserPreview({ visible }: { visible: boolean }) {
           style={card(200)}
         >
           <h3 className="text-cream font-semibold text-sm mb-1">Top Products by Demand</h3>
-          <p className="text-cream-muted/60 text-[10px] mb-4">Consumer favorites from inventory</p>
+          <p className="text-cream-muted/60 text-xs sm:text-[10px] mb-4">Consumer favorites from inventory</p>
           <div className="space-y-3">
             {DEMAND_PRODUCTS.map((p, i) => (
               <div key={p.name}>
@@ -302,7 +302,7 @@ function DispenserPreview({ visible }: { visible: boolean }) {
           <div className="flex items-center justify-between mb-3">
             <div>
               <h3 className="text-cream font-semibold text-sm">Market Gaps</h3>
-              <p className="text-cream-muted/60 text-[10px]">Popular products you don&apos;t carry</p>
+              <p className="text-cream-muted/60 text-xs sm:text-[10px]">Popular products you don&apos;t carry</p>
             </div>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber/20 text-amber">
               8 gaps
@@ -332,7 +332,7 @@ function DispenserPreview({ visible }: { visible: boolean }) {
           style={card(300)}
         >
           <h3 className="text-cream font-semibold text-sm mb-1">Demand Radar</h3>
-          <p className="text-cream-muted/60 text-[10px] mb-4">What Vermont consumers want</p>
+          <p className="text-cream-muted/60 text-xs sm:text-[10px] mb-4">What Vermont consumers want</p>
           <div className="space-y-2.5">
             {[
               { type: "flower", count: 64 },
@@ -430,7 +430,7 @@ function GrowerPreview({ visible }: { visible: boolean }) {
           style={card(250)}
         >
           <h3 className="text-cream font-semibold text-sm mb-1">Yield vs Target</h3>
-          <p className="text-cream-muted/60 text-[10px] mb-4">Grams per harvest cycle</p>
+          <p className="text-cream-muted/60 text-xs sm:text-[10px] mb-4">Grams per harvest cycle</p>
           <div className="flex items-end gap-3" style={{ height: 90 }}>
             {YIELD_DATA.map((d, i) => (
               <div key={d.month} className="flex-1 flex flex-col items-center gap-1.5">
@@ -597,7 +597,7 @@ function ManufacturePreview({ visible }: { visible: boolean }) {
           style={card(250)}
         >
           <h3 className="text-cream font-semibold text-sm mb-1">Production Output</h3>
-          <p className="text-cream-muted/60 text-[10px] mb-4">Units per month</p>
+          <p className="text-cream-muted/60 text-xs sm:text-[10px] mb-4">Units per month</p>
           <div className="flex items-end gap-3" style={{ height: 90 }}>
             {PRODUCTION_DATA.map((d, i) => (
               <div key={d.month} className="flex-1 flex flex-col items-center gap-1.5">

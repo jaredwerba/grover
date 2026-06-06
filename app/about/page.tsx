@@ -4,13 +4,13 @@ import AboutNav from "@/components/AboutNav";
 import { AEO_SECTIONS } from "@/lib/about-sections";
 
 export const metadata: Metadata = {
-  title: "About Cove — Vermont Cannabis Guide, Cannatrail & AI Concierge",
+  title: "About Cove — Vermont Cannabis Guide, CRAVE & AI Concierge",
   description:
     "Vermont cannabis guide — what first-timers need to know, edibles vs smoking, how long edibles last, tourist laws, and how AI helps you choose the right product before visiting a dispensary.",
   openGraph: {
     title: "About Cove — Vermont Cannabis Guide",
     description:
-      "Vermont cannabis for first-timers, tourists, and curious consumers. Cannatrail dispensary map, strain library, and Cove AI — your Vermont cannabis companion.",
+      "Vermont cannabis for first-timers, tourists, and curious consumers. CRAVE dispensary map, strain library, and Cove AI — your Vermont cannabis companion.",
     url: "https://covebud.com/about",
     siteName: "Cove",
     type: "website",
@@ -54,7 +54,7 @@ export default function AboutPage() {
           About
         </h1>
         <p className="text-cream-muted text-sm max-w-xl leading-relaxed">
-          Learn how Cannatrail works, how to choose the right strain, and why AI makes the experience better.
+          Learn how CRAVE works, how to choose the right strain, and why AI makes the experience better.
         </p>
       </div>
 
@@ -106,7 +106,7 @@ export default function AboutPage() {
                     href="/trail"
                     className="bg-amber text-forest-deep text-xs font-bold px-5 py-2.5 rounded-sm tracking-widest uppercase hover:bg-amber/90 transition-colors"
                   >
-                    Open Cannatrail
+                    Open CRAVE
                   </Link>
                   <Link
                     href="/strain"

@@ -41,7 +41,7 @@ export default function LandingPage() {
             href="/trail"
             className="border border-amber/40 text-amber px-8 py-4 rounded-full hover:border-amber/70 hover:bg-amber/10 transition-colors text-xs tracking-widest uppercase"
           >
-            Explore the Cannatrail
+            Explore CRAVE
           </Link>
         </div>
       </section>

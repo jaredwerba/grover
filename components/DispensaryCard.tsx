@@ -40,24 +40,28 @@ export default function DispensaryCard({
       {/* Bottom: links + optional live-inventory badge */}
       <div className="px-4 pb-4 mt-auto shrink-0">
         <div className="flex gap-5">
-          <a
-            href={dispensary.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-amber hover:text-amber-hover transition-colors font-bold tracking-wider uppercase"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Website ↗
-          </a>
-          <a
-            href={dispensary.menu_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-amber hover:text-amber-hover transition-colors font-bold tracking-wider uppercase"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Menu ↗
-          </a>
+          {dispensary.website && (
+            <a
+              href={dispensary.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-amber hover:text-amber-hover transition-colors font-bold tracking-wider uppercase"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Website ↗
+            </a>
+          )}
+          {dispensary.menu_url && (
+            <a
+              href={dispensary.menu_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-amber hover:text-amber-hover transition-colors font-bold tracking-wider uppercase"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Menu ↗
+            </a>
+          )}
         </div>
         {liveBadge && (
           <p className="mt-2 text-[10px] text-cream-muted/60 tracking-wide flex items-center gap-1.5">

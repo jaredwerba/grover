@@ -19,7 +19,7 @@ export default async function TrailPage() {
       {/* Header — compact */}
       <div className="px-4 sm:px-6 pt-5 pb-3 shrink-0">
         <h1 className="text-2xl sm:text-3xl font-groovy text-cream tracking-wide leading-tight mb-1">
-          The Cannatrail
+          CRAVE
         </h1>
         <p className="text-cream-muted text-xs max-w-xl leading-relaxed">
           Vermont&apos;s licensed cannabis dispensaries — tap a pin or swipe the cards.
@@ -35,7 +35,7 @@ export default async function TrailPage() {
       <section className="px-4 sm:px-6 py-16 max-w-3xl mx-auto w-full">
         <div className="border-t border-forest-mid/50 pt-12">
           <p className="text-amber/70 text-xs tracking-[0.3em] uppercase font-semibold mb-4">
-            About the Cannatrail
+            About CRAVE
           </p>
           <h2 className="text-3xl sm:text-4xl font-groovy text-cream tracking-wide leading-tight mb-6">
             Grown here. For you.
@@ -45,7 +45,7 @@ export default async function TrailPage() {
               Vermont has always done things its own way — and cannabis is no different. From the Northeast Kingdom to the Champlain Valley, Green Mountain cultivators are growing some of the most thoughtful, craft cannabis in the country. Medical or recreational, flower or concentrate, there&apos;s a Vermont grower behind every product on this trail.
             </p>
             <p>
-              The Cannatrail was built to help you navigate Vermont&apos;s cannabis scene with confidence. Whether you&apos;re a lifelong Vermonter or just passing through on the way to the mountain, we want to connect you with the dispensaries and growers who call this state home.
+              CRAVE was built to help you navigate Vermont&apos;s cannabis scene with confidence. Whether you&apos;re a lifelong Vermonter or just passing through on the way to the mountain, we want to connect you with the dispensaries and growers who call this state home.
             </p>
             <p>
               Our honest advice? <span className="text-cream font-semibold">Shop around.</span> Every dispensary on the trail has its own personality, its own staff, and its own rotating selection of locally-grown products. The best way to find your favorite is to explore — and Vermont is a pretty great place to do that.
@@ -53,7 +53,7 @@ export default async function TrailPage() {
           </div>
           <div className="flex flex-wrap gap-3 mt-8">
             {([
-              { label: "Vermont Native", href: "/about#what-is-cannatrail" },
+              { label: "Vermont Native", href: "/about#what-is-crave" },
               { label: "Locally Grown", href: "/about#best-afternoon-strain" },
               { label: "Medical & Recreational", href: "/about#first-time-vermont" },
               { label: "Community First", href: "/about#cannabis-safely-first-time" },

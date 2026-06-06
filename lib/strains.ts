@@ -262,7 +262,7 @@ export const strains: Strain[] = [
     effects: ["Relaxed", "Happy", "Euphoric", "Creative", "Uplifted"],
     terpenes: ["Myrcene", "Pinene", "Caryophyllene"],
     flavors: ["Blueberry", "Floral", "Earthy", "Sweet"],
-    description: "A beloved Vermont craft strain — Blue Dragon crosses Blueberry with Sour Diesel to produce a balanced hybrid with a distinctive blueberry and floral aroma. Locally grown in the Green Mountains and a Cannatrail favorite.",
+    description: "A beloved Vermont craft strain — Blue Dragon crosses Blueberry with Sour Diesel to produce a balanced hybrid with a distinctive blueberry and floral aroma. Locally grown in the Green Mountains and a CRAVE favorite.",
   },
   {
     id: "strawberry-cough",
