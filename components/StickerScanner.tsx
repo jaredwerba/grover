@@ -92,13 +92,25 @@ export default function StickerScanner({
       }
       if (!target) return; // not a CRAVE QR — keep scanning
       handledRef.current = true;
-      // Best-effort stop the camera, then navigate. Don't await — we
-      // want the navigation to feel instant.
-      void scannerRef.current?.stop().catch(() => {});
-      onClose();
-      router.push(target);
+
+      // Use a FULL browser navigation, not router.push.
+      //
+      // Why: the scan target is typically /s/<slug>, which is a route
+      // handler that returns a redirect to /crave-passport/scan?t=,
+      // which redirects again to /crave-passport. Following two server
+      // redirects through Next.js's client router while we're also
+      // unmounting the scanner mid-callback was crashing iOS Safari
+      // with its "this page couldn't load" page-load error screen.
+      // A full navigation hands the redirect chain to the browser —
+      // exactly what the iOS Camera app does (which works), so behavior
+      // is identical here.
+      //
+      // We also skip the explicit stop()/onClose() — the page unload
+      // will tear everything down cleanly anyway, and dispatching
+      // those before navigation was racing with the navigation itself.
+      window.location.assign(target);
     },
-    [onClose, router]
+    []
   );
 
   // Start the scanner whenever the modal opens.
