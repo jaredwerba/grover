@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   AnimatePresence,
@@ -75,18 +75,30 @@ export default function PassportSwiper({
   const [scannerOpen, setScannerOpen] = useState(false);
   const [showError, setShowError] = useState(!!errorCode);
   const [celebrate, setCelebrate] = useState(false);
+  // Stash the just-collected ID in local state so the celebration
+  // condition survives the URL cleanup below — otherwise the
+  // `current.id === celebrateShopId` check goes false the moment we
+  // strip `?collected=…` from the URL and the animation cuts off early.
+  const [celebrateShopId, setCelebrateShopId] = useState<string | undefined>(
+    justCollectedShopId && newlyCollected ? justCollectedShopId : undefined
+  );
 
   // Trigger the celebration animation once on mount if we landed here
   // from a scan and the sticker was newly added.
   useEffect(() => {
     if (!justCollectedShopId || !newlyCollected) return;
     setCelebrate(true);
-    const t = setTimeout(() => setCelebrate(false), 1600);
+    const t = setTimeout(() => {
+      setCelebrate(false);
+      setCelebrateShopId(undefined);
+    }, 1600);
     return () => clearTimeout(t);
   }, [justCollectedShopId, newlyCollected]);
 
   // Drop the `?collected=…&new=1&error=…` query after we've consumed it
-  // so refreshing the page doesn't replay the celebration / error.
+  // so refreshing the page doesn't replay the celebration / error. The
+  // local `celebrateShopId` keeps the animation going through the URL
+  // change, so 200ms is fine.
   useEffect(() => {
     if (!justCollectedShopId && !errorCode) return;
     const t = setTimeout(() => {
@@ -246,7 +258,7 @@ export default function PassportSwiper({
             <motion.div
               className="w-full h-full"
               animate={
-                celebrate && current.id === justCollectedShopId
+                celebrate && current.id === celebrateShopId
                   ? { scale: [1, 1.05, 1], rotate: [0, -2, 2, 0] }
                   : { scale: 1, rotate: 0 }
               }
@@ -262,7 +274,7 @@ export default function PassportSwiper({
 
             {/* Amber flash on celebrate */}
             <AnimatePresence>
-              {celebrate && current.id === justCollectedShopId && (
+              {celebrate && current.id === celebrateShopId && (
                 <motion.div
                   className="absolute inset-0 rounded-2xl pointer-events-none"
                   initial={{ opacity: 0 }}

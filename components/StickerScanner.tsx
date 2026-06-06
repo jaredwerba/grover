@@ -13,7 +13,7 @@
  * - @yudiel/react-qr-scanner sets playsInline internally for iOS.
  */
 
-import { useState, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Scanner, type IDetectedBarcode } from "@yudiel/react-qr-scanner";
 
@@ -45,22 +45,45 @@ export default function StickerScanner({
 }) {
   const router = useRouter();
   const [status, setStatus] = useState<Status>("scanning");
-  const [handled, setHandled] = useState(false);
+  // Ref instead of state so the next onScan tick from the camera lib
+  // sees the updated value immediately — useState wouldn't commit
+  // until the next React render, which could let a duplicate detection
+  // sneak through and double-navigate.
+  const handledRef = useRef(false);
+
+  // Reset state every time the modal reopens.
+  useEffect(() => {
+    if (!open) return;
+    handledRef.current = false;
+    setStatus("scanning");
+  }, [open]);
+
+  // Lock body scroll while the scanner is full-screen — prevents the
+  // passport behind from accepting touches and avoids iOS rubber-banding
+  // behind the camera viewport.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   const onDetect = useCallback(
     (codes: IDetectedBarcode[]) => {
-      if (handled) return;
+      if (handledRef.current) return;
       for (const code of codes) {
         const token = extractToken(code.rawValue);
         if (!token) continue;
-        setHandled(true);
+        handledRef.current = true;
         // Close the camera modal then navigate to the scan route.
         onClose();
         router.push(`/crave-passport/scan?t=${encodeURIComponent(token)}`);
         return;
       }
     },
-    [handled, onClose, router]
+    [onClose, router]
   );
 
   const onError = useCallback((err: unknown) => {
@@ -142,7 +165,7 @@ export default function StickerScanner({
             ctaLabel="Try again"
             onCta={() => {
               setStatus("scanning");
-              setHandled(false);
+              handledRef.current = false;
             }}
             onClose={onClose}
           />
@@ -165,7 +188,7 @@ export default function StickerScanner({
             ctaLabel="Try again"
             onCta={() => {
               setStatus("scanning");
-              setHandled(false);
+              handledRef.current = false;
             }}
             onClose={onClose}
           />
