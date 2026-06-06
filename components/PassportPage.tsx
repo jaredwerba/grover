@@ -3,7 +3,7 @@
 import type { Dispensary, Region } from "@/lib/dispensaries";
 
 /**
- * A single CRAVE Passport "page" — visually styled after the printed
+ * A single CRAV Passport "page" — visually styled after the printed
  * brochure (region tag, dispensary header, sticker placeholder, brand
  * row, mountain illustration, scan-to-explore QR), but in the Cove
  * design system (forest/cream/amber).
@@ -54,7 +54,7 @@ export default function PassportPage({
 }) {
   const accent = dispensary.region
     ? REGION_ACCENT[dispensary.region]
-    : { color: "#FFB900", label: "CRAVE Trail" };
+    : { color: "#FFB900", label: "CRAV Trail" };
   const brands = pickBrands(dispensary.id, 4);
 
   return (
@@ -158,7 +158,7 @@ export default function PassportPage({
             className="text-[10px] font-bold leading-tight mb-2"
             style={{ color: "#0f2d1c" }}
           >
-            Participating CRAVE Brands
+            Participating CRAV Brands
           </p>
           <div className="flex flex-wrap gap-1.5 pr-12">
             {brands.map((b) => (
@@ -264,7 +264,7 @@ function StickerSlot({
             color: isCollected ? `${accent}cc` : "rgba(15, 45, 28, 0.45)",
           }}
         >
-          CRAVE Vermont 2026
+          CRAV Vermont 2026
         </span>
       ))}
     </div>

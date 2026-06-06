@@ -43,7 +43,7 @@ For adults 21+ only.
 ## Explore
 
 - [About & FAQ](/about) — first-timer guidance, tourist laws, edibles vs. smoking, and why AI helps you choose.
-- [CRAVE](/trail) — every licensed Vermont dispensary on an interactive map.
+- [CRAV](/trail) — every licensed Vermont dispensary on an interactive map.
 - [Strain Library](/strain) — searchable library of Vermont cannabis cultivars.
 - [Vermont-First](/vermont-first) — directory of Vermont's craft cultivators.
 
@@ -71,7 +71,7 @@ function renderTrail(): string {
     (d) =>
       `| ${cell(d.name)} | ${cell(d.city)} | ${cell(d.tags.join(", "))} | ${cell(d.phone)} | ${cell(d.website)} |`
   );
-  return `# CRAVE — Vermont Dispensaries
+  return `# CRAV — Vermont Dispensaries
 
 Every licensed cannabis dispensary in Vermont, on one map. Adult-use and medical, all state-verified.
 

@@ -5,7 +5,7 @@ import { signStickerToken } from "@/lib/sticker-tokens";
 /**
  * GET /s/[slug]
  *
- * Short-URL redirect for CRAVE Passport stickers. The printed QR
+ * Short-URL redirect for CRAV Passport stickers. The printed QR
  * encodes `https://covebud.com/s/<shopId>` (~30-40 chars) instead of
  * the full signed JWT URL (~280 chars), so the QR pattern is much
  * sparser and far easier for any phone camera or in-app scanner to
@@ -28,14 +28,14 @@ export async function GET(
   const shop = dispensaries.find((d) => d.id === slug);
   if (!shop) {
     return NextResponse.redirect(
-      new URL("/crave-passport?error=unknown", req.url)
+      new URL("/crav-passport?error=unknown", req.url)
     );
   }
 
   const token = await signStickerToken(shop.id);
   return NextResponse.redirect(
     new URL(
-      `/crave-passport/scan?t=${encodeURIComponent(token)}`,
+      `/crav-passport/scan?t=${encodeURIComponent(token)}`,
       req.url
     )
   );

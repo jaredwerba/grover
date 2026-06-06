@@ -35,11 +35,11 @@ const reducedVariants: Variants = {
 const ERROR_COPY: Record<string, string> = {
   missing: "That QR code didn't include a sticker token.",
   invalid: "That sticker QR isn't recognized. It may be from a different program.",
-  unknown: "That sticker doesn't match a dispensary on CRAVE.",
+  unknown: "That sticker doesn't match a dispensary on CRAV.",
 };
 
 /**
- * Swipeable CRAVE Passport — full-screen on mobile, centered on desktop.
+ * Swipeable CRAV Passport — full-screen on mobile, centered on desktop.
  * Pages enter from the right and exit to the left (or reverse) with a
  * subtle rotation to suggest a passport being flipped open. Drag, tap,
  * or keyboard arrows to advance.
@@ -109,7 +109,7 @@ export default function PassportSwiper({
   useEffect(() => {
     if (!justCollectedShopId && !errorCode) return;
     const t = setTimeout(() => {
-      router.replace("/crave-passport", { scroll: false });
+      router.replace("/crav-passport", { scroll: false });
     }, 200);
     return () => clearTimeout(t);
   }, [justCollectedShopId, errorCode, router]);
@@ -196,7 +196,7 @@ export default function PassportSwiper({
         )
       ) : (
         <a
-          href="/join?next=/crave-passport"
+          href="/join?next=/crav-passport"
           className="mb-5 inline-flex items-center gap-2 bg-amber text-forest-deep font-bold px-6 py-3 rounded-full text-xs tracking-widest uppercase shadow-lg shadow-amber/20 hover:bg-amber-hover transition-colors"
         >
           <CameraIcon />
@@ -210,7 +210,7 @@ export default function PassportSwiper({
         style={{ aspectRatio: "3 / 4", perspective: "1400px" }}
         role="region"
         aria-roledescription="carousel"
-        aria-label={`CRAVE Passport — ${index + 1} of ${total}: ${current.name}`}
+        aria-label={`CRAV Passport — ${index + 1} of ${total}: ${current.name}`}
       >
         {/* Subtle "next" peek behind the active page (depth cue) */}
         {total > 1 && (

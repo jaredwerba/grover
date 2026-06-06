@@ -98,7 +98,7 @@ export default function CoveAIPage() {
             />
             <Card
               icon="/images/icons/3d/seeds.png"
-              label="CRAVE"
+              label="CRAV"
               text="Geospatial dispensary intelligence — an interactive map
               of every licensed retail cannabis location in the state,
               enriched with live inventory badges, sync freshness
@@ -254,7 +254,7 @@ export default function CoveAIPage() {
             href="/trail"
             className="bg-amber text-forest-deep text-xs font-bold px-5 py-2.5 rounded-sm tracking-widest uppercase hover:bg-amber/90 transition-colors"
           >
-            Open CRAVE
+            Open CRAV
           </Link>
           <Link
             href="/strain"

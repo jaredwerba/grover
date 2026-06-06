@@ -5,7 +5,7 @@ import QRCode from "qrcode";
 import { dispensaries } from "@/lib/dispensaries";
 
 export const metadata: Metadata = {
-  title: "CRAVE Sticker QR",
+  title: "CRAV Sticker QR",
   robots: { index: false, follow: false },
 };
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  * so the in-app scanner can decode it. Long-term this will move into a
  * dispenser-owner dashboard so each shop can print their own.
  *
- * URL: /crave-passport/qr/papa-g-dispensary
+ * URL: /crav-passport/qr/papa-g-dispensary
  */
 export default async function StickerQrPage({
   params,
@@ -28,7 +28,7 @@ export default async function StickerQrPage({
 
   // Build an absolute SHORT URL so a phone's native camera app can also
   // open the QR. The /s/<slug> route mints + signs the token on demand
-  // and redirects to /crave-passport/scan, so the QR itself only needs
+  // and redirects to /crav-passport/scan, so the QR itself only needs
   // to carry the shop slug (~30-40 chars) — a far sparser pattern than
   // embedding the JWT directly (~280 chars). Easier to scan with any
   // camera, especially at arm's length.
@@ -53,7 +53,7 @@ export default async function StickerQrPage({
     <main className="min-h-screen bg-cream text-forest-deep flex flex-col items-center justify-center p-6">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border-4 border-forest-deep">
         <p className="text-amber font-bold text-[10px] tracking-[0.3em] uppercase mb-2">
-          CRAVE Passport Sticker
+          CRAV Passport Sticker
         </p>
         <h1 className="font-groovy text-3xl text-forest-deep mb-1">
           {shop.name}
@@ -68,7 +68,7 @@ export default async function StickerQrPage({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={qrDataUrl}
-          alt={`QR code for ${shop.name} CRAVE sticker`}
+          alt={`QR code for ${shop.name} CRAV sticker`}
           width={640}
           height={640}
           className="mx-auto rounded-lg w-full max-w-[480px] h-auto"
@@ -79,7 +79,7 @@ export default async function StickerQrPage({
         </p>
       </div>
       <p className="text-forest-deep/60 text-xs mt-6 max-w-md text-center leading-relaxed">
-        Point the in-app CRAVE Passport scanner at this code. The sticker
+        Point the in-app CRAV Passport scanner at this code. The sticker
         will be added to the signed-in user&apos;s passport.
       </p>
     </main>
