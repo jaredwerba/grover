@@ -11,11 +11,15 @@ import type { Dispensary } from "@/lib/dispensaries";
 import PassportPage from "./PassportPage";
 import StickerScanner from "./StickerScanner";
 
-// Three-card carousel: left | middle (active) | right. The user
-// swipes the middle card; it slides into the left slot, and the
-// right slot's card slides into the middle to become the new active.
-// A new card enters at the right and the old left card exits further
-// off-screen-left.
+// Three-slot stack: left history | active middle | next card sitting
+// CENTERED BEHIND the active (peeking from the back, not the side).
+// When the user swipes the active card off to the left, the next card
+// scales up into the middle position — it doesn't slide in from a
+// side, which felt unnatural because cards don't physically come from
+// the right in a passport-flip metaphor.
+//   slot -1: tucked behind on the LEFT (most recently swiped card)
+//   slot  0: ACTIVE middle card, draggable
+//   slot  1: NEXT card, centered behind the active, peeking out top
 type Slot = -1 | 0 | 1;
 
 interface SlotStyle {
@@ -28,36 +32,50 @@ interface SlotStyle {
 }
 
 const SLOT_STYLES: Record<Slot, SlotStyle> = {
-  "-1": { x: -140, y: 14, rotate: -8, scale: 0.82, opacity: 0.85, zIndex: 2 },
-  "0":  { x: 0,    y: 0,  rotate: 0,  scale: 1,    opacity: 1,    zIndex: 10 },
-  "1":  { x: 140,  y: 14, rotate: 8,  scale: 0.82, opacity: 0.85, zIndex: 2 },
+  "-1": { x: -140, y: 14, rotate: -8,  scale: 0.82, opacity: 0.85, zIndex: 2 },
+  "0":  { x: 0,    y: 0,  rotate: 0,   scale: 1,    opacity: 1,    zIndex: 10 },
+  // No x offset on slot 1: the next card sits centered behind the
+  // active. y: -10 puts it a few pixels higher so the top edge is
+  // visible above the active card, like a stack of pages.
+  "1":  { x: 0,    y: -10, rotate: 0,  scale: 0.94, opacity: 1,    zIndex: 5 },
 };
 
 const REDUCED_SLOT_STYLES: Record<Slot, SlotStyle> = {
   "-1": { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 2 },
   "0":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1, zIndex: 10 },
-  "1":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 2 },
+  "1":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 5 },
 };
 
-// Enter/exit variants for AnimatePresence. These MUST be variants
-// (not inline objects on motion.div) so the variant function reads
-// `custom` at the time the card actually exits — not at the time of
-// the previous render. Inline `exit={...}` props get frozen with the
-// direction value from the card's last-present render, which causes
-// the wrong-direction exit when the user reverses swipe direction.
+// Enter/exit variants. MUST be variants (not inline objects on
+// motion.div) so the variant function reads `custom` at the time the
+// card actually exits — not at the time of the previous render.
+//
+// Asymmetric by direction to match the new slot semantics:
+//   Forward (dir = 1):
+//     • Entering card goes to slot 1 (centered BEHIND the active).
+//       It just fades + scales in from invisible — no sideways slide
+//       so we don't repeat the "card-coming-from-the-right" weirdness.
+//     • Exiting card was at slot -1 (left history). It slides further
+//       LEFT to x=-360 and fades.
+//   Backward (dir = -1):
+//     • Entering card goes to slot -1 (left history). Slides in from
+//       off-screen-left (x=-360) so it visibly comes from "even older
+//       history".
+//     • Exiting card was at slot 1 (centered behind). It fades out in
+//       place — there's no natural direction for it to slide to.
 const enterExitVariants = {
   enter: (direction: 1 | -1) => ({
-    x: direction === 1 ? 360 : -360,
-    y: 22,
-    rotate: direction === 1 ? -3 : 3,
-    scale: 0.92,
+    x: direction === 1 ? 0 : -360,
+    y: direction === 1 ? -10 : 14,
+    rotate: direction === 1 ? 0 : -8,
+    scale: direction === 1 ? 0.7 : 0.82,
     opacity: 0,
   }),
   exit: (direction: 1 | -1) => ({
-    x: direction === 1 ? -360 : 360,
-    y: 22,
-    rotate: direction === 1 ? 3 : -3,
-    scale: 0.92,
+    x: direction === 1 ? -360 : 0,
+    y: direction === 1 ? 14 : -10,
+    rotate: direction === 1 ? -8 : 0,
+    scale: direction === 1 ? 0.82 : 0.7,
     opacity: 0,
   }),
 };
