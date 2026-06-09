@@ -212,34 +212,47 @@ export default function PassportSwiper({
         aria-roledescription="carousel"
         aria-label={`Crave Cannatrail Passport — ${index + 1} of ${total}: ${current.name}`}
       >
-        {/* Subtle "next" peek behind the active page (depth cue) */}
-        {total > 1 && (
-          <div
-            className="absolute inset-0 rounded-2xl pointer-events-none"
-            aria-hidden="true"
-            style={{
-              transform: "translate(8px, 10px) rotate(2deg) scale(0.97)",
-              background: "linear-gradient(180deg, #d8cba8, #c4b89a)",
-              boxShadow:
-                "0 12px 28px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(0,0,0,0.08)",
-              zIndex: 0,
-              opacity: 0.55,
-            }}
-          />
-        )}
+        {/* Real "next" cards visible behind the active one — actual
+            PassportPage components so the user can see the contents of
+            the next dispensary while the current card is being swiped
+            away, not just paper-coloured rectangles. Slightly translated,
+            rotated, and scaled to suggest a stack. */}
         {total > 2 && (
           <div
-            className="absolute inset-0 rounded-2xl pointer-events-none"
+            className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none"
             aria-hidden="true"
             style={{
               transform: "translate(16px, 18px) rotate(-1.5deg) scale(0.94)",
-              background: "linear-gradient(180deg, #cdc09e, #b9ad8e)",
-              boxShadow:
-                "0 8px 18px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(0,0,0,0.06)",
-              zIndex: -1,
-              opacity: 0.4,
+              boxShadow: "0 8px 18px rgba(0,0,0,0.2)",
+              zIndex: 0,
+              opacity: 0.85,
             }}
-          />
+          >
+            <PassportPage
+              dispensary={dispensaries[(index + 2) % total]}
+              index={(index + 2) % total}
+              total={total}
+              collected={collectedMap[dispensaries[(index + 2) % total].id]}
+            />
+          </div>
+        )}
+        {total > 1 && (
+          <div
+            className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none"
+            aria-hidden="true"
+            style={{
+              transform: "translate(8px, 10px) rotate(2deg) scale(0.97)",
+              boxShadow: "0 12px 28px rgba(0,0,0,0.28)",
+              zIndex: 1,
+            }}
+          >
+            <PassportPage
+              dispensary={dispensaries[(index + 1) % total]}
+              index={(index + 1) % total}
+              total={total}
+              collected={collectedMap[dispensaries[(index + 1) % total].id]}
+            />
+          </div>
         )}
 
         <AnimatePresence initial={false} custom={direction} mode="popLayout">
@@ -271,7 +284,7 @@ export default function PassportSwiper({
             }}
             whileDrag={{ cursor: "grabbing", scale: 0.98 }}
             className="absolute inset-0 cursor-grab active:cursor-grabbing"
-            style={{ zIndex: 1, touchAction: "pan-y" }}
+            style={{ zIndex: 5, touchAction: "pan-y" }}
           >
             <motion.div
               className="w-full h-full"
