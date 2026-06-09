@@ -112,6 +112,11 @@ export default function PassportSwiper({
     initialIndex,
     1,
   ]);
+  // Becomes true on the first navigation. Gates the slot-(-1) tuck so
+  // that on first paint there's no phantom "previous" card visible —
+  // it only appears after the user has actually swiped through at least
+  // one card and there's a real history to peek at.
+  const [hasNavigated, setHasNavigated] = useState(false);
   const [scannerOpen, setScannerOpen] = useState(false);
   // Stable identities for the modal — passing `() => …` inline would
   // give StickerScanner a new function each render, which would
@@ -156,6 +161,7 @@ export default function PassportSwiper({
     (next: number, fromDir: 1 | -1) => {
       const bounded = (next + total) % total;
       setIndex([bounded, fromDir]);
+      setHasNavigated(true);
     },
     [total]
   );
@@ -193,12 +199,14 @@ export default function PassportSwiper({
 
   const swipeThreshold = 80;
 
-  // Build the sliding-window stack: slots -1, 0, 1, 2 around `index`.
-  // Skip slots that would alias the active card (tiny decks) so we
-  // don't render the same dispensary in two places at once.
+  // Build the sliding-window stack. Slot -1 (tucked-behind-left) only
+  // appears AFTER the user has navigated at least once — before any
+  // swipe there's no "previously-visited" card to peek behind on the
+  // left, and showing one would look like a phantom history entry.
   const visibleCards: { slot: Slot; idx: number; dispensary: Dispensary }[] = [];
   const seenIds = new Set<string>();
-  for (const slot of [-1, 0, 1, 2] as Slot[]) {
+  const slots: Slot[] = hasNavigated ? [-1, 0, 1, 2] : [0, 1, 2];
+  for (const slot of slots) {
     const idx = ((index + slot) % total + total) % total;
     const dispensary = dispensaries[idx];
     if (seenIds.has(dispensary.id)) continue;
