@@ -36,19 +36,14 @@ export default async function CraveCannatrailPassportPage({ searchParams }: Page
   const session = await getSession();
   const isSignedIn = !!session;
 
-  // Keep printed-brochure order: by region, then alphabetical
-  const TRAIL_ORDER = [
-    "Champlain Valley",
-    "Lamoille to NEK",
-    "Catamount",
-    "Granite Capital",
-  ] as const;
-
-  const ordered = TRAIL_ORDER.flatMap((region) =>
-    dispensaries
-      .filter((d) => d.region === region)
-      .sort((a, b) => a.name.localeCompare(b.name))
-  );
+  // Shuffle the deck on every page load — each visit feels like
+  // flipping through a different stretch of the passport. Fisher-Yates
+  // in-place on a copy so we don't mutate the imported dispensaries.
+  const ordered = [...dispensaries];
+  for (let i = ordered.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [ordered[i], ordered[j]] = [ordered[j], ordered[i]];
+  }
 
   // Only signed-in users have a sticker collection.
   const stickers = session ? await getStickers(session.email) : [];

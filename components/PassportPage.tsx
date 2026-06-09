@@ -30,6 +30,15 @@ const FAKE_BRANDS = [
   { name: "Mechayeh", emoji: "✨" },
 ];
 
+/** Stable 6-digit "passport number" per shop id — purely decorative. */
+function passportNumberFor(seed: string): string {
+  let h = 5381;
+  for (let i = 0; i < seed.length; i++) {
+    h = ((h << 5) + h + seed.charCodeAt(i)) >>> 0;
+  }
+  return String(h % 1000000).padStart(6, "0");
+}
+
 function pickBrands(seed: string, n: number) {
   // Stable shuffle so each shop shows a consistent subset across loads.
   const hash = seed.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
@@ -89,6 +98,67 @@ export default function PassportPage({
         }}
         aria-hidden="true"
       />
+
+      {/* Stitched binding strip — runs vertically just inside the left
+          border, with small "perforation" circles every ~32px. Suggests
+          the gutter of a sewn passport. */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          left: 14,
+          top: 36,
+          bottom: 36,
+          width: 8,
+          borderLeft: `1px dashed ${accent.color}66`,
+        }}
+        aria-hidden="true"
+      >
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <span
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              top: `${(i + 0.5) * (100 / 6)}%`,
+              left: -3,
+              width: 5,
+              height: 5,
+              background: `${accent.color}33`,
+              border: `1px solid ${accent.color}55`,
+              transform: "translateY(-50%)",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Background watermark seal — a faded, large cannabis leaf sitting
+          behind the main content. Reads as an official passport seal,
+          but quiet enough not to fight the stamp foreground. */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        aria-hidden="true"
+        style={{ opacity: 0.06 }}
+      >
+        <CannabisLeaf
+          className="w-2/3 h-2/3"
+          style={{ color: "#0f2d1c" }}
+        />
+      </div>
+
+      {/* Passport-number ribbon — small label upper-right above the
+          trail tag area. Deterministic per-shop so it's stable across
+          loads but unique per page. */}
+      <div
+        className="absolute pointer-events-none flex flex-col items-end"
+        style={{ top: 38, right: 18 }}
+        aria-hidden="true"
+      >
+        <span className="text-[8px] tracking-[0.25em] uppercase font-bold text-forest-deep/40">
+          Passport No.
+        </span>
+        <span className="text-[10px] tabular-nums font-mono text-forest-deep/55">
+          VT-{passportNumberFor(dispensary.id)}
+        </span>
+      </div>
 
       {/* Dispensary header */}
       <div className="relative px-6 pt-2 pb-3 text-center shrink-0">
@@ -204,7 +274,7 @@ function StickerSlot({
   return (
     <div className="relative w-full max-w-[180px]" style={{ aspectRatio: "1" }}>
       {isCollected ? (
-        <CollectedStamp initial={initial} accent={accent} collectedAt={collectedAt!} />
+        <CollectedStamp collectedAt={collectedAt!} />
       ) : (
         // Dashed empty slot
         <div
@@ -244,8 +314,8 @@ function StickerSlot({
             bottom: c.bottom,
             width: 14,
             height: 14,
-            borderTop: `2px solid ${isCollected ? accent : "rgba(15, 45, 28, 0.55)"}`,
-            borderLeft: `2px solid ${isCollected ? accent : "rgba(15, 45, 28, 0.55)"}`,
+            borderTop: `2px solid ${isCollected ? "#8a5a08" : "rgba(15, 45, 28, 0.55)"}`,
+            borderLeft: `2px solid ${isCollected ? "#8a5a08" : "rgba(15, 45, 28, 0.55)"}`,
             transform: `rotate(${c.rotate}deg)`,
           }}
           aria-hidden="true"
@@ -261,7 +331,7 @@ function StickerSlot({
             [side]: -14,
             transform: `translateY(-50%) rotate(${side === "left" ? -90 : 90}deg)`,
             transformOrigin: "center",
-            color: isCollected ? `${accent}cc` : "rgba(15, 45, 28, 0.45)",
+            color: isCollected ? "rgba(138, 90, 8, 0.85)" : "rgba(15, 45, 28, 0.45)",
           }}
         >
           Crave Cannatrail Vermont 2026
@@ -271,19 +341,11 @@ function StickerSlot({
   );
 }
 
-/* Saturated collected stamp — circular amber/region-colored badge with
-   the shop's initial centered, a date band at the bottom, and a 6° tilt
-   for character. Replaces the dashed empty slot without changing frame
-   size so the page layout stays stable. */
-function CollectedStamp({
-  initial,
-  accent,
-  collectedAt,
-}: {
-  initial: string;
-  accent: string;
-  collectedAt: string;
-}) {
+/* Gold cannabis-leaf stamp — a vintage foil-impressed seal that lands
+   on the sticker slot once a sticker is collected. Replaces the dashed
+   empty slot without changing frame size so the page layout stays
+   stable. The leaf is a 7-leaflet fan rendered in gold gradient. */
+function CollectedStamp({ collectedAt }: { collectedAt: string }) {
   const date = new Date(collectedAt);
   const monthYear = date
     .toLocaleString("en-US", { month: "short", year: "numeric" })
@@ -292,58 +354,101 @@ function CollectedStamp({
   return (
     <div
       className="absolute inset-2 flex items-center justify-center"
-      style={{ transform: "rotate(-6deg)" }}
+      style={{ transform: "rotate(-8deg)" }}
       aria-label={`Collected ${monthYear}`}
     >
       <div
         className="relative w-full h-full rounded-full flex items-center justify-center"
         style={{
-          background: `radial-gradient(circle at 30% 30%, ${accent}, ${accent}cc 60%, ${accent}99)`,
-          border: `3px solid ${accent}`,
-          boxShadow: `0 4px 12px rgba(0,0,0,0.25), inset 0 0 0 6px rgba(255,255,255,0.18), inset 0 -4px 12px rgba(0,0,0,0.15)`,
+          background:
+            "radial-gradient(circle at 30% 28%, #fff7d6 0%, #f5c542 35%, #c98a18 70%, #8a5a08 100%)",
+          border: "3px solid #6b3f04",
+          boxShadow:
+            "0 6px 14px rgba(0,0,0,0.35), inset 0 0 0 6px rgba(255,255,255,0.18), inset 0 -6px 12px rgba(75,40,0,0.35), inset 0 4px 6px rgba(255,255,255,0.4)",
         }}
       >
-        {/* Inner ring of dashes for a postage-stamp feel */}
+        {/* Inner postage-stamp dashed ring */}
         <div
           className="absolute rounded-full"
           style={{
-            inset: 14,
-            border: "1.5px dashed rgba(255,255,255,0.5)",
+            inset: 12,
+            border: "1.5px dashed rgba(75, 40, 0, 0.45)",
           }}
           aria-hidden="true"
         />
 
-        {/* Initial */}
-        <span
-          className="font-groovy leading-none"
+        {/* Cannabis leaf — embossed gold-foil look */}
+        <CannabisLeaf
+          className="w-3/5 h-3/5"
           style={{
-            fontSize: "3.5rem",
-            color: "#fff",
-            textShadow: "0 2px 4px rgba(0,0,0,0.25)",
+            color: "#6b3f04",
+            filter:
+              "drop-shadow(0 1px 0 rgba(255,255,255,0.6)) drop-shadow(0 -1px 0 rgba(75,40,0,0.5))",
           }}
-        >
-          {initial}
-        </span>
+        />
 
         {/* Date band across the bottom */}
         <div
           className="absolute left-2 right-2 bottom-3 text-center"
           style={{
-            background: "rgba(15,45,28,0.85)",
-            border: "1px solid rgba(255,255,255,0.2)",
+            background: "rgba(75, 40, 0, 0.9)",
+            border: "1px solid rgba(255,235,180,0.4)",
             borderRadius: 3,
             padding: "2px 4px",
           }}
         >
-          <p className="text-[7px] tracking-[0.2em] font-bold text-white/90">
+          <p className="text-[7px] tracking-[0.25em] font-bold text-amber-50/95">
             COLLECTED
           </p>
-          <p className="text-[9px] tracking-[0.15em] font-bold text-white tabular-nums leading-none">
+          <p className="text-[9px] tracking-[0.15em] font-bold text-amber-50 tabular-nums leading-none">
             {monthYear}
           </p>
         </div>
       </div>
     </div>
+  );
+}
+
+/* Stylized cannabis fan leaf — 7 pointed leaflets radiating from a
+   short stem. Pure SVG (no external asset), color via currentColor so
+   the parent's color-or-filter governs the foil look. */
+function CannabisLeaf({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const leaflets = [
+    { angle: -75, len: 28, half: 6 },
+    { angle: -50, len: 36, half: 7 },
+    { angle: -25, len: 44, half: 8 },
+    { angle: 0, len: 48, half: 9 },
+    { angle: 25, len: 44, half: 8 },
+    { angle: 50, len: 36, half: 7 },
+    { angle: 75, len: 28, half: 6 },
+  ];
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={style}
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <g transform="translate(50 64)">
+        {leaflets.map(({ angle, len, half }, i) => (
+          <g key={i} transform={`rotate(${angle})`}>
+            <path
+              d={`M0 0 L-${half} -${len * 0.32} L0 -${len} L${half} -${len * 0.32} Z`}
+            />
+          </g>
+        ))}
+        {/* Stem */}
+        <rect x="-1.2" y="0" width="2.4" height="10" rx="1" />
+      </g>
+    </svg>
   );
 }
 
@@ -376,7 +481,8 @@ function DispensaryLogo({
     }
   })();
 
-  const size = 44;
+  const size = 72;
+  const imgSize = 52;
 
   return (
     <div
@@ -385,8 +491,8 @@ function DispensaryLogo({
         width: size,
         height: size,
         background: "#fff",
-        border: `2px solid ${accent}`,
-        boxShadow: `0 2px 6px rgba(0,0,0,0.15), inset 0 0 0 2px ${accent}1a`,
+        border: `3px solid ${accent}`,
+        boxShadow: `0 3px 10px rgba(0,0,0,0.18), inset 0 0 0 2px ${accent}1a`,
       }}
       aria-hidden="true"
     >
@@ -395,16 +501,16 @@ function DispensaryLogo({
         <img
           src={faviconUrl}
           alt=""
-          width={32}
-          height={32}
+          width={imgSize}
+          height={imgSize}
           className="object-contain"
-          style={{ width: 32, height: 32 }}
+          style={{ width: imgSize, height: imgSize }}
         />
       ) : (
         <span
           className="font-groovy leading-none"
           style={{
-            fontSize: 22,
+            fontSize: 34,
             color: accent,
             transform: "translateY(1px)",
           }}

@@ -12,24 +12,24 @@ import type { Dispensary } from "@/lib/dispensaries";
 import PassportPage from "./PassportPage";
 import StickerScanner from "./StickerScanner";
 
+// No opacity fade — cards stay fully visible as they slide, so the
+// contents (logo, name, stamp) never blink out mid-swipe.
 const pageVariants: Variants = {
   enter: (direction: 1 | -1) => ({
-    x: direction === 1 ? 320 : -320,
-    rotate: direction === 1 ? 8 : -8,
-    opacity: 0,
+    x: direction === 1 ? 360 : -360,
+    rotate: direction === 1 ? 5 : -5,
   }),
-  center: { x: 0, rotate: 0, opacity: 1 },
+  center: { x: 0, rotate: 0 },
   exit: (direction: 1 | -1) => ({
-    x: direction === 1 ? -320 : 320,
-    rotate: direction === 1 ? -8 : 8,
-    opacity: 0,
+    x: direction === 1 ? -360 : 360,
+    rotate: direction === 1 ? -5 : 5,
   }),
 };
 
 const reducedVariants: Variants = {
-  enter: { opacity: 0 },
-  center: { opacity: 1 },
-  exit: { opacity: 0 },
+  enter: { x: 0 },
+  center: { x: 0 },
+  exit: { x: 0 },
 };
 
 const ERROR_COPY: Record<string, string> = {
