@@ -19,7 +19,7 @@ export interface Dispensary {
   };
   tags: Array<"recreational" | "medical">;
   description: string;
-  /** Crave Cannatrail region/trail this dispensary belongs to. */
+  /** CRAV Cannatrail region/trail this dispensary belongs to. */
   region?: Region;
   /**
    * Optional transparent-background logo. Local path (e.g.
@@ -32,14 +32,14 @@ export interface Dispensary {
    * Cove Connect — which platform powers this shop's online menu, and
    * the platform-specific merchant identifier the connector uses to
    * fetch their inventory. Optional: shops without a known platform
-   * are visible on Crave Cannatrail but won't have live "in stock" data
+   * are visible on CRAV Cannatrail but won't have live "in stock" data
    * until classified.
    */
   platform?: PlatformId;
   merchant_id?: string;
 }
 
-// Default hours used as a placeholder for the new 2026 Crave Cannatrail roster
+// Default hours used as a placeholder for the new 2026 CRAV Cannatrail roster
 // until verified per-shop hours are imported.
 const DEFAULT_HOURS = { mon_fri: "10am – 8pm", sat: "10am – 8pm", sun: "11am – 6pm" };
 
@@ -637,7 +637,7 @@ export const dispensaries: Dispensary[] = [
     region: "Granite Capital",
   },
 
-  /* ── TEST FIXTURE — used for Crave Cannatrail Passport scan-flow verification ── */
+  /* ── TEST FIXTURE — used for CRAV Cannatrail Passport scan-flow verification ── */
   {
     id: "papa-g-dispensary",
     name: "Papa G Dispensary",
@@ -650,7 +650,7 @@ export const dispensaries: Dispensary[] = [
     menu_url: "",
     hours: DEFAULT_HOURS,
     tags: ["recreational"],
-    description: "Crave Cannatrail Passport test dispensary — used for development and end-to-end QR scan verification.",
+    description: "CRAV Cannatrail Passport test dispensary — used for development and end-to-end QR scan verification.",
     region: "Champlain Valley",
   },
 ];

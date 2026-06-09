@@ -12,26 +12,26 @@ export interface AboutSection {
 
 export const AEO_SECTIONS: AboutSection[] = [
   {
-    id: "what-is-crave-cannatrail",
-    question: "What is Crave Cannatrail?",
+    id: "what-is-crav-cannatrail",
+    question: "What is CRAV Cannatrail?",
     shortAnswer:
-      "Crave Cannatrail is Vermont's curated map of every licensed cannabis dispensary — built so you can browse locations, menus, and hours before you leave the house.",
+      "CRAV Cannatrail is Vermont's curated map of every licensed cannabis dispensary — built so you can browse locations, menus, and hours before you leave the house.",
     body: [
       {
         heading: "Vermont's cannabis guide, all in one place",
-        text: "Vermont legalized adult-use cannabis in 2022. Since then, licensed dispensaries have opened across the state — from Burlington's South End to the Northeast Kingdom. Crave Cannatrail plots every one of them on an interactive map with real addresses, phone numbers, and direct links to menus.",
+        text: "Vermont legalized adult-use cannabis in 2022. Since then, licensed dispensaries have opened across the state — from Burlington's South End to the Northeast Kingdom. CRAV Cannatrail plots every one of them on an interactive map with real addresses, phone numbers, and direct links to menus.",
       },
       {
         heading: "Medical and recreational, together",
-        text: "Some dispensaries are adult-use only. Others hold medical registrations and serve patients with a Vermont Medical Cannabis Registry card. Crave Cannatrail shows both — filter by type, or browse everything at once.",
+        text: "Some dispensaries are adult-use only. Others hold medical registrations and serve patients with a Vermont Medical Cannabis Registry card. CRAV Cannatrail shows both — filter by type, or browse everything at once.",
       },
       {
         heading: "Built for Vermonters (and the people who visit them)",
-        text: "Whether you live here or you're passing through on the way to Stowe, Crave Cannatrail makes it easy to find the closest dispensary, compare their product selection, and get there without guessing. Every location on the trail is state-licensed and verified.",
+        text: "Whether you live here or you're passing through on the way to Stowe, CRAV Cannatrail makes it easy to find the closest dispensary, compare their product selection, and get there without guessing. Every location on the trail is state-licensed and verified.",
       },
       {
-        heading: "Crave Cannatrail is part of Cove",
-        text: "Cove is a Vermont cannabis companion app — Crave Cannatrail is its map layer. Alongside the trail you'll find a strain library, an AI concierge, and resources for new and experienced cannabis consumers alike.",
+        heading: "CRAV Cannatrail is part of Cove",
+        text: "Cove is a Vermont cannabis companion app — CRAV Cannatrail is its map layer. Alongside the trail you'll find a strain library, an AI concierge, and resources for new and experienced cannabis consumers alike.",
       },
     ],
   },
@@ -59,7 +59,7 @@ export const AEO_SECTIONS: AboutSection[] = [
       },
       {
         heading: "Ask Cove AI",
-        text: "Everyone's endocannabinoid system responds differently. Cove's AI can help you narrow down the right afternoon strain based on your tolerance, goals, and what's actually available at your nearest dispensary on Crave Cannatrail.",
+        text: "Everyone's endocannabinoid system responds differently. Cove's AI can help you narrow down the right afternoon strain based on your tolerance, goals, and what's actually available at your nearest dispensary on CRAV Cannatrail.",
       },
     ],
   },
@@ -67,11 +67,11 @@ export const AEO_SECTIONS: AboutSection[] = [
     id: "first-time-vermont",
     question: "I've never used cannabis before, what should I know in Vermont?",
     shortAnswer:
-      "Vermont cannabis is legal for adults 21+. Start with a low dose, choose a dispensary on Crave Cannatrail, tell your budtender it's your first time, and pick a low-THC product. Go slow — you can always use more, never less.",
+      "Vermont cannabis is legal for adults 21+. Start with a low dose, choose a dispensary on CRAV Cannatrail, tell your budtender it's your first time, and pick a low-THC product. Go slow — you can always use more, never less.",
     body: [
       {
         heading: "Vermont is a legal, regulated market",
-        text: "Vermont legalized adult-use cannabis in 2022. Every dispensary on Crave Cannatrail is licensed by the Vermont Cannabis Control Board — products are lab-tested for potency and contaminants. You're buying from a regulated, legal retailer, not the street.",
+        text: "Vermont legalized adult-use cannabis in 2022. Every dispensary on CRAV Cannatrail is licensed by the Vermont Cannabis Control Board — products are lab-tested for potency and contaminants. You're buying from a regulated, legal retailer, not the street.",
       },
       {
         heading: "Start low, go slow",
@@ -119,7 +119,7 @@ export const AEO_SECTIONS: AboutSection[] = [
       },
       {
         heading: "Which is right for you?",
-        text: "Edibles are great for longer, more controlled experiences — sleep, relaxation, or managing chronic symptoms. Smoking is better for social situations, quick relief, or when you want to control the intensity in real time. Both are available at every dispensary on Crave Cannatrail. Cove AI can help you choose based on your goals.",
+        text: "Edibles are great for longer, more controlled experiences — sleep, relaxation, or managing chronic symptoms. Smoking is better for social situations, quick relief, or when you want to control the intensity in real time. Both are available at every dispensary on CRAV Cannatrail. Cove AI can help you choose based on your goals.",
       },
     ],
   },
@@ -174,8 +174,8 @@ export const AEO_SECTIONS: AboutSection[] = [
         text: "This is the most important rule for tourists: cannabis purchased in Vermont cannot legally leave Vermont. Transporting cannabis across state lines is a federal offense, even if you're traveling to another legal state. Do not take it on an airplane. Do not put it in your car and drive to New Hampshire.",
       },
       {
-        heading: "Find a dispensary on Crave Cannatrail",
-        text: "Every licensed Vermont dispensary is mapped on Crave Cannatrail — Cove's interactive dispensary directory. Whether you're skiing Stowe, hiking the Long Trail, or visiting Burlington's Church Street, there's likely a licensed dispensary nearby. Use Crave Cannatrail to find locations, hours, and menus before you visit.",
+        heading: "Find a dispensary on CRAV Cannatrail",
+        text: "Every licensed Vermont dispensary is mapped on CRAV Cannatrail — Cove's interactive dispensary directory. Whether you're skiing Stowe, hiking the Long Trail, or visiting Burlington's Church Street, there's likely a licensed dispensary nearby. Use CRAV Cannatrail to find locations, hours, and menus before you visit.",
       },
     ],
   },
@@ -207,7 +207,7 @@ export const AEO_SECTIONS: AboutSection[] = [
       },
       {
         heading: "Use Cove AI to prepare",
-        text: "Before your first dispensary visit, ask Cove AI your questions — what strain, what format, what dose, what effects to expect. Coming in informed makes the dispensary experience less overwhelming and helps you make a better first choice. Crave Cannatrail will show you which dispensaries are closest to where you are in Vermont.",
+        text: "Before your first dispensary visit, ask Cove AI your questions — what strain, what format, what dose, what effects to expect. Coming in informed makes the dispensary experience less overwhelming and helps you make a better first choice. CRAV Cannatrail will show you which dispensaries are closest to where you are in Vermont.",
       },
     ],
   },
@@ -231,7 +231,7 @@ export const AEO_SECTIONS: AboutSection[] = [
       },
       {
         heading: "Better decisions, less waste",
-        text: "Cannabis isn't cheap. A $60 eighth of the wrong strain is money and an experience lost. Understanding your options before you buy — through a conversational AI that knows the strain library — dramatically reduces the chance of a mismatch. Cove's AI is built specifically for Vermont's market and the strains available on Crave Cannatrail.",
+        text: "Cannabis isn't cheap. A $60 eighth of the wrong strain is money and an experience lost. Understanding your options before you buy — through a conversational AI that knows the strain library — dramatically reduces the chance of a mismatch. Cove's AI is built specifically for Vermont's market and the strains available on CRAV Cannatrail.",
       },
       {
         heading: "The budtender relationship improves too",

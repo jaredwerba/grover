@@ -88,11 +88,11 @@ const reducedEnterExitVariants = {
 const ERROR_COPY: Record<string, string> = {
   missing: "That QR code didn't include a sticker token.",
   invalid: "That sticker QR isn't recognized. It may be from a different program.",
-  unknown: "That sticker doesn't match a dispensary on Crave Cannatrail.",
+  unknown: "That sticker doesn't match a dispensary on CRAV Cannatrail.",
 };
 
 /**
- * Swipeable Crave Cannatrail Passport — full-screen on mobile, centered on desktop.
+ * Swipeable CRAV Cannatrail Passport — full-screen on mobile, centered on desktop.
  * Pages enter from the right and exit to the left (or reverse) with a
  * subtle rotation to suggest a passport being flipped open. Drag, tap,
  * or keyboard arrows to advance.
@@ -167,7 +167,7 @@ export default function PassportSwiper({
   useEffect(() => {
     if (!justCollectedShopId && !errorCode) return;
     const t = setTimeout(() => {
-      router.replace("/crave-cannatrail-passport", { scroll: false });
+      router.replace("/crav-cannatrail-passport", { scroll: false });
     }, 200);
     return () => clearTimeout(t);
   }, [justCollectedShopId, errorCode, router]);
@@ -269,7 +269,7 @@ export default function PassportSwiper({
         )
       ) : (
         <a
-          href="/join?next=/crave-cannatrail-passport"
+          href="/join?next=/crav-cannatrail-passport"
           className="mb-5 inline-flex items-center gap-2 bg-amber text-forest-deep font-bold px-6 py-3 rounded-full text-xs tracking-widest uppercase shadow-lg shadow-amber/20 hover:bg-amber-hover transition-colors"
         >
           <CameraIcon />
@@ -283,7 +283,7 @@ export default function PassportSwiper({
         style={{ aspectRatio: "3 / 4", perspective: "1400px" }}
         role="region"
         aria-roledescription="carousel"
-        aria-label={`Crave Cannatrail Passport — ${index + 1} of ${total}: ${current.name}`}
+        aria-label={`CRAV Cannatrail Passport — ${index + 1} of ${total}: ${current.name}`}
       >
         {/* Sliding-window stack — render the four visible cards across
             slots [-1, 0, 1, 2]. The card at slot 0 is the draggable

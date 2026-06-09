@@ -5,19 +5,19 @@ import { addSticker } from "@/lib/stickers";
 import { dispensaries } from "@/lib/dispensaries";
 
 /**
- * GET /crave-cannatrail-passport/scan?t=<jwt>
+ * GET /crav-cannatrail-passport/scan?t=<jwt>
  *
- * Universal landing target for every Crave Cannatrail Passport QR code — both the
+ * Universal landing target for every CRAV Cannatrail Passport QR code — both the
  * in-app camera scanner and a phone's native camera redirect through
  * here. Behavior:
  *
  * 1. Reads the signed token from `?t`.
  * 2. If no session: 302 → /join?next=<this-url> so the QR isn't wasted.
- * 3. Verifies the token signature. Invalid → /crave-cannatrail-passport?error=invalid.
- * 4. Looks up the shop. Unknown id → /crave-cannatrail-passport?error=unknown.
+ * 3. Verifies the token signature. Invalid → /crav-cannatrail-passport?error=invalid.
+ * 4. Looks up the shop. Unknown id → /crav-cannatrail-passport?error=unknown.
  * 5. Adds the sticker to the user's passport (idempotent per the
  *    lifetime-uniqueness rule) and redirects to
- *    /crave-cannatrail-passport?collected=<shopId>(&new=1).
+ *    /crav-cannatrail-passport?collected=<shopId>(&new=1).
  *
  * Known limitation (signed-out phone-camera scans):
  *   We forward `?next=` to /join, but the magic-link consumer at
@@ -36,13 +36,13 @@ export async function GET(req: NextRequest) {
   const token = url.searchParams.get("t");
 
   if (!token) {
-    return NextResponse.redirect(new URL("/crave-cannatrail-passport?error=missing", req.url));
+    return NextResponse.redirect(new URL("/crav-cannatrail-passport?error=missing", req.url));
   }
 
   const session = await getSession();
   if (!session) {
     // Preserve the full scan URL so the user lands back here after sign-in.
-    const next = `/crave-cannatrail-passport/scan?t=${encodeURIComponent(token)}`;
+    const next = `/crav-cannatrail-passport/scan?t=${encodeURIComponent(token)}`;
     return NextResponse.redirect(
       new URL(`/join?next=${encodeURIComponent(next)}`, req.url)
     );
@@ -50,12 +50,12 @@ export async function GET(req: NextRequest) {
 
   const payload = await verifyStickerToken(token);
   if (!payload) {
-    return NextResponse.redirect(new URL("/crave-cannatrail-passport?error=invalid", req.url));
+    return NextResponse.redirect(new URL("/crav-cannatrail-passport?error=invalid", req.url));
   }
 
   const shop = dispensaries.find((d) => d.id === payload.shopId);
   if (!shop) {
-    return NextResponse.redirect(new URL("/crave-cannatrail-passport?error=unknown", req.url));
+    return NextResponse.redirect(new URL("/crav-cannatrail-passport?error=unknown", req.url));
   }
 
   const { newlyAdded } = await addSticker(session.email, {
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
     region: shop.region ?? null,
   });
 
-  const target = new URL("/crave-cannatrail-passport", req.url);
+  const target = new URL("/crav-cannatrail-passport", req.url);
   target.searchParams.set("collected", shop.id);
   if (newlyAdded) target.searchParams.set("new", "1");
   return NextResponse.redirect(target);

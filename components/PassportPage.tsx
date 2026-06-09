@@ -3,7 +3,7 @@
 import type { Dispensary, Region } from "@/lib/dispensaries";
 
 /**
- * A single Crave Cannatrail Passport "page" — visually styled after the printed
+ * A single CRAV Cannatrail Passport "page" — visually styled after the printed
  * brochure (region tag, dispensary header, sticker placeholder, brand
  * row, mountain illustration, scan-to-explore QR), but in the Cove
  * design system (forest/cream/amber).
@@ -63,7 +63,7 @@ export default function PassportPage({
 }) {
   const accent = dispensary.region
     ? REGION_ACCENT[dispensary.region]
-    : { color: "#FFB900", label: "Crave Cannatrail Trail" };
+    : { color: "#FFB900", label: "CRAV Cannatrail Trail" };
   const brands = pickBrands(dispensary.id, 4);
 
   return (
@@ -228,7 +228,7 @@ export default function PassportPage({
             className="text-[10px] font-bold leading-tight mb-2"
             style={{ color: "#0f2d1c" }}
           >
-            Participating Crave Cannatrail Brands
+            Participating CRAV Cannatrail Brands
           </p>
           <div className="flex flex-wrap gap-1.5 pr-12">
             {brands.map((b) => (
@@ -334,7 +334,7 @@ function StickerSlot({
             color: isCollected ? "rgba(138, 90, 8, 0.85)" : "rgba(15, 45, 28, 0.45)",
           }}
         >
-          Crave Cannatrail Vermont 2026
+          CRAV Cannatrail Vermont 2026
         </span>
       ))}
     </div>
