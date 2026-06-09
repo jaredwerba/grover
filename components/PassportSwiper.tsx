@@ -6,31 +6,69 @@ import {
   AnimatePresence,
   motion,
   useReducedMotion,
-  type Variants,
 } from "motion/react";
 import type { Dispensary } from "@/lib/dispensaries";
 import PassportPage from "./PassportPage";
 import StickerScanner from "./StickerScanner";
 
-// No opacity fade — cards stay fully visible as they slide, so the
-// contents (logo, name, stamp) never blink out mid-swipe.
-const pageVariants: Variants = {
-  enter: (direction: 1 | -1) => ({
-    x: direction === 1 ? 360 : -360,
-    rotate: direction === 1 ? 5 : -5,
-  }),
-  center: { x: 0, rotate: 0 },
-  exit: (direction: 1 | -1) => ({
-    x: direction === 1 ? -360 : 360,
-    rotate: direction === 1 ? -5 : 5,
-  }),
+// Sliding-window stack: visible cards live in slots -1 .. +2 around
+// the active page. The card at slot 0 is the draggable one. After a
+// swipe, the previously-active card transitions to slot -1 (tucked
+// behind on the left) rather than disappearing, so the user can see
+// where they came from.
+type Slot = -1 | 0 | 1 | 2;
+
+interface SlotStyle {
+  x: number;
+  y: number;
+  rotate: number;
+  scale: number;
+  opacity: number;
+  zIndex: number;
+}
+
+const SLOT_STYLES: Record<Slot, SlotStyle> = {
+  "-1": { x: -22, y: 12, rotate: -3, scale: 0.94, opacity: 0.9, zIndex: 2 },
+  "0":  { x: 0,   y: 0,  rotate: 0,  scale: 1,    opacity: 1,   zIndex: 10 },
+  "1":  { x: 12,  y: 10, rotate: 2,  scale: 0.97, opacity: 1,   zIndex: 6 },
+  "2":  { x: 22,  y: 18, rotate: -1.5, scale: 0.94, opacity: 0.85, zIndex: 3 },
 };
 
-const reducedVariants: Variants = {
-  enter: { x: 0 },
-  center: { x: 0 },
-  exit: { x: 0 },
+const REDUCED_SLOT_STYLES: Record<Slot, SlotStyle> = {
+  "-1": { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 2 },
+  "0":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1, zIndex: 10 },
+  "1":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 6 },
+  "2":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 3 },
 };
+
+// Off-window enter/exit for AnimatePresence — covers the moment a card
+// is added to or removed from the sliding window during a swipe.
+function enterStyle(direction: 1 | -1, reduced: boolean): SlotStyle {
+  if (reduced) {
+    return { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 1 };
+  }
+  return {
+    x: direction === 1 ? 360 : -360,
+    y: 22,
+    rotate: direction === 1 ? -3 : 3,
+    scale: 0.92,
+    opacity: 0,
+    zIndex: 1,
+  };
+}
+function exitStyle(direction: 1 | -1, reduced: boolean): SlotStyle {
+  if (reduced) {
+    return { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 1 };
+  }
+  return {
+    x: direction === 1 ? -360 : 360,
+    y: 22,
+    rotate: direction === 1 ? 3 : -3,
+    scale: 0.92,
+    opacity: 0,
+    zIndex: 1,
+  };
+}
 
 const ERROR_COPY: Record<string, string> = {
   missing: "That QR code didn't include a sticker token.",
@@ -142,7 +180,6 @@ export default function PassportSwiper({
   }, [goNext, goPrev, scannerOpen]);
 
   const current = dispensaries[index];
-  const collected = collectedMap[current.id];
 
   // Show scan button only when getUserMedia is supported. SSR-safe via
   // a mounted flag (we can't read navigator on the server).
@@ -155,6 +192,19 @@ export default function PassportSwiper({
   }, []);
 
   const swipeThreshold = 80;
+
+  // Build the sliding-window stack: slots -1, 0, 1, 2 around `index`.
+  // Skip slots that would alias the active card (tiny decks) so we
+  // don't render the same dispensary in two places at once.
+  const visibleCards: { slot: Slot; idx: number; dispensary: Dispensary }[] = [];
+  const seenIds = new Set<string>();
+  for (const slot of [-1, 0, 1, 2] as Slot[]) {
+    const idx = ((index + slot) % total + total) % total;
+    const dispensary = dispensaries[idx];
+    if (seenIds.has(dispensary.id)) continue;
+    seenIds.add(dispensary.id);
+    visibleCards.push({ slot, idx, dispensary });
+  }
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -212,115 +262,115 @@ export default function PassportSwiper({
         aria-roledescription="carousel"
         aria-label={`Crave Cannatrail Passport — ${index + 1} of ${total}: ${current.name}`}
       >
-        {/* Real "next" cards visible behind the active one — actual
-            PassportPage components so the user can see the contents of
-            the next dispensary while the current card is being swiped
-            away, not just paper-coloured rectangles. Slightly translated,
-            rotated, and scaled to suggest a stack. */}
-        {total > 2 && (
-          <div
-            className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none"
-            aria-hidden="true"
-            style={{
-              transform: "translate(16px, 18px) rotate(-1.5deg) scale(0.94)",
-              boxShadow: "0 8px 18px rgba(0,0,0,0.2)",
-              zIndex: 0,
-              opacity: 0.85,
-            }}
-          >
-            <PassportPage
-              dispensary={dispensaries[(index + 2) % total]}
-              index={(index + 2) % total}
-              total={total}
-              collected={collectedMap[dispensaries[(index + 2) % total].id]}
-            />
-          </div>
-        )}
-        {total > 1 && (
-          <div
-            className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none"
-            aria-hidden="true"
-            style={{
-              transform: "translate(8px, 10px) rotate(2deg) scale(0.97)",
-              boxShadow: "0 12px 28px rgba(0,0,0,0.28)",
-              zIndex: 1,
-            }}
-          >
-            <PassportPage
-              dispensary={dispensaries[(index + 1) % total]}
-              index={(index + 1) % total}
-              total={total}
-              collected={collectedMap[dispensaries[(index + 1) % total].id]}
-            />
-          </div>
-        )}
-
-        <AnimatePresence initial={false} custom={direction} mode="popLayout">
-          <motion.div
-            key={current.id}
-            custom={direction}
-            variants={reduceMotion ? reducedVariants : pageVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{
-              type: "spring",
-              stiffness: 280,
-              damping: 30,
-              mass: 0.9,
-            }}
-            drag={reduceMotion ? false : "x"}
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.6}
-            onDragEnd={(_, info) => {
-              if (info.offset.x < -swipeThreshold || info.velocity.x < -500) {
-                goNext();
-              } else if (
-                info.offset.x > swipeThreshold ||
-                info.velocity.x > 500
-              ) {
-                goPrev();
-              }
-            }}
-            whileDrag={{ cursor: "grabbing", scale: 0.98 }}
-            className="absolute inset-0 cursor-grab active:cursor-grabbing"
-            style={{ zIndex: 5, touchAction: "pan-y" }}
-          >
-            <motion.div
-              className="w-full h-full"
-              animate={
-                celebrate && current.id === celebrateShopId
-                  ? { scale: [1, 1.05, 1], rotate: [0, -2, 2, 0] }
-                  : { scale: 1, rotate: 0 }
-              }
-              transition={{ duration: 0.9, ease: "easeOut" }}
-            >
-              <PassportPage
-                dispensary={current}
-                index={index}
-                total={total}
-                collected={collected}
-              />
-            </motion.div>
-
-            {/* Amber flash on celebrate */}
-            <AnimatePresence>
-              {celebrate && current.id === celebrateShopId && (
+        {/* Sliding-window stack — render the four visible cards across
+            slots [-1, 0, 1, 2]. The card at slot 0 is the draggable
+            active page. After a swipe the previously-active card lands
+            in slot -1 (tucked behind on the left) so it stays visible
+            instead of unmounting. */}
+        <AnimatePresence initial={false} custom={direction}>
+          {visibleCards.map(({ slot, idx, dispensary }) => {
+            const isActive = slot === 0;
+            const slotStyles = reduceMotion ? REDUCED_SLOT_STYLES : SLOT_STYLES;
+            const t = slotStyles[slot];
+            const enter = enterStyle(direction, !!reduceMotion);
+            const exit = exitStyle(direction, !!reduceMotion);
+            return (
+              <motion.div
+                key={dispensary.id}
+                custom={direction}
+                initial={{
+                  x: enter.x,
+                  y: enter.y,
+                  rotate: enter.rotate,
+                  scale: enter.scale,
+                  opacity: enter.opacity,
+                }}
+                animate={{
+                  x: t.x,
+                  y: t.y,
+                  rotate: t.rotate,
+                  scale: t.scale,
+                  opacity: t.opacity,
+                }}
+                exit={{
+                  x: exit.x,
+                  y: exit.y,
+                  rotate: exit.rotate,
+                  scale: exit.scale,
+                  opacity: exit.opacity,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 280,
+                  damping: 30,
+                  mass: 0.9,
+                }}
+                drag={isActive && !reduceMotion ? "x" : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.6}
+                onDragEnd={
+                  isActive
+                    ? (_, info) => {
+                        if (
+                          info.offset.x < -swipeThreshold ||
+                          info.velocity.x < -500
+                        ) {
+                          goNext();
+                        } else if (
+                          info.offset.x > swipeThreshold ||
+                          info.velocity.x > 500
+                        ) {
+                          goPrev();
+                        }
+                      }
+                    : undefined
+                }
+                whileDrag={isActive ? { cursor: "grabbing", scale: 0.98 } : undefined}
+                className={`absolute inset-0 ${
+                  isActive ? "cursor-grab active:cursor-grabbing" : "pointer-events-none"
+                }`}
+                style={{
+                  zIndex: t.zIndex,
+                  touchAction: isActive ? "pan-y" : "none",
+                }}
+              >
                 <motion.div
-                  className="absolute inset-0 rounded-2xl pointer-events-none"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 0.45, 0] }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.2 }}
-                  style={{
-                    background:
-                      "radial-gradient(circle at center, rgba(255,185,0,0.6) 0%, rgba(255,185,0,0) 70%)",
-                  }}
-                  aria-hidden="true"
-                />
-              )}
-            </AnimatePresence>
-          </motion.div>
+                  className="w-full h-full"
+                  animate={
+                    isActive && celebrate && dispensary.id === celebrateShopId
+                      ? { scale: [1, 1.05, 1], rotate: [0, -2, 2, 0] }
+                      : { scale: 1, rotate: 0 }
+                  }
+                  transition={{ duration: 0.9, ease: "easeOut" }}
+                >
+                  <PassportPage
+                    dispensary={dispensary}
+                    index={idx}
+                    total={total}
+                    collected={collectedMap[dispensary.id]}
+                  />
+                </motion.div>
+
+                {/* Amber flash on celebrate — only on the active card */}
+                <AnimatePresence>
+                  {isActive && celebrate && dispensary.id === celebrateShopId && (
+                    <motion.div
+                      className="absolute inset-0 rounded-2xl pointer-events-none"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: [0, 0.45, 0] }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 1.2 }}
+                      style={{
+                        background:
+                          "radial-gradient(circle at center, rgba(255,185,0,0.6) 0%, rgba(255,185,0,0) 70%)",
+                      }}
+                      aria-hidden="true"
+                    />
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
       </div>
 
