@@ -6,7 +6,7 @@ export default function MountainBackground() {
   const pathname = usePathname();
 
   // Pages that manage their own mountain placement or don't need it
-  if (pathname === "/vermont-first" || pathname === "/trail" || pathname === "/about" || pathname === "/crav-passport") return null;
+  if (pathname === "/vermont-first" || pathname === "/trail" || pathname === "/about" || pathname === "/crave-cannatrail-passport") return null;
 
   return (
     <div

@@ -10,7 +10,7 @@ import type { NormalizedItem, ShopInventoryMeta } from "./inventory";
  * Redis client is never bundled to the browser.
  *
  * Two top-level reads:
- *   - getInventorySnapshot(): per-shop metas for CRAV badges
+ *   - getInventorySnapshot(): per-shop metas for Crave Cannatrail badges
  *   - getStrainAvailability(): which shops carry which canonical strain
  */
 
