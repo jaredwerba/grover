@@ -11,12 +11,12 @@ import type { Dispensary } from "@/lib/dispensaries";
 import PassportPage from "./PassportPage";
 import StickerScanner from "./StickerScanner";
 
-// Sliding-window stack: visible cards live in slots -1 .. +2 around
-// the active page. The card at slot 0 is the draggable one. After a
-// swipe, the previously-active card transitions to slot -1 (tucked
-// behind on the left) rather than disappearing, so the user can see
-// where they came from.
-type Slot = -1 | 0 | 1 | 2;
+// Three-card carousel: left | middle (active) | right. The user
+// swipes the middle card; it slides into the left slot, and the
+// right slot's card slides into the middle to become the new active.
+// A new card enters at the right and the old left card exits further
+// off-screen-left.
+type Slot = -1 | 0 | 1;
 
 interface SlotStyle {
   x: number;
@@ -28,47 +28,44 @@ interface SlotStyle {
 }
 
 const SLOT_STYLES: Record<Slot, SlotStyle> = {
-  "-1": { x: -22, y: 12, rotate: -3, scale: 0.94, opacity: 0.9, zIndex: 2 },
-  "0":  { x: 0,   y: 0,  rotate: 0,  scale: 1,    opacity: 1,   zIndex: 10 },
-  "1":  { x: 12,  y: 10, rotate: 2,  scale: 0.97, opacity: 1,   zIndex: 6 },
-  "2":  { x: 22,  y: 18, rotate: -1.5, scale: 0.94, opacity: 0.85, zIndex: 3 },
+  "-1": { x: -140, y: 14, rotate: -8, scale: 0.82, opacity: 0.85, zIndex: 2 },
+  "0":  { x: 0,    y: 0,  rotate: 0,  scale: 1,    opacity: 1,    zIndex: 10 },
+  "1":  { x: 140,  y: 14, rotate: 8,  scale: 0.82, opacity: 0.85, zIndex: 2 },
 };
 
 const REDUCED_SLOT_STYLES: Record<Slot, SlotStyle> = {
   "-1": { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 2 },
   "0":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1, zIndex: 10 },
-  "1":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 6 },
-  "2":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 3 },
+  "1":  { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 2 },
 };
 
-// Off-window enter/exit for AnimatePresence — covers the moment a card
-// is added to or removed from the sliding window during a swipe.
-function enterStyle(direction: 1 | -1, reduced: boolean): SlotStyle {
-  if (reduced) {
-    return { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 1 };
-  }
-  return {
+// Enter/exit variants for AnimatePresence. These MUST be variants
+// (not inline objects on motion.div) so the variant function reads
+// `custom` at the time the card actually exits — not at the time of
+// the previous render. Inline `exit={...}` props get frozen with the
+// direction value from the card's last-present render, which causes
+// the wrong-direction exit when the user reverses swipe direction.
+const enterExitVariants = {
+  enter: (direction: 1 | -1) => ({
     x: direction === 1 ? 360 : -360,
     y: 22,
     rotate: direction === 1 ? -3 : 3,
     scale: 0.92,
     opacity: 0,
-    zIndex: 1,
-  };
-}
-function exitStyle(direction: 1 | -1, reduced: boolean): SlotStyle {
-  if (reduced) {
-    return { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0, zIndex: 1 };
-  }
-  return {
+  }),
+  exit: (direction: 1 | -1) => ({
     x: direction === 1 ? -360 : 360,
     y: 22,
     rotate: direction === 1 ? 3 : -3,
     scale: 0.92,
     opacity: 0,
-    zIndex: 1,
-  };
-}
+  }),
+};
+
+const reducedEnterExitVariants = {
+  enter: { opacity: 0 },
+  exit: { opacity: 0 },
+};
 
 const ERROR_COPY: Record<string, string> = {
   missing: "That QR code didn't include a sticker token.",
@@ -205,7 +202,7 @@ export default function PassportSwiper({
   // left, and showing one would look like a phantom history entry.
   const visibleCards: { slot: Slot; idx: number; dispensary: Dispensary }[] = [];
   const seenIds = new Set<string>();
-  const slots: Slot[] = hasNavigated ? [-1, 0, 1, 2] : [0, 1, 2];
+  const slots: Slot[] = hasNavigated ? [-1, 0, 1] : [0, 1];
   for (const slot of slots) {
     const idx = ((index + slot) % total + total) % total;
     const dispensary = dispensaries[idx];
@@ -280,32 +277,21 @@ export default function PassportSwiper({
             const isActive = slot === 0;
             const slotStyles = reduceMotion ? REDUCED_SLOT_STYLES : SLOT_STYLES;
             const t = slotStyles[slot];
-            const enter = enterStyle(direction, !!reduceMotion);
-            const exit = exitStyle(direction, !!reduceMotion);
             return (
               <motion.div
                 key={dispensary.id}
                 custom={direction}
-                initial={{
-                  x: enter.x,
-                  y: enter.y,
-                  rotate: enter.rotate,
-                  scale: enter.scale,
-                  opacity: enter.opacity,
-                }}
+                variants={
+                  reduceMotion ? reducedEnterExitVariants : enterExitVariants
+                }
+                initial="enter"
+                exit="exit"
                 animate={{
                   x: t.x,
                   y: t.y,
                   rotate: t.rotate,
                   scale: t.scale,
                   opacity: t.opacity,
-                }}
-                exit={{
-                  x: exit.x,
-                  y: exit.y,
-                  rotate: exit.rotate,
-                  scale: exit.scale,
-                  opacity: exit.opacity,
                 }}
                 transition={{
                   type: "spring",
