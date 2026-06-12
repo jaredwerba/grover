@@ -756,18 +756,25 @@ function FeatureAI() {
   );
 }
 
-/* ── Retention loop — why a customer comes back ──
-   The retention thesis: a customer returns when (1) something pulls
-   them back, (2) they're reminded at the moment they're deciding
-   where to buy, and (3) they're certain the trip will pay off. The
-   four steps below show how a single counter scan compounds into all
-   three. The active step auto-advances while the section is on
-   screen; tapping a card focuses it. */
+/* ── Retention — diagnosis first, then the machine ──
+   The section leads with the pain most owners can't see (no shop can
+   measure its repeat rate: cash is anonymous and the normal win-back
+   channels — ads, SMS, email — are banned for cannabis). Then the
+   four-step loop shows how one counter scan makes the return visit
+   measurable and engineered, and a concrete timeline ("Sarah")
+   makes it tangible. Active step auto-advances while on screen;
+   tapping a card focuses it. */
+
+const PAIN_CHIPS = [
+  { k: "Banned from ads", v: "Google & Meta won't take cannabis money" },
+  { k: "Blocked from texts", v: "carriers filter cannabis SMS" },
+  { k: "Blind to repeats", v: "cash can't tell a regular from a tourist" },
+];
 
 const LOOP_STEPS = [
   {
-    title: "First visit",
-    body: "A customer buys at your counter. For most shops, the relationship ends when the receipt prints.",
+    title: "An anonymous sale",
+    body: "A customer pays cash and walks out. Today that's where your data ends — you can't tell a regular from a tourist.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
         <path d="M3 9l1.5-5h15L21 9M3 9v11a1 1 0 001 1h16a1 1 0 001-1V9M3 9h18M9 21v-6a1 1 0 011-1h4a1 1 0 011 1v6" />
@@ -775,8 +782,8 @@ const LOOP_STEPS = [
     ),
   },
   {
-    title: "Stamp at checkout",
-    body: "One QR scan stamps their digital passport. The collection stays open — and your shop is in it.",
+    title: "One scan, one known customer",
+    body: "A passport stamp at checkout turns that sale into a returning identity. No signup form, no phone number begged at the counter.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
         <path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM20 17h1v4h-4v-1" />
@@ -784,16 +791,16 @@ const LOOP_STEPS = [
     ),
   },
   {
-    title: "Cove remembers",
-    body: "Their favorites tie to your live menu. When something they loved restocks, Cove knows — and so do they.",
+    title: "The restock alert",
+    body: "Small batches sell out — that's Vermont. When the product they loved comes back, Cove tells them before a competitor's shelf does.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0016.5 3c-1.8 0-3.4.9-4.5 2.3A5.7 5.7 0 007.5 3 5.5 5.5 0 002 8.5c0 2.3 1.5 4 3 5.5l7 7z" />
+        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
       </svg>
     ),
   },
   {
-    title: "The return trip",
+    title: "The decision moment",
     body: "Next time they ask Cove where to buy, the answer is the shop that stamped them — with their product in stock.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -801,6 +808,14 @@ const LOOP_STEPS = [
       </svg>
     ),
   },
+];
+
+const STORY_ROWS = [
+  { d: "Mar 14", t: "Sarah buys Sour Diesel at your counter — and stamps her passport.", final: false },
+  { d: "Mar 20", t: "The batch sells out. Small-batch grower, six-week gap.", final: false },
+  { d: "Apr 12", t: "Your menu syncs the restock. Cove notices within minutes.", final: false },
+  { d: "Apr 12", t: "Sarah gets the back-in-stock alert.", final: false },
+  { d: "Apr 13", t: "She's back at your counter.", final: true },
 ];
 
 const STEP_INTERVAL_MS = 2600;
@@ -831,21 +846,43 @@ function RetentionLoop() {
         viewport={{ once: true, margin: "-120px" }}
         className="max-w-5xl mx-auto"
       >
-        <motion.div variants={fadeUp} className="text-center mb-12 max-w-2xl mx-auto">
+        <motion.div variants={fadeUp} className="text-center mb-8 max-w-2xl mx-auto">
           <p className="text-amber/80 text-[10px] sm:text-xs tracking-[0.3em] uppercase font-bold mb-3">
             Retention
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
-            The first visit costs you marketing.
+            What&apos;s your repeat-visit rate?
             <br />
-            <span className="text-amber">The second one is free.</span>
+            <span className="text-amber">Most shops can&apos;t answer.</span>
           </h2>
           <p className="mt-5 text-cream/70 text-sm sm:text-base leading-relaxed">
-            Customers come back when something pulls them back, when they're
-            reminded at the moment they're deciding where to buy, and when
-            they know the trip will pay off. Cove engineers all three from a
-            single scan at your counter.
+            Not because owners don&apos;t care — because the number is
+            unmeasurable. Cash is anonymous, and the receipt is the last
+            time you can reach them. Lapsed regulars don&apos;t look like
+            churn; they look like a slow Tuesday. Cove makes the return
+            visit measurable, then engineers it — the first visit costs
+            you marketing, the second one is free.
           </p>
+        </motion.div>
+
+        {/* The structural blackout — pains an owner instantly recognizes */}
+        <motion.div
+          variants={fadeUp}
+          className="flex flex-wrap justify-center gap-2.5 mb-12"
+        >
+          {PAIN_CHIPS.map((p) => (
+            <span
+              key={p.k}
+              className="text-[11px] sm:text-xs rounded-full px-4 py-2 border"
+              style={{
+                background: "rgba(225,29,72,0.08)",
+                borderColor: "rgba(251,113,133,0.25)",
+              }}
+            >
+              <span className="font-bold text-rose-200/90">{p.k}</span>
+              <span className="text-cream/60"> — {p.v}</span>
+            </span>
+          ))}
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -909,6 +946,65 @@ function RetentionLoop() {
             );
           })}
         </div>
+
+        {/* The story — one concrete narrative beats ten charts */}
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 28 },
+            show: {
+              opacity: 1,
+              y: 0,
+              transition: {
+                duration: 0.7,
+                ease: [0.16, 1, 0.3, 1],
+                staggerChildren: 0.25,
+                delayChildren: 0.3,
+              },
+            },
+          }}
+          className="mt-12 max-w-2xl mx-auto rounded-2xl border border-amber/15 p-6 sm:p-8"
+          style={{ background: "rgba(11,45,27,0.6)" }}
+        >
+          <p className="text-amber/80 text-[10px] tracking-[0.3em] uppercase font-bold mb-6 text-center">
+            How it plays out
+          </p>
+          <ol className="space-y-4">
+            {STORY_ROWS.map((row) => (
+              <motion.li
+                key={`${row.d}-${row.t}`}
+                variants={fadeUp}
+                className="flex items-start gap-4"
+              >
+                <span
+                  className={`shrink-0 w-14 text-[10px] font-mono tabular-nums pt-0.5 ${
+                    row.final ? "text-amber" : "text-cream-muted/60"
+                  }`}
+                >
+                  {row.d}
+                </span>
+                <span
+                  className={`shrink-0 mt-1.5 w-2 h-2 rounded-full ${
+                    row.final ? "bg-amber" : "bg-forest-mid"
+                  }`}
+                  aria-hidden="true"
+                />
+                <span
+                  className={`text-sm leading-relaxed ${
+                    row.final ? "text-amber font-semibold" : "text-cream/75"
+                  }`}
+                >
+                  {row.t}
+                </span>
+              </motion.li>
+            ))}
+          </ol>
+          <motion.p
+            variants={fadeUp}
+            className="mt-6 pt-5 border-t border-forest-mid/50 text-center text-cream/80 text-sm font-semibold"
+          >
+            One restock alert. One returned customer. Zero ad spend.
+          </motion.p>
+        </motion.div>
 
         <motion.p
           variants={fadeUp}
