@@ -81,6 +81,7 @@ export default function BusinessLanding() {
         <FeaturePassport />
         <FeatureAI />
       </div>
+      <RetentionLoop />
       <StatsBand />
       <HowItWorks />
       <FinalCTA />
@@ -134,7 +135,7 @@ function Aurora() {
 
 /* ── Hero ── */
 
-const HEADLINE_WORDS = ["Know", "your", "market", "before", "it", "walks", "in."];
+const HEADLINE_WORDS = ["Know", "your", "market", "before", "they", "walk", "in."];
 
 function Hero() {
   const reduce = useReducedMotion();
@@ -182,7 +183,7 @@ function Hero() {
       {/* Word-staggered headline — words are aria-hidden (margins, not
           spaces, separate them); the label carries the real sentence. */}
       <h1
-        aria-label="Know your market before it walks in."
+        aria-label="Know your market before they walk in."
         className="mt-4 max-w-3xl text-4xl sm:text-6xl font-bold leading-[1.05] tracking-tight"
       >
         {HEADLINE_WORDS.map((word, i) => (
@@ -214,8 +215,8 @@ function Hero() {
         transition={{ delay: 1.0, duration: 0.7 }}
         className="mt-6 max-w-xl text-cream/75 text-base sm:text-lg leading-relaxed"
       >
-        Cove turns live menus, consumer demand, and CRAV Cannatrail foot
-        traffic into a dashboard your shop can act on — built exclusively
+        Cove turns live menus, consumer demand, and verified in-store
+        visits into a dashboard your shop can act on — built exclusively
         for Vermont cannabis.
       </motion.p>
 
@@ -414,7 +415,7 @@ function Marquee() {
         ))}
       </motion.div>
       <p className="mt-4 text-center text-cream-muted/50 text-[10px] tracking-[0.3em] uppercase">
-        The dispensaries of the CRAV Cannatrail
+        Licensed Vermont dispensaries, live on Cove
       </p>
     </div>
   );
@@ -431,7 +432,7 @@ function ProofStrip() {
 
   const items = [
     { value: shops, label: "Licensed VT dispensaries" },
-    { value: trails, label: "Regional trails" },
+    { value: trails, label: "Regions covered" },
     { value: strainCount, label: "Strains tracked" },
   ];
 
@@ -610,7 +611,7 @@ function FeatureDashboards() {
   );
 }
 
-/* ── Feature 2 — CRAV Cannatrail Passport ── */
+/* ── Feature 2 — digital passport foot traffic ── */
 
 function FeaturePassport() {
   const ref = useRef<HTMLDivElement>(null);
@@ -619,15 +620,15 @@ function FeaturePassport() {
   return (
     <FeatureRow
       flip
-      eyebrow="CRAV Cannatrail Passport"
+      eyebrow="Cove Digital Passport"
       title="Turn foot traffic into a number you can grow."
-      body="Every passport sticker scanned at your counter is a verified visit. Cove counts them, spots your repeat customers, and shows which trail traffic you're missing."
+      body="Every passport sticker scanned at your counter is a verified visit. Cove counts them, spots your repeat customers, and shows you the visits nearby shops are getting that you aren't."
       bullets={[
         "A QR sticker kit for your counter — we generate, you print",
         "Verified visits and repeat-visitor rate, per week",
-        "Cross-shop overlap — see which trail stops share your customers",
+        "Cross-shop overlap — see which nearby shops share your customers",
       ]}
-      cta={{ label: "Join the Cannatrail", href: "/trail" }}
+      cta={{ label: "See the consumer map", href: "/trail" }}
       mock={
         <div ref={ref}>
           <MockShell>
@@ -641,7 +642,7 @@ function FeaturePassport() {
                 }}
               >
                 <p className="text-[6px] font-bold tracking-[0.2em] uppercase text-forest-deep/70">
-                  CRAV Cannatrail
+                  Cove Passport
                 </p>
                 {/* Gold stamp */}
                 <motion.div
@@ -736,7 +737,7 @@ function FeatureAI() {
               >
                 <span className="text-amber font-semibold">Zenbarn Farms</span> in
                 Waterbury Center has Blue Dream in stock right now — about 4
-                minutes from you on the Lamoille to NEK trail.
+                minutes from where you&apos;re standing.
               </div>
             </motion.div>
             <motion.p
@@ -752,6 +753,171 @@ function FeatureAI() {
         </MockShell>
       }
     />
+  );
+}
+
+/* ── Retention loop — why a customer comes back ──
+   The retention thesis: a customer returns when (1) something pulls
+   them back, (2) they're reminded at the moment they're deciding
+   where to buy, and (3) they're certain the trip will pay off. The
+   four steps below show how a single counter scan compounds into all
+   three. The active step auto-advances while the section is on
+   screen; tapping a card focuses it. */
+
+const LOOP_STEPS = [
+  {
+    title: "First visit",
+    body: "A customer buys at your counter. For most shops, the relationship ends when the receipt prints.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M3 9l1.5-5h15L21 9M3 9v11a1 1 0 001 1h16a1 1 0 001-1V9M3 9h18M9 21v-6a1 1 0 011-1h4a1 1 0 011 1v6" />
+      </svg>
+    ),
+  },
+  {
+    title: "Stamp at checkout",
+    body: "One QR scan stamps their digital passport. The collection stays open — and your shop is in it.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM20 17h1v4h-4v-1" />
+      </svg>
+    ),
+  },
+  {
+    title: "Cove remembers",
+    body: "Their favorites tie to your live menu. When something they loved restocks, Cove knows — and so do they.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0016.5 3c-1.8 0-3.4.9-4.5 2.3A5.7 5.7 0 007.5 3 5.5 5.5 0 002 8.5c0 2.3 1.5 4 3 5.5l7 7z" />
+      </svg>
+    ),
+  },
+  {
+    title: "The return trip",
+    body: "Next time they ask Cove where to buy, the answer is the shop that stamped them — with their product in stock.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16M3 21v-5h5" />
+      </svg>
+    ),
+  },
+];
+
+const STEP_INTERVAL_MS = 2600;
+
+function RetentionLoop() {
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { margin: "-120px" });
+  const [active, setActive] = useState(0);
+
+  // Auto-advance the highlighted step while the section is on screen.
+  // Reduced motion gets all steps fully lit, no cycling.
+  useEffect(() => {
+    if (!inView || reduce) return;
+    const t = setInterval(
+      () => setActive((a) => (a + 1) % LOOP_STEPS.length),
+      STEP_INTERVAL_MS
+    );
+    return () => clearInterval(t);
+  }, [inView, reduce]);
+
+  return (
+    <section ref={ref} className="relative z-10 px-6 py-16 sm:py-24">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-120px" }}
+        className="max-w-5xl mx-auto"
+      >
+        <motion.div variants={fadeUp} className="text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-amber/80 text-[10px] sm:text-xs tracking-[0.3em] uppercase font-bold mb-3">
+            Retention
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+            The first visit costs you marketing.
+            <br />
+            <span className="text-amber">The second one is free.</span>
+          </h2>
+          <p className="mt-5 text-cream/70 text-sm sm:text-base leading-relaxed">
+            Customers come back when something pulls them back, when they're
+            reminded at the moment they're deciding where to buy, and when
+            they know the trip will pay off. Cove engineers all three from a
+            single scan at your counter.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {LOOP_STEPS.map((s, i) => {
+            const isActive = reduce || active === i;
+            return (
+              <motion.div
+                key={s.title}
+                variants={fadeUp}
+                onClick={() => setActive(i)}
+                animate={{
+                  scale: isActive ? 1.02 : 1,
+                  opacity: isActive ? 1 : 0.55,
+                }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="relative rounded-2xl border p-6 cursor-pointer overflow-hidden"
+                style={{
+                  background: "rgba(11,45,27,0.6)",
+                  borderColor: isActive
+                    ? "rgba(255,185,0,0.5)"
+                    : "rgba(39,94,60,0.6)",
+                  boxShadow: isActive
+                    ? "0 16px 40px rgba(0,0,0,0.35), 0 0 24px rgba(255,185,0,0.08)"
+                    : "none",
+                }}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <span
+                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
+                    style={{
+                      background: isActive
+                        ? "rgba(255,185,0,0.18)"
+                        : "rgba(39,94,60,0.4)",
+                      color: isActive ? "#FFB900" : "#c4b89a",
+                    }}
+                  >
+                    {s.icon}
+                  </span>
+                  <span className="font-groovy text-amber/60 text-xl">
+                    0{i + 1}
+                  </span>
+                </div>
+                <h3 className="text-cream font-bold text-base mb-2">{s.title}</h3>
+                <p className="text-cream/65 text-sm leading-relaxed">{s.body}</p>
+
+                {/* Step timer — fills while this card is the active one */}
+                {!reduce && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-forest-mid/40">
+                    {active === i && (
+                      <motion.div
+                        key={`timer-${active}`}
+                        className="h-full bg-amber"
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: STEP_INTERVAL_MS / 1000, ease: "linear" }}
+                      />
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+
+        <motion.p
+          variants={fadeUp}
+          className="mt-10 text-center text-cream-muted/70 text-sm tracking-wide"
+        >
+          No punch cards. No app to build. No mailing list to beg for.
+        </motion.p>
+      </motion.div>
+    </section>
   );
 }
 
@@ -781,7 +947,7 @@ function StatsBand() {
       >
         {[
           { v: `${synced}/7`, l: "Live menu sync" },
-          { v: `${regions}`, l: "Trail regions covered" },
+          { v: `${regions}`, l: "Vermont regions covered" },
           { v: `$${zero}`, l: "Cost during 2026 season" },
         ].map(({ v, l }) => (
           <div key={l}>
@@ -882,7 +1048,7 @@ function FinalCTA() {
         </h2>
         <p className="text-cream/70 text-sm sm:text-base max-w-lg mx-auto leading-relaxed mb-9">
           Cove is onboarding Vermont dispensaries, growers, and manufacturers
-          for the 2026 CRAV Cannatrail season — free while the program grows.
+          for the 2026 season — free while the program grows.
         </p>
         <motion.span
           whileHover={{ scale: 1.05 }}
