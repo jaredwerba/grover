@@ -2,11 +2,11 @@
 
 > Vermont cannabis companion app — https://covebud.com
 
-Cove helps Vermonters and visitors navigate Vermont's licensed cannabis dispensaries. It combines an interactive dispensary map (CRAV Cannatrail), a strain library, and an AI cannabis concierge called Cove AI.
+Cove helps Vermonters and visitors navigate Vermont's licensed cannabis dispensaries. It combines an interactive dispensary map (COVE Trail), a strain library, and an AI cannabis concierge called Cove AI.
 
-## What is CRAV Cannatrail?
+## What is COVE Trail?
 
-CRAV Cannatrail is Vermont's curated, interactive map of every state-licensed cannabis dispensary — adult-use and medical. It covers the full state from Burlington and the Champlain Valley to the Northeast Kingdom. Each location includes address, phone, hours, and direct menu links.
+COVE Trail is Vermont's curated, interactive map of every state-licensed cannabis dispensary — adult-use and medical. It covers the full state from Burlington and the Champlain Valley to the Northeast Kingdom. Each location includes address, phone, hours, and direct menu links.
 
 ## Strain Library
 
@@ -14,7 +14,7 @@ A searchable library of Vermont cannabis strains. Each strain entry includes: ty
 
 ## Cove AI
 
-An AI cannabis concierge built specifically for Vermont's market. Cove AI helps users choose the right strain, format (flower, edible, concentrate), and dosage before visiting a dispensary. It answers questions about terpenes, effects, and product availability on CRAV Cannatrail.
+An AI cannabis concierge built specifically for Vermont's market. Cove AI helps users choose the right strain, format (flower, edible, concentrate), and dosage before visiting a dispensary. It answers questions about terpenes, effects, and product availability on COVE Trail.
 
 ## Vermont Cannabis
 
@@ -22,7 +22,7 @@ Vermont legalized adult-use cannabis in 2022. The state licenses both recreation
 
 ## Key Pages
 
-- /about — Learn about Cove, CRAV Cannatrail, strain guidance, and AI-powered discovery
+- /about — Learn about Cove, COVE Trail, strain guidance, and AI-powered discovery
 - /trail — Interactive map of all Vermont licensed dispensaries
 - /strain — Full strain library with effects, terpenes, and potency
 - /vermont-first — Vermont's craft cannabis grower community

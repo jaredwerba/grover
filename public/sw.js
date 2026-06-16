@@ -1,4 +1,4 @@
-const CACHE_NAME = "cove-pwa-v1";
+const CACHE_NAME = "cove-pwa-v2";
 const SHELL_ASSETS = [
   "/",
   "/trail",

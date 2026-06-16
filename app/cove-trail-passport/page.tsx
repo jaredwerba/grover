@@ -6,19 +6,19 @@ import { getStickers } from "@/lib/stickers";
 import PassportSwiper from "@/components/PassportSwiper";
 
 export const metadata: Metadata = {
-  title: "CRAV Cannatrail Passport — Your Vermont Cannabis Trail | Cove",
+  title: "COVE Trail Passport — Your Vermont Cannabis Trail | Cove",
   description:
-    "Your personal CRAV Cannatrail Passport — collect stickers from Vermont dispensaries by scanning their QR codes. 40 stops across four regional trails.",
+    "Your personal COVE Trail Passport — collect stickers from Vermont dispensaries by scanning their QR codes. 40 stops across four regional trails.",
   openGraph: {
-    title: "CRAV Cannatrail Passport — Your Vermont Cannabis Trail",
+    title: "COVE Trail Passport — Your Vermont Cannabis Trail",
     description:
-      "Scan stickers at Vermont dispensaries to fill up your digital CRAV Cannatrail Passport.",
-    url: "https://covebud.com/crav-cannatrail-passport",
+      "Scan stickers at Vermont dispensaries to fill up your digital COVE Trail Passport.",
+    url: "https://covebud.com/cove-trail-passport",
     siteName: "Cove",
     type: "website",
   },
   alternates: {
-    canonical: "https://covebud.com/crav-cannatrail-passport",
+    canonical: "https://covebud.com/cove-trail-passport",
   },
 };
 
@@ -30,7 +30,7 @@ interface PageProps {
   }>;
 }
 
-export default async function CRAVCannatrailPassportPage({ searchParams }: PageProps) {
+export default async function CoveTrailPassportPage({ searchParams }: PageProps) {
   // Browsable without sign-in — anyone can flip through the passport.
   // Collecting still requires a session (the /scan route enforces it).
   const session = await getSession();
@@ -69,10 +69,10 @@ export default async function CRAVCannatrailPassportPage({ searchParams }: PageP
           2026 Edition
         </p>
         <h1 className="text-3xl sm:text-4xl font-groovy text-cream tracking-wide leading-tight mb-2">
-          CRAV Cannatrail Passport
+          COVE Trail Passport
         </h1>
         <p className="text-cream-muted text-xs sm:text-sm leading-relaxed max-w-md mx-auto">
-          Scan a CRAV Cannatrail sticker at any participating dispensary to stamp
+          Scan a COVE Trail sticker at any participating dispensary to stamp
           your passport.
         </p>
         {/* Progress counter */}
@@ -105,7 +105,7 @@ export default async function CRAVCannatrailPassportPage({ searchParams }: PageP
               href="/trail"
               className="bg-amber text-forest-deep font-bold px-8 py-3 rounded-full hover:bg-amber-hover transition-colors text-xs tracking-widest uppercase shadow-lg shadow-amber/20"
             >
-              Open CRAV Cannatrail Map
+              Open COVE Trail Map
             </Link>
             <Link
               href="/about"

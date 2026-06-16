@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * In-app QR scanner for the CRAV Cannatrail Passport. Opens a fullscreen modal,
+ * In-app QR scanner for the COVE Trail Passport. Opens a fullscreen modal,
  * requests rear-camera access, and on a successful decode routes to
  * the same server route a phone's-native-camera scan hits so the
  * code paths are unified.
@@ -26,17 +26,17 @@ type Html5QrcodeInstance = import("html5-qrcode").Html5Qrcode;
 
 type Status = "starting" | "scanning" | "denied" | "no-camera" | "error";
 
-const SCANNER_ELEMENT_ID = "crav-cannatrail-sticker-scanner-region";
+const SCANNER_ELEMENT_ID = "cove-trail-sticker-scanner-region";
 
 /**
  * Decide where to navigate based on a decoded QR string. We accept:
  *
  *   • Short slug URL: https://covebud.com/s/papa-g-dispensary
  *     → navigate to /s/papa-g-dispensary (server mints the JWT)
- *   • Direct scan URL: https://covebud.com/crav-cannatrail-passport/scan?t=<jwt>
- *     → navigate to /crav-cannatrail-passport/scan?t=<jwt>
+ *   • Direct scan URL: https://covebud.com/cove-trail-passport/scan?t=<jwt>
+ *     → navigate to /cove-trail-passport/scan?t=<jwt>
  *   • Bare JWT (legacy stickers printed without a domain)
- *     → navigate to /crav-cannatrail-passport/scan?t=<jwt>
+ *     → navigate to /cove-trail-passport/scan?t=<jwt>
  *
  * Returns the in-app path to push, or null if the decoded value
  * doesn't look like ours and we should keep scanning.
@@ -48,14 +48,14 @@ function extractScanTarget(raw: string): string | null {
     if (/^\/s\/[a-z0-9-]+$/i.test(path)) {
       return path;
     }
-    if (path === "/crav-cannatrail-passport/scan" && u.searchParams.get("t")) {
+    if (path === "/cove-trail-passport/scan" && u.searchParams.get("t")) {
       return `${path}?t=${encodeURIComponent(u.searchParams.get("t")!)}`;
     }
   } catch {
     // not a URL
   }
   if (/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(raw)) {
-    return `/crav-cannatrail-passport/scan?t=${encodeURIComponent(raw)}`;
+    return `/cove-trail-passport/scan?t=${encodeURIComponent(raw)}`;
   }
   return null;
 }
@@ -90,14 +90,14 @@ export default function StickerScanner({
       if (typeof console !== "undefined") {
         console.log("[StickerScanner] decoded", { decodedText, target });
       }
-      if (!target) return; // not a CRAV Cannatrail QR — keep scanning
+      if (!target) return; // not a COVE Trail QR — keep scanning
       handledRef.current = true;
 
       // Use a FULL browser navigation, not router.push.
       //
       // Why: the scan target is typically /s/<slug>, which is a route
-      // handler that returns a redirect to /crav-cannatrail-passport/scan?t=,
-      // which redirects again to /crav-cannatrail-passport. Following two server
+      // handler that returns a redirect to /cove-trail-passport/scan?t=,
+      // which redirects again to /cove-trail-passport. Following two server
       // redirects through Next.js's client router while we're also
       // unmounting the scanner mid-callback was crashing iOS Safari
       // with its "this page couldn't load" page-load error screen.
@@ -211,13 +211,13 @@ export default function StickerScanner({
       className="fixed inset-0 z-[100] flex flex-col bg-black"
       role="dialog"
       aria-modal="true"
-      aria-label="Scan a CRAV Cannatrail sticker"
+      aria-label="Scan a COVE Trail sticker"
     >
       {/* Top bar */}
       <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-forest-deep/90 backdrop-blur-sm">
         <div>
           <p className="text-amber/70 text-[10px] tracking-[0.3em] uppercase font-bold">
-            CRAV Cannatrail Passport
+            COVE Trail Passport
           </p>
           <p className="text-cream text-sm font-semibold">Scan a Sticker</p>
         </div>
@@ -275,7 +275,7 @@ export default function StickerScanner({
         {status === "denied" && (
           <FallbackPanel
             title="Camera access denied"
-            body="Cove needs your camera to read CRAV Cannatrail stickers. Enable camera access for this site in your browser settings, then try again."
+            body="Cove needs your camera to read COVE Trail stickers. Enable camera access for this site in your browser settings, then try again."
             ctaLabel="Try again"
             onCta={() => {
               setStatus("starting");
@@ -314,7 +314,7 @@ export default function StickerScanner({
       {/* Bottom hint + manual fallback */}
       <div className="shrink-0 px-6 py-4 bg-forest-deep/90 backdrop-blur-sm text-center">
         <p className="text-cream-muted text-xs leading-relaxed mb-2">
-          Point your camera at a CRAV Cannatrail sticker QR. Sticker is auto-collected
+          Point your camera at a COVE Trail sticker QR. Sticker is auto-collected
           when detected.
         </p>
         <button
@@ -325,7 +325,7 @@ export default function StickerScanner({
             if (!raw) return;
             const slug = raw.trim().toLowerCase();
             if (!/^[a-z0-9-]+$/.test(slug)) {
-              window.alert("That doesn't look like a valid CRAV Cannatrail shop ID.");
+              window.alert("That doesn't look like a valid COVE Trail shop ID.");
               return;
             }
             onClose();

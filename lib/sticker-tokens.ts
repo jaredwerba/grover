@@ -25,7 +25,7 @@ export function stickerIdFor(shopId: string): string {
 export interface StickerPayload {
   shopId: string;
   stickerId: string;
-  purpose: "crav-cannatrail-sticker";
+  purpose: "cove-trail-sticker";
 }
 
 /**
@@ -36,7 +36,7 @@ export async function signStickerToken(shopId: string): Promise<string> {
   return new SignJWT({
     shopId,
     stickerId: stickerIdFor(shopId),
-    purpose: "crav-cannatrail-sticker",
+    purpose: "cove-trail-sticker",
   })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -51,7 +51,7 @@ export async function verifyStickerToken(
       algorithms: ["HS256"],
     });
     if (
-      payload.purpose !== "crav-cannatrail-sticker" ||
+      payload.purpose !== "cove-trail-sticker" ||
       typeof payload.shopId !== "string" ||
       typeof payload.stickerId !== "string"
     ) {
@@ -60,7 +60,7 @@ export async function verifyStickerToken(
     return {
       shopId: payload.shopId,
       stickerId: payload.stickerId,
-      purpose: "crav-cannatrail-sticker",
+      purpose: "cove-trail-sticker",
     };
   } catch {
     return null;

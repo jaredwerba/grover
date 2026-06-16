@@ -3,7 +3,7 @@
  *
  * Public dispensary menus are ingested by per-platform connectors
  * (lib/connectors/*) and normalized into a single shape that powers
- * CRAV Cannatrail's "in stock" badges, the Strain Library's "available at"
+ * COVE Trail's "in stock" badges, the Strain Library's "available at"
  * cards, and Cove AI's location-aware recommendations.
  */
 
