@@ -79,7 +79,7 @@ export default function AboutNav({ sections }: { sections: Section[] }) {
             href="/trail"
             className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber/70 transition-colors"
           >
-            Explore COVE Trail ↗
+            Explore the Map ↗
           </Link>
           <Link
             href="/strain"

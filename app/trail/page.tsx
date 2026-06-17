@@ -53,7 +53,7 @@ export default async function TrailPage() {
           </div>
           <div className="flex flex-wrap gap-3 mt-8">
             {([
-              { label: "Vermont Native", href: "/about#what-is-cove-trail" },
+              { label: "Vermont Native", href: "/about#what-is-cove" },
               { label: "Locally Grown", href: "/about#best-afternoon-strain" },
               { label: "Medical & Recreational", href: "/about#first-time-vermont" },
               { label: "Community First", href: "/about#cannabis-safely-first-time" },
