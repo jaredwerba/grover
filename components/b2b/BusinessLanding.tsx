@@ -76,6 +76,7 @@ export default function BusinessLanding() {
       <Aurora />
       <Hero />
       <ProofStrip />
+      <CovebudMeaning />
       <div id="platform">
         <FeatureDashboards />
         <FeaturePassport />
@@ -450,6 +451,77 @@ function ProofStrip() {
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+/* ── COVEBUD name reveal ──
+   Explains the covebud.com name as a backronym: Cove + BUD, where
+   BUD = Botanical Understanding Dashboard. Doubles as a one-line
+   product definition (real-time dashboards, demand radar, AI insights)
+   that sets up the three feature rows that follow. */
+
+const BUD_WORDS = [
+  { letter: "B", word: "otanical" },
+  { letter: "U", word: "nderstanding" },
+  { letter: "D", word: "ashboard" },
+];
+
+function CovebudMeaning() {
+  return (
+    <section className="relative z-10 px-6 py-16 sm:py-20">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        className="max-w-3xl mx-auto text-center"
+      >
+        <motion.p
+          variants={fadeUp}
+          className="text-amber/80 text-[10px] sm:text-xs tracking-[0.3em] uppercase font-bold mb-5"
+        >
+          Why covebud
+        </motion.p>
+
+        {/* Wordmark: cove + BUD */}
+        <motion.div
+          variants={fadeUp}
+          className="flex items-baseline justify-center gap-1 mb-6"
+        >
+          <span className="font-bold text-3xl sm:text-5xl tracking-tight text-cream/90">
+            cove
+          </span>
+          <span className="font-bold text-3xl sm:text-5xl tracking-tight text-amber">
+            bud
+          </span>
+        </motion.div>
+
+        {/* BUD expansion — each leading letter in amber */}
+        <motion.div
+          variants={fadeUp}
+          className="flex flex-col sm:flex-row items-center justify-center gap-x-5 gap-y-2 mb-6"
+        >
+          {BUD_WORDS.map((w) => (
+            <span
+              key={w.letter}
+              className="text-lg sm:text-2xl font-semibold tracking-tight"
+            >
+              <span className="text-amber">{w.letter}</span>
+              <span className="text-cream/85">{w.word}</span>
+            </span>
+          ))}
+        </motion.div>
+
+        <motion.p
+          variants={fadeUp}
+          className="text-cream/65 text-sm sm:text-base leading-relaxed max-w-xl mx-auto"
+        >
+          A Botanical Understanding Dashboard — real-time dashboards, demand
+          radar, and AI insights, in one place, for Vermont growers and
+          dispensaries.
+        </motion.p>
+      </motion.div>
     </section>
   );
 }
