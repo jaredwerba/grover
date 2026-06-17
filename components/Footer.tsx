@@ -29,13 +29,6 @@ export default function Footer() {
         </svg>
       </FooterLink>
 
-      <FooterLink href="/trail" label="Trail" active={pathname === "/trail"}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-          <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1118 0z" />
-          <circle cx="12" cy="10" r="3" />
-        </svg>
-      </FooterLink>
-
       <FooterLink href="/strain" label="Products" active={pathname === "/strain"}>
         <Image
           src="/images/icons/2d-white/flower.png"
