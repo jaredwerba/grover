@@ -76,12 +76,6 @@ export default function AboutNav({ sections }: { sections: Section[] }) {
 
         <div className="mt-8 pt-8 border-t border-forest-mid/40 px-3 flex flex-col gap-3">
           <Link
-            href="/trail"
-            className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber/70 transition-colors"
-          >
-            Explore the Map ↗
-          </Link>
-          <Link
             href="/strain"
             className="text-amber text-xs font-bold tracking-widest uppercase hover:text-amber/70 transition-colors"
           >

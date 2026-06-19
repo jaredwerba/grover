@@ -103,14 +103,8 @@ export default function AboutPage() {
                 {/* CTA */}
                 <div className="mt-10 pt-8 border-t border-forest-mid/40 flex flex-wrap gap-3">
                   <Link
-                    href="/trail"
-                    className="bg-amber text-forest-deep text-xs font-bold px-5 py-2.5 rounded-sm tracking-widest uppercase hover:bg-amber/90 transition-colors"
-                  >
-                    Open the Map
-                  </Link>
-                  <Link
                     href="/strain"
-                    className="border border-forest-mid text-cream-muted text-xs font-bold px-5 py-2.5 rounded-sm tracking-widest uppercase hover:border-amber/40 hover:text-cream transition-colors"
+                    className="bg-amber text-forest-deep text-xs font-bold px-5 py-2.5 rounded-sm tracking-widest uppercase hover:bg-amber/90 transition-colors"
                   >
                     Browse Strains
                   </Link>
