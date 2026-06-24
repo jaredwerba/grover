@@ -1,9 +1,25 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import HeroVideo from "@/components/HeroVideo";
 import HeroLogo from "@/components/HeroLogo";
 import HeroChat from "@/components/HeroChat";
 import HeroAAI from "@/components/HeroAAI";
+
+export const metadata: Metadata = {
+  title: "Cove — Your Vermont Cannabis Companion",
+  description:
+    "Local strains, local dispensaries, one app. Cove is Vermont's cannabis companion — browse a live dispensary map, explore the strain library, and ask the Cove AI concierge anything.",
+  openGraph: {
+    title: "Cove — Your Vermont Cannabis Companion",
+    description:
+      "Local strains, local dispensaries, one app. Vermont's cannabis companion — live dispensary map, strain library, and an AI concierge.",
+    url: "https://covebud.com",
+    siteName: "Cove",
+    type: "website",
+  },
+  alternates: { canonical: "https://covebud.com" },
+};
 
 export default function LandingPage() {
   return (

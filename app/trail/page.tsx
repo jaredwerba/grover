@@ -1,8 +1,24 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { dispensaries } from "@/lib/dispensaries";
 import { growers } from "@/lib/growers";
 import TrailClient from "@/components/TrailClient";
 import { getInventorySnapshot } from "@/lib/inventory-public";
+
+export const metadata: Metadata = {
+  title: "COVE Trail — Vermont Dispensary Map | Cove",
+  description:
+    "Find every licensed Vermont cannabis dispensary on an interactive map — locations, hours, menus, and live in-stock badges, plus the state's craft growers.",
+  openGraph: {
+    title: "COVE Trail — Vermont Dispensary Map",
+    description:
+      "Every licensed Vermont cannabis dispensary on an interactive map — locations, hours, menus, and live in-stock badges.",
+    url: "https://covebud.com/trail",
+    siteName: "Cove",
+    type: "website",
+  },
+  alternates: { canonical: "https://covebud.com/trail" },
+};
 
 export default async function TrailPage() {
   const { metas } = await getInventorySnapshot();

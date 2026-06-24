@@ -35,8 +35,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Cove",
-  description: "Your Vermont cannabis companion",
+  metadataBase: new URL("https://covebud.com"),
+  title: "Cove — Your Vermont Cannabis Companion",
+  description:
+    "Cove is your Vermont cannabis companion — a live dispensary map, strain library, and AI concierge for the Green Mountain State.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
