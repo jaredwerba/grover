@@ -91,6 +91,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "St Albans dispensary near the Canadian border. Part of the Champlain Valley Region Trail.",
     region: "Champlain Valley",
+    platform: "leafly",
+    merchant_id: "mary-jane-junction-",
   },
   {
     id: "milton-remedies",
@@ -121,8 +123,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Pine Street Arts District dispensary with craft extracts and flower. Part of the Champlain Valley Region Trail.",
     region: "Champlain Valley",
-    platform: "dutchie",
-    merchant_id: "62f28802b87e0f676aeaa8a6",
+    platform: "leafly",
+    merchant_id: "green-state-dispensary",
   },
   {
     id: "the-high-bar",
@@ -198,6 +200,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Essex Junction's Gaston Weed Company on Center Rd. Part of the Champlain Valley Region Trail.",
     region: "Champlain Valley",
+    platform: "leafly",
+    merchant_id: "gaston-weed-company",
   },
 
   /* ── LAMOILLE TO NEK TRAIL ── */
@@ -262,6 +266,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Johnson Vermont dispensary on Route 15. Part of the Lamoille to NEK Trail.",
     region: "Lamoille to NEK",
+    platform: "leafly",
+    merchant_id: "castle-cannabis",
   },
   {
     id: "kushies",
@@ -309,6 +315,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Morrisville craft cannabis dispensary. Part of the Lamoille to NEK Trail.",
     region: "Lamoille to NEK",
+    platform: "leafly",
+    merchant_id: "craft-cannabis-company-vt-",
   },
   {
     id: "cambridge-cannabis-company",
@@ -324,6 +332,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Jeffersonville dispensary in the Cambridge/Smugglers' Notch area. Part of the Lamoille to NEK Trail.",
     region: "Lamoille to NEK",
+    platform: "leafly",
+    merchant_id: "cambridge-cannabis-company",
   },
 
   /* ── THE CATAMOUNT TRAIL ── */
@@ -627,6 +637,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Barre's Forbins Reserve dispensary. Part of the Granite Capital Trail.",
     region: "Granite Capital",
+    platform: "leafly",
+    merchant_id: "forbins-reserve-",
   },
   {
     id: "juanas-garden",
@@ -642,6 +654,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Montpelier's Juana's Garden on River St. Part of the Granite Capital Trail.",
     region: "Granite Capital",
+    platform: "leafly",
+    merchant_id: "juana-s-garden-cannabis-boutique",
   },
   {
     id: "capital-cannabis-co",
