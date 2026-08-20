@@ -115,6 +115,67 @@ function pickSize(p: MauiProduct): string | null {
   return p.type ?? null;
 }
 
+/**
+ * Extract a complete JSON array starting at `start` (which must index
+ * the opening `[`) using balanced-bracket scanning. Needed because the
+ * payload contains nested arrays/objects and strings with escaped
+ * quotes, so a non-greedy regex can't find the true end.
+ * Returns null if the array never closes.
+ */
+function sliceBalancedArray(src: string, start: number): string | null {
+  let depth = 0;
+  let inStr = false;
+  let escaped = false;
+  for (let i = start; i < src.length; i++) {
+    const ch = src[i];
+    if (inStr) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inStr = false;
+      continue;
+    }
+    if (ch === '"') inStr = true;
+    else if (ch === "[" || ch === "{") depth++;
+    else if (ch === "]" || ch === "}") {
+      depth--;
+      if (depth === 0) return src.slice(start, i + 1);
+    }
+  }
+  return null;
+}
+
+/**
+ * Pull carousel rails out of Remix's deferred-promise resolution calls
+ * embedded later in the streamed HTML document.
+ */
+function parseDeferredCarousels(
+  html: string
+): Array<{ products?: MauiProduct[]; total?: number }> {
+  const out: Array<{ products?: MauiProduct[]; total?: number }> = [];
+  // Match the resolver call for the carousels promise on any route key.
+  const callRe = /__remixContext\.r\(\s*"[^"]*"\s*,\s*"carouselsPromise"\s*,\s*/g;
+  let m: RegExpExecArray | null;
+  while ((m = callRe.exec(html)) !== null) {
+    const arrStart = html.indexOf("[", m.index + m[0].length - 1);
+    if (arrStart === -1) continue;
+    const raw = sliceBalancedArray(html, arrStart);
+    if (!raw) continue;
+    try {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) {
+        for (const c of arr) {
+          if (c && typeof c === "object" && Array.isArray(c.products)) {
+            out.push(c as { products?: MauiProduct[]; total?: number });
+          }
+        }
+      }
+    } catch {
+      // Malformed chunk — skip this rail rather than failing the shop.
+    }
+  }
+  return out;
+}
+
 export const mauiConnector: Connector = {
   platform: "maui",
 
@@ -153,14 +214,42 @@ export const mauiConnector: Connector = {
     };
     const loaderData = ctx.state?.loaderData ?? {};
 
-    // The carousels live under a route key that includes ":menu" —
-    // be lenient and pick whichever route key has carouselsProducts.
+    // ── Legacy shape ──
+    // Older Maui builds embedded the rails synchronously as
+    // `carouselsProducts` under the ":menu" route key.
     let carousels: Array<{ products?: MauiProduct[]; total?: number }> = [];
     for (const route of Object.keys(loaderData)) {
       const cps = loaderData[route]?.carouselsProducts;
       if (Array.isArray(cps) && cps.length > carousels.length) {
         carousels = cps;
       }
+    }
+
+    // ── Current shape (Remix deferred streaming) ──
+    // Maui now ships the menu route with `carouselsPromise` instead of
+    // an inline array, so __remixContext holds an unresolved promise
+    // and the real payload is streamed further down the document as:
+    //
+    //   __remixContext.r("/:store?/:medrec/menu", "carouselsPromise", [ … ]);
+    //
+    // Parse those resolution calls when the legacy path found nothing.
+    // (Silent-0-items was the failure mode this guards against: the
+    // fetch succeeded and __remixContext existed, so the connector
+    // reported "ok" with an empty menu.)
+    if (carousels.length === 0) {
+      carousels = parseDeferredCarousels(html);
+    }
+
+    // Fail loudly rather than reporting a successful sync of an empty
+    // menu. A silently-empty parse is how a Maui markup change went
+    // unnoticed: sync said "ok / 0 items" and the Strain Library just
+    // quietly lost those shops.
+    if (carousels.length === 0) {
+      throw new Error(
+        "Maui: no carousels found — neither loaderData.carouselsProducts " +
+          "nor a __remixContext.r(…, 'carouselsPromise', …) payload matched. " +
+          "Menu markup likely changed again."
+      );
     }
 
     // Dedupe by product_id across all carousels — a single SKU is

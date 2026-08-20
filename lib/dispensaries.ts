@@ -59,6 +59,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Champlain Valley dispensary in South Hero on the islands. Part of the Champlain Valley Region Trail.",
     region: "Champlain Valley",
+    platform: "dutchie",
+    merchant_id: "651d9909613505000993ef41",
   },
   {
     id: "hello-hi",
@@ -119,6 +121,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Pine Street Arts District dispensary with craft extracts and flower. Part of the Champlain Valley Region Trail.",
     region: "Champlain Valley",
+    platform: "dutchie",
+    merchant_id: "62f28802b87e0f676aeaa8a6",
   },
   {
     id: "the-high-bar",
@@ -211,6 +215,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Morrisville mountain-town dispensary serving the Stowe corridor. Part of the Lamoille to NEK Trail.",
     region: "Lamoille to NEK",
+    platform: "leafly",
+    merchant_id: "higher-elevation-vt",
   },
   {
     id: "zenbarn-farms",
@@ -286,6 +292,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Northeast Kingdom Cannabis Company in Barton. Part of the Lamoille to NEK Trail.",
     region: "Lamoille to NEK",
+    platform: "leafly",
+    merchant_id: "kingdom-kind",
   },
   {
     id: "craft-cannabis-company",
@@ -333,6 +341,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Middlebury downtown dispensary on Park St. Part of the Catamount Trail.",
     region: "Catamount",
+    platform: "dutchie",
+    merchant_id: "62f28802b87e0f676aeaa8a6",
   },
   {
     id: "emerald-rose-grows",
@@ -348,6 +358,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Bristol dispensary and cultivator in the Champlain Valley foothills. Part of the Catamount Trail.",
     region: "Catamount",
+    platform: "dutchie",
+    merchant_id: "65860962422c8c00097c7489",
   },
   {
     id: "green-mountain-therapeutics",
@@ -468,6 +480,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Brattleboro's Vermont Bud Barn on Marlboro Rd. Part of the Catamount Trail.",
     region: "Catamount",
+    platform: "dutchie",
+    merchant_id: "62fbbc5780bafa00c9d0a900",
   },
   {
     id: "cloud-9",
@@ -515,6 +529,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "White River Junction's Tea House dispensary. Part of the Granite Capital Trail.",
     region: "Granite Capital",
+    platform: "maui",
+    merchant_id: "theteahouse",
   },
   {
     id: "something-wicked-cannabis-company",
@@ -560,6 +576,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Bradford's Devil's Den Cannabis Co. on Main St. Part of the Granite Capital Trail.",
     region: "Granite Capital",
+    platform: "maui",
+    merchant_id: "devilsden",
   },
   {
     id: "sunday-drive",
@@ -575,6 +593,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Woodstock's Sunday Drive dispensary. Part of the Granite Capital Trail.",
     region: "Granite Capital",
+    platform: "dutchie",
+    merchant_id: "62ffa7e1b787e800ce7b8424",
   },
   {
     id: "polestar-cannabis",
@@ -590,6 +610,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Randolph's Polestar Cannabis on Pleasant St. Part of the Granite Capital Trail.",
     region: "Granite Capital",
+    platform: "dutchie",
+    merchant_id: "6334a4421806bf00fa33a3d3",
   },
   {
     id: "forbins-reserve",
@@ -635,6 +657,8 @@ export const dispensaries: Dispensary[] = [
     tags: ["recreational"],
     description: "Montpelier's Capital Cannabis Co. on Main St. Part of the Granite Capital Trail.",
     region: "Granite Capital",
+    platform: "dutchie",
+    merchant_id: "62f1311ebce6d2744eafea42",
   },
 
   /* ── TEST FIXTURE — used for COVE Trail Passport scan-flow verification ── */
