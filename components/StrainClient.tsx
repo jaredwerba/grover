@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import type { LiveProduct } from "@/lib/inventory-public";
 import { productIcon } from "@/lib/product-icons";
@@ -68,6 +68,13 @@ const LIVE_SUBCATEGORIES: Record<string, FilterChoice[]> = {
     { value: "distillate", label: "Distillate" },
   ],
 };
+
+/**
+ * Lazy list rendering — cards revealed per batch as the user scrolls.
+ * 36 divides evenly into the 1-, 2-, and 3-column grid layouts, so a
+ * batch always ends on a complete row.
+ */
+const PAGE_SIZE = 36;
 
 const LIVE_TYPE_LABELS: Record<string, string> = {
   flower: "flower",
@@ -513,6 +520,53 @@ export default function StrainClient({
   const subcategoryRow = liveType !== "all" ? LIVE_SUBCATEGORIES[liveType] : null;
   const labelForType = LIVE_TYPE_LABELS[liveType] ?? "products";
 
+  // ── Lazy rendering ──
+  // With 2k+ live products, mounting every card at once makes the page
+  // heavy to hydrate and scroll. Render PAGE_SIZE at a time and reveal
+  // the next batch when the sentinel below the grid approaches the
+  // viewport. Filtering/sorting still runs over the FULL dataset — only
+  // the DOM is windowed.
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  // Reset scroll depth when any filter/sort input changes. Deliberately
+  // keyed on the inputs rather than `filteredLive` identity — toggling
+  // a favorite rebuilds the array and must NOT collapse the list back
+  // to the first page mid-scroll.
+  const filterKey = `${liveType}|${liveSubcat}|${query}|${pricePct}|${sortBy}|${showFavoritesOnly}|${userLocation ? "loc" : ""}`;
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [filterKey]);
+
+  const visibleLive =
+    filteredLive.length > visibleCount
+      ? filteredLive.slice(0, visibleCount)
+      : filteredLive;
+  const hasMore = visibleCount < filteredLive.length;
+
+  const revealMore = useCallback(() => {
+    setVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredLive.length));
+  }, [filteredLive.length]);
+
+  // Sentinel sits under the grid; rootMargin preloads the next batch
+  // ~800px before the user reaches the bottom, so a normal scroll feels
+  // endless rather than "click to load". 800px is deliberately smaller
+  // than the height of an initial 36-card grid, so first paint never
+  // cascades — the reveal only advances as the user actually scrolls.
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!hasMore) return;
+    const el = sentinelRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) revealMore();
+      },
+      { rootMargin: "800px 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasMore, revealMore]);
+
   if (!liveProducts || liveProducts.length === 0) {
     return (
       <div className="bg-forest/40 border border-forest-mid/60 rounded-md px-5 py-8 text-center">
@@ -716,19 +770,42 @@ export default function StrainClient({
         </span>
       </div>
 
-      {/* Cards — visible by default. Mobile = 1 col, tablet = 2, desktop = 3. */}
+      {/* Cards — lazily revealed in batches. Mobile = 1 col, tablet = 2, desktop = 3. */}
       {filteredLive.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
-          {filteredLive.map((p) => (
-            <LiveProductCard
-              key={p.key}
-              product={p}
-              distance={distanceMap?.get(p.key)}
-              isFavorite={favorites.has(p.key)}
-              onToggle={() => toggleFavorite(p)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+            {visibleLive.map((p) => (
+              <LiveProductCard
+                key={p.key}
+                product={p}
+                distance={distanceMap?.get(p.key)}
+                isFavorite={favorites.has(p.key)}
+                onToggle={() => toggleFavorite(p)}
+              />
+            ))}
+          </div>
+
+          {/* Infinite-scroll sentinel + manual fallback. The observer
+              usually fires before this is visible; the button covers
+              keyboard users and any environment without observers. */}
+          {hasMore && (
+            <div
+              ref={sentinelRef}
+              className="flex flex-col items-center gap-2 pt-6 pb-2"
+            >
+              <button
+                onClick={revealMore}
+                className="border border-amber/40 text-amber text-xs font-bold tracking-widest uppercase px-6 py-3 rounded-full hover:border-amber/70 hover:bg-amber/10 transition-colors"
+              >
+                Load more
+              </button>
+              <p className="text-cream-muted/60 text-[11px] tabular-nums">
+                Showing {visibleLive.length.toLocaleString()} of{" "}
+                {filteredLive.length.toLocaleString()}
+              </p>
+            </div>
+          )}
+        </>
       ) : (
         <p className="text-cream-muted/80 text-sm py-6 font-medium text-center">
           No live products match these filters.
