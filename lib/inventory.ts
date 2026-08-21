@@ -92,6 +92,7 @@ export type PlatformId =
   | "tymber" // shop.{domain}.com SSR (powers most VT shops, incl. those listed via DispenseApp)
   | "leafly" // consumer-api.leafly.com — public JSON, no Cloudflare gating
   | "maui"   // *.dispensary.shop — Remix SSR with __remixContext
+  | "weedmaps" // api-g.weedmaps.com — public discovery/menu JSON; merchant_id = listing slug
   | "dutchie"
   | "shopify"
   | "manual";

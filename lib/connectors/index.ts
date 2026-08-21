@@ -2,6 +2,7 @@ import type { NormalizedItem, PlatformId, RawProduct } from "../inventory";
 import { tymberConnector } from "./tymber";
 import { leaflyConnector } from "./leafly";
 import { mauiConnector } from "./maui";
+import { weedmapsConnector } from "./weedmaps";
 // Dutchie connector intentionally NOT registered yet:
 // dutchie.com is gated by Cloudflare bot protection and operator
 // subdomains are SPA-rendered. Reach requires Playwright or a Dutchie
@@ -38,5 +39,6 @@ const CONNECTORS: Partial<Record<PlatformId, Connector>> = {
   tymber: tymberConnector,
   leafly: leaflyConnector,
   maui: mauiConnector,
+  weedmaps: weedmapsConnector,
   // dutchie: dutchieConnector — see note above
 };
